@@ -170,6 +170,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
 
     qqMusicSong.setSubTitle(trackInfoNode.get("subtitle").textValue());
 
+    qqMusicSong.setAlbum(trackInfoNode.get("album").get("name").textValue());
+
     for (JsonNode singerNode : singersNode) {
       QQMusicSinger singer = new QQMusicSinger();
       singer.setName(singerNode.get("name").textValue());

@@ -58,7 +58,8 @@ public class QQMusicUserServiceImpl extends QQMusicBase implements QQMusicUserSe
 
     qqMusicUser.setName(creatorNode.get("nick").textValue());
     qqMusicUser.setHeadPic(creatorNode.get("headpic").textValue());
-    qqMusicUser.setLvPic(creatorNode.get("lvinfo").get(0).get("iconurl").textValue());
+    qqMusicUser.setLvPic(
+        creatorNode.get("userInfoUI").get("iconlist").get(0).get("srcUrl").textValue());
     qqMusicUser.setListenPic(creatorNode.get("listeninfo").get("iconurl").textValue());
     qqMusicUser.setBgPic(creatorNode.get("backpic").get("picurl").textValue());
     qqMusicUser.setVisitorNum(creatorNode.get("nums").get("visitornum").intValue());

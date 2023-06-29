@@ -19,6 +19,9 @@ public class QQMusicSong {
   /** The subTitle of the song. */
   private String subTitle;
 
+  /** The album of the song. */
+  private String album;
+
   /** All singers of this song. */
   private List<QQMusicSinger> singers;
 

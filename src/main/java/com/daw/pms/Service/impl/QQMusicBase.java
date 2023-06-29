@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -18,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @version 1.0
  * @since 6/3/23
  */
+@Service
 public class QQMusicBase {
   /** Host of proxy qq music api server. */
   @Value("${pm.remoteapi.qqmusic.host}")

@@ -1,5 +1,10 @@
 package com.daw.pms.Service;
 
+import com.daw.pms.Entity.QQMusicBasicSong;
+import com.daw.pms.Entity.QQMusicSong;
+
+import java.util.List;
+
 /**
  * Service for songs in pm server.
  *
@@ -7,4 +12,12 @@ package com.daw.pms.Service;
  * @version 1.0
  * @since 6/3/23
  */
-public interface SongService {}
+public interface SongService {
+  List<QQMusicBasicSong> getBasicSongsFromPlaylist(String playlistId, Integer platformId);
+
+  QQMusicSong getDetailSong(String songMid, Integer platformId);
+
+  List<QQMusicBasicSong> getSimilarSongs(String songId, Integer platformId);
+
+  String getSongLink(String songMid, String type, String mediaId, Integer platformId);
+}
