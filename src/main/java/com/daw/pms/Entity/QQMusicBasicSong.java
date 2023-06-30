@@ -27,6 +27,9 @@ public class QQMusicBasicSong {
   /** The singers of the song. */
   private List<QQMusicSinger> singers;
 
+  /** The cover uri of the song. */
+  private String coverUri;
+
   /** Need vip to play(1: need vip, 0: no need vip). */
   private Integer payPlay;
 }

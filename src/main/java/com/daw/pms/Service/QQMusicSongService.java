@@ -1,9 +1,7 @@
 package com.daw.pms.Service;
 
-import com.daw.pms.Entity.QQMusicBasicSong;
-import com.daw.pms.Entity.QQMusicLyrics;
-import com.daw.pms.Entity.QQMusicSearchSongPagedResult;
-import com.daw.pms.Entity.QQMusicSong;
+import com.daw.pms.Entity.*;
+
 import java.util.List;
 
 /**
@@ -25,14 +23,14 @@ public interface QQMusicSongService {
   List<String> getSongsIdFromPlaylist(String dirId, String cookie);
 
   /**
-   * Get basic songs of a playlist with {@code tid}.
+   * Get detail playlist with {@code tid}.
    *
    * @param tid The playlist's global tid.
    * @param cookie Your qq music cookie.
-   * @return Basic songs of the playlist in form of QQMusicBasicSong.
+   * @return Detail playlist.
    * @apiNote GET /playlist?id={@code tid}
    */
-  List<QQMusicBasicSong> getBasicSongsFromPlaylist(String tid, String cookie);
+  QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie);
 
   /**
    * Get detail of song with mid {@code songMid}.
@@ -65,18 +63,28 @@ public interface QQMusicSongService {
   QQMusicLyrics getLyrics(String songMid, String cookie);
 
   /**
-   * Get the url of song with songMid {@code songMid} and media id {@code mediaId} and type {@code
+   * Get the cover uri of the song/album with {@code albumMid}.
+   *
+   * @param albumMid The albumMid of song.
+   * @param cookie Your qq music cookie.
+   * @return Cover uri of your song.
+   * @apiNote GET /album?albummid={@code albumMid}
+   */
+  String getSongCoverUri(String albumMid, String cookie);
+
+  /**
+   * Get the url of song with songMid {@code songMid} and mediaMid {@code mediaMid} and type {@code
    * type}.
    *
    * @param songMid The song mid.
    * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
-   * @param mediaId The media id of song.
+   * @param mediaMid The mediaMid of song.
    * @param cookie Your qq music cookie.
-   * @return The url of your song with mid {@code songMid} and mediaId {@code mediaId} and type
+   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
    *     {@code type}
-   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaId}
+   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaMid}
    */
-  String getSongLink(String songMid, String type, String mediaId, String cookie);
+  String getSongLink(String songMid, String type, String mediaMid, String cookie);
 
   /**
    * Search and return paged songs according to the given keyword {@code name}.

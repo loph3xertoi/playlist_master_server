@@ -1,6 +1,7 @@
 package com.daw.pms.Service.impl;
 
 import com.daw.pms.Entity.QQMusicBasicSong;
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusicSong;
 import com.daw.pms.Service.QQMusicSongService;
 import com.daw.pms.Service.SongService;
@@ -25,14 +26,13 @@ public class SongServiceImpl implements SongService {
    * @return A list of QQMusicBasicSong.
    */
   @Override
-  public List<QQMusicBasicSong> getBasicSongsFromPlaylist(String playlistId, Integer platformId) {
-    List<QQMusicBasicSong> songs = null;
+  public QQMusicDetailPlaylist getDetailPlaylist(String playlistId, Integer platformId) {
+    QQMusicDetailPlaylist detailPlaylist = null;
     if (platformId == 1) {
-      songs =
-          qqMusicSongService.getBasicSongsFromPlaylist(
-              playlistId, qqMusicCookieService.getCookie(1));
+      detailPlaylist =
+          qqMusicSongService.getDetailPlaylist(playlistId, qqMusicCookieService.getCookie(1));
     }
-    return songs;
+    return detailPlaylist;
   }
 
   @Override
@@ -54,11 +54,12 @@ public class SongServiceImpl implements SongService {
   }
 
   @Override
-  public String getSongLink(String songMid, String type, String mediaId, Integer platformId) {
+  public String getSongLink(String songMid, String type, String mediaMid, Integer platformId) {
     String songLink = null;
     if (platformId == 1) {
       songLink =
-          qqMusicSongService.getSongLink(songMid, type, mediaId, qqMusicCookieService.getCookie(1));
+          qqMusicSongService.getSongLink(
+              songMid, type, mediaMid, qqMusicCookieService.getCookie(1));
     }
     return songLink;
   }

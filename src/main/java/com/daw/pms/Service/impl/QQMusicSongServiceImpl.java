@@ -62,40 +62,52 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
   }
 
   /**
-   * Get basic songs of a playlist with {@code tid}.
+   * Get detail playlist with {@code tid}.
    *
    * @param tid The playlist's global tid.
    * @param cookie Your qq music cookie.
-   * @return Basic songs of the playlist.
+   * @return Detail playlist.
    * @apiNote GET /playlist?id={@code tid}
    */
   @Override
-  public List<QQMusicBasicSong> getBasicSongsFromPlaylist(String tid, String cookie) {
-    return extractBasicSongs(
+  public QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie) {
+    return extractDetailPlaylist(
         requestGetAPI(
-            QQMusicAPI.GET_BASIC_SONGS_FROM_PLAYLIST,
+            QQMusicAPI.GET_DETAIL_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("id", tid);
               }
             },
-            Optional.of(cookie)));
+            Optional.of(cookie)),
+        cookie);
   }
 
   /**
-   * Extract raw basic songs in playlist to a list of QQMusicBasicSong.
+   * Extract detail playlist from raw detail playlist.
    *
-   * @param rawBasicSongs Raw basic songs returned by proxy qq music api server.
-   * @return A list of QQMusicBasicSong.
+   * @param rawDetailPlaylist Raw detail playlist returned by proxy qq music api server.
+   * @return Detail playlist.
    */
-  private List<QQMusicBasicSong> extractBasicSongs(String rawBasicSongs) {
+  private QQMusicDetailPlaylist extractDetailPlaylist(String rawDetailPlaylist, String cookie) {
     JsonNode jsonNode;
+    QQMusicDetailPlaylist detailPlaylist = new QQMusicDetailPlaylist();
     try {
-      jsonNode = new ObjectMapper().readTree(rawBasicSongs);
+      jsonNode = new ObjectMapper().readTree(rawDetailPlaylist);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    List<QQMusicBasicSong> songsList = new ArrayList<>();
+
+    JsonNode dataNode = jsonNode.get("data");
+    detailPlaylist.setName(dataNode.get("dissname").textValue());
+    detailPlaylist.setDesc(dataNode.get("desc").textValue());
+    detailPlaylist.setCoverImage(dataNode.get("logo").textValue());
+    detailPlaylist.setSongCount(dataNode.get("songnum").intValue());
+    detailPlaylist.setListenNum(dataNode.get("visitnum").intValue());
+    detailPlaylist.setDirId(dataNode.get("dirid").intValue());
+    detailPlaylist.setTid(dataNode.get("disstid").textValue());
+
+    List<QQMusicBasicSong> songs = new ArrayList<>();
     JsonNode songsNode = jsonNode.get("data").get("songlist");
     for (JsonNode song : songsNode) {
       JsonNode singersNode = song.get("singer");
@@ -115,10 +127,21 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
       }
       basicSong.setSingers(singers);
 
+      String albumMid = song.get("albummid").textValue();
+      String songCoverUri;
+      if (!albumMid.isEmpty()) {
+        songCoverUri = getSongCoverUri(albumMid, cookie);
+      } else {
+        String singerMid = singers.get(0).getMid();
+        songCoverUri = "https://y.qq.com/music/photo_new/T001R300x300M000" + singerMid + "_3.jpg";
+      }
+      basicSong.setCoverUri(songCoverUri);
+
       basicSong.setPayPlay(song.get("pay").get("payplay").intValue());
-      songsList.add(basicSong);
+      songs.add(basicSong);
+      detailPlaylist.setSongs(songs);
     }
-    return songsList;
+    return detailPlaylist;
   }
 
   /**
@@ -141,7 +164,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
                     put("songmid", songMid);
                   }
                 },
-                Optional.of(cookie)));
+                Optional.of(cookie)),
+            cookie);
     qqMusicSong.setLyrics(qqMusicLyrics);
     //    qqMusicSong.setPmPlaylists();
     return qqMusicSong;
@@ -153,7 +177,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
    * @param rawSongDetail Raw song's detail info returned by proxy qq music api server.
    * @return Wrapped QQMusicSong objected.
    */
-  private QQMusicSong extractDetailSong(String rawSongDetail) {
+  private QQMusicSong extractDetailSong(String rawSongDetail, String cookie) {
     JsonNode jsonNode;
     try {
       jsonNode = new ObjectMapper().readTree(rawSongDetail);
@@ -170,7 +194,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
 
     qqMusicSong.setSubTitle(trackInfoNode.get("subtitle").textValue());
 
-    qqMusicSong.setAlbum(trackInfoNode.get("album").get("name").textValue());
+    qqMusicSong.setAlbumName(trackInfoNode.get("album").get("name").textValue());
 
     for (JsonNode singerNode : singersNode) {
       QQMusicSinger singer = new QQMusicSinger();
@@ -179,8 +203,18 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
       singer.setMid(singerNode.get("mid").textValue());
       singerList.add(singer);
     }
-
     qqMusicSong.setSingers(singerList);
+
+    String albumMid = trackInfoNode.get("album").get("mid").textValue();
+    String songCoverUri;
+    if (!albumMid.isEmpty()) {
+      songCoverUri = getSongCoverUri(albumMid, cookie);
+    } else {
+      String singerMid = singerList.get(0).getMid();
+      songCoverUri = "https://y.qq.com/music/photo_new/T001R300x300M000" + singerMid + "_3.jpg";
+    }
+    qqMusicSong.setCoverUri(songCoverUri);
+
     qqMusicSong.setPayPlay(trackInfoNode.get("pay").get("pay_play").intValue());
     qqMusicSong.setSongId(trackInfoNode.get("id").asText());
     qqMusicSong.setSongMid(trackInfoNode.get("mid").textValue());
@@ -303,19 +337,56 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
   }
 
   /**
-   * Get the url of song with songMid {@code songMid} and media id {@code mediaId} and type {@code
+   * Get the cover uri of the song/album with {@code albumMid}.
+   *
+   * @param albumMid The albumMid of song.
+   * @param cookie Your qq music cookie.
+   * @return Cover uri of your song.
+   * @apiNote GET /album?albummid={@code albumMid}
+   */
+  @Override
+  public String getSongCoverUri(String albumMid, String cookie) {
+    return extractCoverUri(
+        requestGetAPI(
+            QQMusicAPI.GET_ALBUM_INFO,
+            new HashMap<String, String>() {
+              {
+                put("albummid", albumMid);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  /**
+   * Extract cover uri of song/album.
+   *
+   * @param rawAlbumInfo Raw album information returned by proxy qq music api server.
+   * @return The cover uri of song or album.
+   */
+  private String extractCoverUri(String rawAlbumInfo) {
+    JsonNode jsonNode;
+    try {
+      jsonNode = new ObjectMapper().readTree(rawAlbumInfo);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    return "http:" + jsonNode.get("data").get("picurl").textValue();
+  }
+
+  /**
+   * Get the url of song with songMid {@code songMid} and mediaMid {@code mediaMid} and type {@code
    * type}.
    *
    * @param songMid The song mid.
    * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
-   * @param mediaId The media id of song.
+   * @param mediaMid The mediaMid of the song.
    * @param cookie Your qq music cookie.
-   * @return The url of your song with mid {@code songMid} and mediaId {@code mediaId} and type
+   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
    *     {@code type}
-   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaId}
+   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaMid}
    */
   @Override
-  public String getSongLink(String songMid, String type, String mediaId, String cookie) {
+  public String getSongLink(String songMid, String type, String mediaMid, String cookie) {
     return extractSongLink(
         requestGetAPI(
             QQMusicAPI.GET_SONG_LINK,
@@ -323,7 +394,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
               {
                 put("id", songMid);
                 put("type", type);
-                put("mediaId", mediaId);
+                put("mediaId", mediaMid);
               }
             },
             Optional.of(cookie)));
@@ -342,7 +413,13 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    return jsonNode.get("data").textValue();
+    int result = jsonNode.get("result").intValue();
+    // Success for getting the song link.
+    if (result == 100) {
+      return jsonNode.get("data").textValue();
+    } else {
+      return "";
+    }
   }
 
   /**

@@ -2,6 +2,7 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.QQMusicBasicSong;
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Service.SongService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,11 @@ public class SongController {
   }
 
   @GetMapping("/songs/{playlistId}/{platformId}")
-  public Result getBasicSongsFromPlaylist(
+  public Result getDetailPlaylist(
       @PathVariable(name = "playlistId") String playlistId,
       @PathVariable(name = "platformId") Integer platformId) {
-    List<QQMusicBasicSong> basicSongsFromPlaylist =
-        songService.getBasicSongsFromPlaylist(playlistId, platformId);
-    return Result.ok(basicSongsFromPlaylist, (long) basicSongsFromPlaylist.size());
+    QQMusicDetailPlaylist detailPlaylist = songService.getDetailPlaylist(playlistId, platformId);
+    return Result.ok(detailPlaylist);
   }
 
   @GetMapping("/song/{songMid}/{platformId}")
@@ -45,8 +45,8 @@ public class SongController {
   public Result getSongLink(
       @PathVariable(name = "platformId") Integer platformId,
       @RequestParam(value = "songMid") String songMid,
-      @RequestParam(value = "mediaId") String mediaId,
+      @RequestParam(value = "mediaMid") String mediaMid,
       @RequestParam(value = "type") String type) {
-    return Result.ok(songService.getSongLink(songMid, type, mediaId, platformId));
+    return Result.ok(songService.getSongLink(songMid, type, mediaMid, platformId));
   }
 }

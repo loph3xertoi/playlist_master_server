@@ -1,7 +1,5 @@
 package com.daw.pms.Service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,10 +15,9 @@ class QQMusicSongServiceImplTest {
   }
 
   @Test
-  void getBasicSongsFromPlaylist() {
+  void getDetailPlaylist() {
     System.out.println(
-        qqMusicSongService.getBasicSongsFromPlaylist(
-            "4146457838", QQMusicCookieServiceImplTest.cookie));
+        qqMusicSongService.getDetailPlaylist("4146457838", QQMusicCookieServiceImplTest.cookie));
   }
 
   // 002GNiJS1BwnQJ 003aW4ny3SpmBa
@@ -40,6 +37,12 @@ class QQMusicSongServiceImplTest {
   void getLyrics() {
     System.out.println(
         qqMusicSongService.getLyrics("001UiydT2NNPir", QQMusicCookieServiceImplTest.cookie));
+  }
+
+  @Test
+  void getSongCoverUri() {
+    System.out.println(
+        qqMusicSongService.getSongCoverUri("0012vTYD3iRdKJ", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

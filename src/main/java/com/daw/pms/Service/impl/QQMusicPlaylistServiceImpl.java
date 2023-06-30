@@ -104,7 +104,6 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase implements QQMusicPl
       playlist.setName(playlistNode.get("diss_name").textValue());
       playlist.setCoverImage(playlistNode.get("diss_cover").textValue());
       playlist.setSongCount(playlistNode.get("song_cnt").intValue());
-      playlist.setListenNum(playlistNode.get("listen_num").intValue());
       playlist.setDirId(playlistNode.get("dirid").intValue());
       playlist.setTid(playlistNode.get("tid").asText());
       playlists.add(playlist);
