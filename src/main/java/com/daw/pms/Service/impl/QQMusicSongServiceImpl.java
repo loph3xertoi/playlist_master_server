@@ -79,8 +79,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
                 put("id", tid);
               }
             },
-            Optional.of(cookie)),
-        cookie);
+            Optional.of(cookie)));
   }
 
   /**
@@ -89,7 +88,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
    * @param rawDetailPlaylist Raw detail playlist returned by proxy qq music api server.
    * @return Detail playlist.
    */
-  private QQMusicDetailPlaylist extractDetailPlaylist(String rawDetailPlaylist, String cookie) {
+  private QQMusicDetailPlaylist extractDetailPlaylist(String rawDetailPlaylist) {
     JsonNode jsonNode;
     QQMusicDetailPlaylist detailPlaylist = new QQMusicDetailPlaylist();
     try {
@@ -130,7 +129,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
       String albumMid = song.get("albummid").textValue();
       String songCoverUri;
       if (!albumMid.isEmpty()) {
-        songCoverUri = getSongCoverUri(albumMid, cookie);
+        songCoverUri = "https://y.qq.com/music/photo_new/T002R300x300M000" + albumMid + "_2.jpg";
       } else {
         String singerMid = singers.get(0).getMid();
         songCoverUri = "https://y.qq.com/music/photo_new/T001R300x300M000" + singerMid + "_3.jpg";
@@ -164,8 +163,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
                     put("songmid", songMid);
                   }
                 },
-                Optional.of(cookie)),
-            cookie);
+                Optional.of(cookie)));
     qqMusicSong.setLyrics(qqMusicLyrics);
     //    qqMusicSong.setPmPlaylists();
     return qqMusicSong;
@@ -177,7 +175,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
    * @param rawSongDetail Raw song's detail info returned by proxy qq music api server.
    * @return Wrapped QQMusicSong objected.
    */
-  private QQMusicSong extractDetailSong(String rawSongDetail, String cookie) {
+  private QQMusicSong extractDetailSong(String rawSongDetail) {
     JsonNode jsonNode;
     try {
       jsonNode = new ObjectMapper().readTree(rawSongDetail);
@@ -208,7 +206,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
     String albumMid = trackInfoNode.get("album").get("mid").textValue();
     String songCoverUri;
     if (!albumMid.isEmpty()) {
-      songCoverUri = getSongCoverUri(albumMid, cookie);
+      songCoverUri = "https://y.qq.com/music/photo_new/T002R300x300M000" + albumMid + "_2.jpg";
     } else {
       String singerMid = singerList.get(0).getMid();
       songCoverUri = "https://y.qq.com/music/photo_new/T001R300x300M000" + singerMid + "_3.jpg";

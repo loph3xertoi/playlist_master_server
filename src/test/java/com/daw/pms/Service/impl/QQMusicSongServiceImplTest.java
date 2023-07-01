@@ -39,6 +39,7 @@ class QQMusicSongServiceImplTest {
         qqMusicSongService.getLyrics("001UiydT2NNPir", QQMusicCookieServiceImplTest.cookie));
   }
 
+  // Only for album, the song cover can obtain by albummid directly.
   @Test
   void getSongCoverUri() {
     System.out.println(
