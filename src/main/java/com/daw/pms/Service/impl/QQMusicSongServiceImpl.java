@@ -98,6 +98,9 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
     }
 
     JsonNode dataNode = jsonNode.get("data");
+    if (dataNode.isObject() && dataNode.size() == 0) {
+      return detailPlaylist;
+    }
     detailPlaylist.setName(dataNode.get("dissname").textValue());
     detailPlaylist.setDesc(dataNode.get("desc").textValue());
     detailPlaylist.setCoverImage(dataNode.get("logo").textValue());

@@ -23,6 +23,9 @@ public class SongController {
       @PathVariable(name = "playlistId") String playlistId,
       @PathVariable(name = "platformId") Integer platformId) {
     QQMusicDetailPlaylist detailPlaylist = songService.getDetailPlaylist(playlistId, platformId);
+    if (detailPlaylist.getTid() == null) {
+      return Result.fail("The tid of playlist not exist.");
+    }
     return Result.ok(detailPlaylist);
   }
 
