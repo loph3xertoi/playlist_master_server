@@ -1,5 +1,6 @@
 package com.daw.pms.Service;
 
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusicPlaylist;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
  * @since 6/28/23
  */
 public interface PlaylistService {
+  QQMusicDetailPlaylist getDetailPlaylist(String playlistId, Integer platformId);
+
   List<QQMusicPlaylist> getPlaylists(String uid, Integer platformId);
   //  Integer createPlaylist()
 }

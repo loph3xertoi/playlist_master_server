@@ -24,6 +24,9 @@ public class QQMusicBasicSong {
   /** The media mid of the song. */
   private String mediaMid;
 
+  /** The vid of the song. */
+  private String vid;
+
   /** The singers of the song. */
   private List<QQMusicSinger> singers;
 

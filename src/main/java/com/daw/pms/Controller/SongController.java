@@ -2,7 +2,6 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.QQMusicBasicSong;
-import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Service.SongService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,17 +15,6 @@ public class SongController {
 
   public SongController(SongService songService) {
     this.songService = songService;
-  }
-
-  @GetMapping("/songs/{playlistId}/{platformId}")
-  public Result getDetailPlaylist(
-      @PathVariable(name = "playlistId") String playlistId,
-      @PathVariable(name = "platformId") Integer platformId) {
-    QQMusicDetailPlaylist detailPlaylist = songService.getDetailPlaylist(playlistId, platformId);
-    if (detailPlaylist.getTid() == null) {
-      return Result.fail("The tid of playlist not exist.");
-    }
-    return Result.ok(detailPlaylist);
   }
 
   @GetMapping("/song/{songMid}/{platformId}")

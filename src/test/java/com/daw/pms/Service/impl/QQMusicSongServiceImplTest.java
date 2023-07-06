@@ -14,17 +14,11 @@ class QQMusicSongServiceImplTest {
         qqMusicSongService.getSongsIdFromPlaylist("14", QQMusicCookieServiceImplTest.cookie));
   }
 
-  @Test
-  void getDetailPlaylist() {
-    System.out.println(
-        qqMusicSongService.getDetailPlaylist("4146457838", QQMusicCookieServiceImplTest.cookie));
-  }
-
   // 002GNiJS1BwnQJ 003aW4ny3SpmBa
   @Test
   void getDetailSong() {
     System.out.println(
-        qqMusicSongService.getDetailSong("002GNiJS1BwnQJ", QQMusicCookieServiceImplTest.cookie));
+        qqMusicSongService.getDetailSong("0010eVNd0PkB2X", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test
@@ -50,7 +44,7 @@ class QQMusicSongServiceImplTest {
   void getSongLink() {
     System.out.println(
         qqMusicSongService.getSongLink(
-            "003nkjOy4dtZxc", "128", "003nkjOy4dtZxc", QQMusicCookieServiceImplTest.cookie));
+            "001mzBxY4UVcAH", "128", "000f6dQ63WCT60", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

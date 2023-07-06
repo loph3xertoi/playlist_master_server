@@ -23,16 +23,6 @@ public interface QQMusicSongService {
   List<String> getSongsIdFromPlaylist(String dirId, String cookie);
 
   /**
-   * Get detail playlist with {@code tid}.
-   *
-   * @param tid The playlist's global tid.
-   * @param cookie Your qq music cookie.
-   * @return Detail playlist.
-   * @apiNote GET /playlist?id={@code tid}
-   */
-  QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie);
-
-  /**
    * Get detail of song with mid {@code songMid}.
    *
    * @param songMid The mid of this song.

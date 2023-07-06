@@ -1,5 +1,6 @@
 package com.daw.pms.Service;
 
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusicPlaylist;
 
 import java.util.List;
@@ -21,6 +22,16 @@ public interface QQMusicPlaylistService {
    * @apiNote GET /user/playlist?id={@code id}
    */
   List<QQMusicPlaylist> getPlaylist(String id, String cookie);
+
+  /**
+   * Get detail playlist with {@code tid}.
+   *
+   * @param tid The playlist's global tid.
+   * @param cookie Your qq music cookie.
+   * @return Detail playlist.
+   * @apiNote GET /playlist?id={@code tid}
+   */
+  QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie);
 
   /**
    * Create playlist.

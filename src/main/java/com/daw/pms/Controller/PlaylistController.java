@@ -1,6 +1,7 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusicPlaylist;
 import com.daw.pms.Service.PlaylistService;
 import java.util.List;
@@ -22,5 +23,17 @@ public class PlaylistController {
       @PathVariable(name = "platformId") Integer platformId) {
     List<QQMusicPlaylist> playlists = playlistService.getPlaylists(uid, platformId);
     return Result.ok(playlists, (long) playlists.size());
+  }
+
+  @GetMapping("/detailplaylist/{playlistId}/{platformId}")
+  public Result getDetailPlaylist(
+      @PathVariable(name = "playlistId") String playlistId,
+      @PathVariable(name = "platformId") Integer platformId) {
+    QQMusicDetailPlaylist detailPlaylist =
+        playlistService.getDetailPlaylist(playlistId, platformId);
+    if (detailPlaylist.getTid() == null) {
+      return Result.fail("The tid of playlist not exist.");
+    }
+    return Result.ok(detailPlaylist);
   }
 }

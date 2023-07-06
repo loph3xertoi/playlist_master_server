@@ -1,5 +1,6 @@
 package com.daw.pms.Service.impl;
 
+import com.daw.pms.Entity.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusicPlaylist;
 import com.daw.pms.Service.PlaylistService;
 import com.daw.pms.Service.QQMusicCookieService;
@@ -32,5 +33,20 @@ public class PlaylistServiceImpl implements PlaylistService {
       qqMusicPlaylists = qqMusicPlaylistService.getPlaylist(uid, qqMusicCookieService.getCookie(1));
     }
     return qqMusicPlaylists;
+  }
+
+  /**
+   * @param playlistId The playlist id.
+   * @param platformId The platform id.
+   * @return A list of QQMusicBasicSong.
+   */
+  @Override
+  public QQMusicDetailPlaylist getDetailPlaylist(String playlistId, Integer platformId) {
+    QQMusicDetailPlaylist detailPlaylist = null;
+    if (platformId == 1) {
+      detailPlaylist =
+          qqMusicPlaylistService.getDetailPlaylist(playlistId, qqMusicCookieService.getCookie(1));
+    }
+    return detailPlaylist;
   }
 }
