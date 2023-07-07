@@ -5,7 +5,9 @@ import com.daw.pms.Entity.QQMusicSong;
 import com.daw.pms.Service.QQMusicSongService;
 import com.daw.pms.Service.SongService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,5 +48,14 @@ public class SongServiceImpl implements SongService {
               songMid, type, mediaMid, qqMusicCookieService.getCookie(1));
     }
     return songLink;
+  }
+
+  @Override
+  public Map<String, String> getSongsLink(String songMids, Integer platformId) {
+    Map<String, String> map = new HashMap<>();
+    if (platformId == 1) {
+      map = qqMusicSongService.getSongsLink(songMids, qqMusicCookieService.getCookie(1));
+    }
+    return map;
   }
 }

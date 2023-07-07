@@ -19,7 +19,7 @@ class QQMusicPlaylistServiceImplTest {
   void getDetailPlaylist() {
     System.out.println(
         qqMusicPlaylistService.getDetailPlaylist(
-            "4146457838", QQMusicCookieServiceImplTest.cookie));
+            "8729577481", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

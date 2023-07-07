@@ -12,8 +12,8 @@ import java.util.List;
  * @since 6/28/23
  */
 public interface PlaylistService {
-  QQMusicDetailPlaylist getDetailPlaylist(String playlistId, Integer platformId);
-
   List<QQMusicPlaylist> getPlaylists(String uid, Integer platformId);
+
+  QQMusicDetailPlaylist getDetailPlaylist(String playlistId, Integer platformId);
   //  Integer createPlaylist()
 }

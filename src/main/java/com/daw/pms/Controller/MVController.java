@@ -18,4 +18,10 @@ public class MVController {
   public Result getDetailMV(@PathVariable String vid, @PathVariable Integer platformId) {
     return Result.ok(mvService.getDetailMV(vid, platformId));
   }
+
+  @GetMapping("/mvlink/{vid}/{platformId}")
+  public Result getMVsLink(
+      @PathVariable(name = "vid") String vids, @PathVariable Integer platformId) {
+    return Result.ok(mvService.getMVsLink(vids, platformId));
+  }
 }

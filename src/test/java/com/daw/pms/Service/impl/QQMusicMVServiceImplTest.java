@@ -16,8 +16,9 @@ class QQMusicMVServiceImplTest {
   }
 
   @Test
-  void getMVLink() {
+  void getMVsLink() {
     System.out.println(
-        qqMusicMVService.getMVLink("c0021h9cv9k", QQMusicCookieServiceImplTest.cookie));
+        qqMusicMVService.getMVsLink(
+            "c0021h9cv9k,h0025qsvrpe", QQMusicCookieServiceImplTest.cookie));
   }
 }

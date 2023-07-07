@@ -1,8 +1,8 @@
 package com.daw.pms.Service;
 
 import com.daw.pms.Entity.*;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for handle songs of qq music.
@@ -75,6 +75,16 @@ public interface QQMusicSongService {
    * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaMid}
    */
   String getSongLink(String songMid, String type, String mediaMid, String cookie);
+
+  /**
+   * Get the url of songs with songMids {@code songMids}.
+   *
+   * @param songMids The songMid, separated with comma.
+   * @param cookie Your qq music cookie.
+   * @return The urls of your songs with mid {@code songMids}.
+   * @apiNote GET /song/urls?id={@code songMids}
+   */
+  Map<String, String> getSongsLink(String songMids, String cookie);
 
   /**
    * Search and return paged songs according to the given keyword {@code name}.

@@ -7,10 +7,7 @@ import com.daw.pms.Service.QQMusicMVService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,21 +41,21 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
   }
 
   /**
-   * Get the play url for the mv {@code vid}.
+   * Get the url for the mv(s) {@code vids}.
    *
-   * @param vid The vid of the mv.
+   * @param vids The vid of the mv, multi vid separated by comma.
    * @param cookie Your qq music cookie.
-   * @return A list of urls of this mv.
-   * @apiNote GET /mv/url?id={@code vid}
+   * @return A map which key is the vid and value is a list of urls of this mv.
+   * @apiNote GET /mv/url?id={@code vids}
    */
   @Override
-  public List<String> getMVLink(String vid, String cookie) {
+  public Map<String, List<String>> getMVsLink(String vids, String cookie) {
     return extractQQMusicMVLinks(
         requestGetAPI(
             QQMusicAPI.GET_MV_LINK,
             new HashMap<String, String>() {
               {
-                put("id", vid);
+                put("id", vids);
               }
             },
             Optional.of(cookie)));
@@ -102,23 +99,22 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
   }
 
   /**
-   * Extract rawMVLinks into a string list.
+   * Extract rawMVLinks into a map of vid and a list of urls.
    *
    * @param rawMVLinks Raw mv links returned by qq music api.
-   * @return A list of mv links string.
+   * @return A map of vid and a list of urls.
    */
-  private List<String> extractQQMusicMVLinks(String rawMVLinks) {
-    ArrayList<String> mvLinks = new ArrayList<>();
+  private Map<String, List<String>> extractQQMusicMVLinks(String rawMVLinks) {
+    Map<String, List<String>> mvLinks;
+    ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
-      jsonNode = new ObjectMapper().readTree(rawMVLinks);
+      jsonNode = objectMapper.readTree(rawMVLinks);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    JsonNode linksNode = jsonNode.get("data").get(jsonNode.get("data").fieldNames().next());
-    for (JsonNode linkNode : linksNode) {
-      mvLinks.add(linkNode.textValue());
-    }
+    JsonNode mapNode = jsonNode.get("data");
+    mvLinks = objectMapper.convertValue(mapNode, Map.class);
     return mvLinks;
   }
 }

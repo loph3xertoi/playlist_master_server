@@ -18,7 +18,7 @@ class QQMusicSongServiceImplTest {
   @Test
   void getDetailSong() {
     System.out.println(
-        qqMusicSongService.getDetailSong("0010eVNd0PkB2X", QQMusicCookieServiceImplTest.cookie));
+        qqMusicSongService.getDetailSong("000Miat72wA0e6", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test
@@ -45,6 +45,12 @@ class QQMusicSongServiceImplTest {
     System.out.println(
         qqMusicSongService.getSongLink(
             "001mzBxY4UVcAH", "128", "000f6dQ63WCT60", QQMusicCookieServiceImplTest.cookie));
+  }
+
+  @Test
+  void getSongsLink() {
+    System.out.println(
+        qqMusicSongService.getSongsLink("000Miat72wA0e6", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

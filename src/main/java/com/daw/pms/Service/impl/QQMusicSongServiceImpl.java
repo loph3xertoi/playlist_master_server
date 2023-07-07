@@ -339,6 +339,58 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
   }
 
   /**
+   * Get the urls of songs with songMids {@code songMids}.
+   *
+   * @param songMids The songs mid, separated with comma.
+   * @param cookie Your qq music cookie.
+   * @return The urls of your songs with mid {@code songMids}.
+   * @apiNote GET /song/urls?id={@code songMids}
+   */
+  @Override
+  public Map<String, String> getSongsLink(String songMids, String cookie) {
+    return extractSongLinks(
+        requestGetAPI(
+            QQMusicAPI.GET_SONGS_LINK,
+            new HashMap<String, String>() {
+              {
+                put("id", songMids);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  /**
+   * Extract raw song links into map.
+   *
+   * @param rawSongLinks Raw songs link returned by the proxy qq music api server.
+   * @return Map containing all songs link.
+   */
+  private Map<String, String> extractSongLinks(String rawSongLinks) {
+    JsonNode jsonNode;
+    try {
+      jsonNode = new ObjectMapper().readTree(rawSongLinks);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int result = jsonNode.get("result").intValue();
+    // Success for getting the song links.
+    if (result == 100) {
+      jsonNode = jsonNode.get("data");
+      Map<String, String> map = new HashMap<>();
+
+      Iterator<String> fieldNames = jsonNode.fieldNames();
+      while (fieldNames.hasNext()) {
+        String fieldName = fieldNames.next();
+        JsonNode fieldValue = jsonNode.get(fieldName);
+        map.put(fieldName, fieldValue.asText());
+      }
+      return map;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Search and return paged songs according to the given keyword {@code name}.
    *
    * @param name The search keyword.

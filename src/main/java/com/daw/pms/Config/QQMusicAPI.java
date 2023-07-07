@@ -21,6 +21,7 @@ public class QQMusicAPI {
   public static final String GET_LYRICS = "/lyric";
   public static final String GET_ALBUM_INFO = "/album";
   public static final String GET_SONG_LINK = "/song/url";
+  public static final String GET_SONGS_LINK = "/song/urls";
   public static final String SEARCH_SONGS = "/search";
   public static final String GET_MV_INFO = "/mv";
   public static final String GET_MV_LINK = "/mv/url";

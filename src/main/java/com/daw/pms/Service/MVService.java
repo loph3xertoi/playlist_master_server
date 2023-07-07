@@ -1,6 +1,8 @@
 package com.daw.pms.Service;
 
 import com.daw.pms.Entity.QQMusicMV;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service for handle MV.
@@ -11,4 +13,6 @@ import com.daw.pms.Entity.QQMusicMV;
  */
 public interface MVService {
   QQMusicMV getDetailMV(String vid, Integer platformId);
+
+  Map<String, List<String>> getMVsLink(String vids, Integer platformId);
 }

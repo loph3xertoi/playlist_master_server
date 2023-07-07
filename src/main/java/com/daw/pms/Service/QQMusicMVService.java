@@ -1,8 +1,8 @@
 package com.daw.pms.Service;
 
 import com.daw.pms.Entity.QQMusicMV;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for handle mv in qq music.
@@ -23,12 +23,12 @@ public interface QQMusicMVService {
   QQMusicMV getMVInfo(String vid, String cookie);
 
   /**
-   * Get the play url for the mv {@code vid}.
+   * Get the url for the mv(s) {@code vids}.
    *
-   * @param vid The vid of the mv.
+   * @param vids The vid of the mv, multi vid separated by comma.
    * @param cookie Your qq music cookie.
-   * @return A list of urls of this mv.
-   * @apiNote GET /mv/url?id={@code vid}
+   * @return A map which key is the vid and value is a list of urls of this mv.
+   * @apiNote GET /mv/url?id={@code vids}
    */
-  List<String> getMVLink(String vid, String cookie);
+  Map<String, List<String>> getMVsLink(String vids, String cookie);
 }

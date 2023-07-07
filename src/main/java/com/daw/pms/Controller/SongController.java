@@ -40,4 +40,11 @@ public class SongController {
       @RequestParam(value = "type") String type) {
     return Result.ok(songService.getSongLink(songMid, type, mediaMid, platformId));
   }
+
+  @GetMapping("/songslink/{platformId}")
+  public Result getSongsLink(
+      @PathVariable(name = "platformId") Integer platformId,
+      @RequestParam(value = "songMids") String songMids) {
+    return Result.ok(songService.getSongsLink(songMids, platformId));
+  }
 }

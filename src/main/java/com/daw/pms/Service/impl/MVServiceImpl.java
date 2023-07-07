@@ -4,6 +4,9 @@ import com.daw.pms.Entity.QQMusicMV;
 import com.daw.pms.Service.MVService;
 import com.daw.pms.Service.QQMusicCookieService;
 import com.daw.pms.Service.QQMusicMVService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,5 +32,19 @@ public class MVServiceImpl implements MVService {
       mvInfo = qqMusicMVService.getMVInfo(vid, qqMusicCookieService.getCookie(1));
     }
     return mvInfo;
+  }
+
+  /**
+   * @param vids The vids of the mv(s), multi vids separated by comma.
+   * @param platformId The platform id.
+   * @return The urls for the mv(s).
+   */
+  @Override
+  public Map<String, List<String>> getMVsLink(String vids, Integer platformId) {
+    Map<String, List<String>> mvLinks = new HashMap<>();
+    if (platformId == 1) {
+      mvLinks = qqMusicMVService.getMVsLink(vids, qqMusicCookieService.getCookie(1));
+    }
+    return mvLinks;
   }
 }
