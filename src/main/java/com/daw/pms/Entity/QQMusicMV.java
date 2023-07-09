@@ -21,6 +21,9 @@ public class QQMusicMV {
   /** The cover of the mv. */
   private String coverPic;
 
+  /** The publishing date of the mv. */
+  private Integer pubdate;
+
   /** The vid of the mv. */
   private String vid;
 

@@ -5,6 +5,7 @@ import com.daw.pms.Entity.QQMusicMV;
 import com.daw.pms.Entity.QQMusicSinger;
 import com.daw.pms.Service.QQMusicMVService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
@@ -91,6 +92,7 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
     qqMusicMV.setName(infoNode.get("name").textValue());
     qqMusicMV.setSingers(singers);
     qqMusicMV.setCoverPic(infoNode.get("cover_pic").textValue());
+    qqMusicMV.setPubdate(infoNode.get("pubdate").intValue());
     qqMusicMV.setVid(infoNode.get("vid").textValue());
     qqMusicMV.setDuration(infoNode.get("duration").intValue());
     qqMusicMV.setPlayCnt(infoNode.get("playcnt").intValue());
@@ -106,6 +108,8 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
    */
   private Map<String, List<String>> extractQQMusicMVLinks(String rawMVLinks) {
     Map<String, List<String>> mvLinks;
+    TypeReference<Map<String, List<String>>> typeRef =
+        new TypeReference<Map<String, List<String>>>() {};
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -114,7 +118,7 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
       throw new RuntimeException(e);
     }
     JsonNode mapNode = jsonNode.get("data");
-    mvLinks = objectMapper.convertValue(mapNode, Map.class);
+    mvLinks = objectMapper.convertValue(mapNode, typeRef);
     return mvLinks;
   }
 }
