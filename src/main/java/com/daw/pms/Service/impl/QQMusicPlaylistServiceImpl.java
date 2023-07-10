@@ -25,16 +25,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class QQMusicPlaylistServiceImpl extends QQMusicBase implements QQMusicPlaylistService {
   /**
-   * Get all playlist of user {@code id}.
+   * Get all playlists of user {@code id}.
    *
    * @param id User's qq number.
    * @param cookie Your cookie for qq music.
-   * @return All playlist created by {@code id}.
+   * @return All playlists created by {@code id}.
    * @apiNote GET /user/playlist?id={@code id}
    */
   @Override
-  public List<QQMusicPlaylist> getPlaylist(String id, String cookie) {
-    return extractQQMusicPlaylist(
+  public List<QQMusicPlaylist> getPlaylists(String id, String cookie) {
+    return extractQQMusicPlaylists(
         requestGetAPI(
             QQMusicAPI.GET_PLAYLIST,
             new HashMap<String, String>() {
@@ -174,13 +174,13 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase implements QQMusicPl
   /**
    * Extract raw playlists to a list of QQMusicPlaylist.
    *
-   * @param rawAllPlaylist Raw json string returned by remote QQMusicAPI server.
+   * @param rawAllPlaylists Raw json string returned by remote QQMusicAPI server.
    * @return ArrayList of QQMusicPlaylist.
    */
-  private List<QQMusicPlaylist> extractQQMusicPlaylist(String rawAllPlaylist) {
+  private List<QQMusicPlaylist> extractQQMusicPlaylists(String rawAllPlaylists) {
     JsonNode jsonNode;
     try {
-      jsonNode = new ObjectMapper().readTree(rawAllPlaylist);
+      jsonNode = new ObjectMapper().readTree(rawAllPlaylists);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }

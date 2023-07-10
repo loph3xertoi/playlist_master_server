@@ -198,7 +198,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
       qqMusicBasicSong.setSongMid(songNode.get("mid").textValue());
       qqMusicBasicSong.setMediaMid(songNode.get("file").get("media_mid").textValue());
       qqMusicBasicSong.setPayPlay(songNode.get("pay").get("pay_play").intValue());
-
+      qqMusicBasicSong.setVid(songNode.get("mv").get("vid").textValue());
       for (JsonNode singerNode : singersNode) {
         QQMusicSinger singer = new QQMusicSinger();
         singer.setName(singerNode.get("name").textValue());
@@ -207,6 +207,17 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
         qqMusicSingers.add(singer);
       }
       qqMusicBasicSong.setSingers(qqMusicSingers);
+
+      String albumMid = songNode.get("album").get("mid").textValue();
+      String songCoverUri;
+      if (!albumMid.isEmpty()) {
+        songCoverUri = "https://y.qq.com/music/photo_new/T002R300x300M000" + albumMid + "_2.jpg";
+      } else {
+        String singerMid = qqMusicBasicSong.getSingers().get(0).getMid();
+        songCoverUri = "https://y.qq.com/music/photo_new/T001R300x300M000" + singerMid + "_3.jpg";
+      }
+      qqMusicBasicSong.setCoverUri(songCoverUri);
+      
       songList.add(qqMusicBasicSong);
     }
     return songList;

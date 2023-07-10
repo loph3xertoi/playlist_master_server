@@ -24,7 +24,7 @@ class QQMusicSongServiceImplTest {
   @Test
   void getSimilarSongs() {
     System.out.println(
-        qqMusicSongService.getSimilarSongs("102060511", QQMusicCookieServiceImplTest.cookie));
+        qqMusicSongService.getSimilarSongs("240442614", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

@@ -21,7 +21,7 @@ public interface QQMusicPlaylistService {
    * @return All playlist created by {@code id}.
    * @apiNote GET /user/playlist?id={@code id}
    */
-  List<QQMusicPlaylist> getPlaylist(String id, String cookie);
+  List<QQMusicPlaylist> getPlaylists(String id, String cookie);
 
   /**
    * Get detail playlist with {@code tid}.

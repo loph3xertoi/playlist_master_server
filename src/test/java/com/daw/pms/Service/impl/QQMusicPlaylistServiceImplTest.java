@@ -9,9 +9,9 @@ class QQMusicPlaylistServiceImplTest {
   @Autowired QQMusicPlaylistServiceImpl qqMusicPlaylistService;
 
   @Test
-  void getPlaylist() {
+  void getPlaylists() {
     System.out.println(
-        qqMusicPlaylistService.getPlaylist(
+        qqMusicPlaylistService.getPlaylists(
             QQMusicCookieServiceImplTest.id, QQMusicCookieServiceImplTest.cookie));
   }
 

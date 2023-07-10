@@ -30,7 +30,8 @@ public class PlaylistServiceImpl implements PlaylistService {
   public List<QQMusicPlaylist> getPlaylists(String uid, Integer platformId) {
     List<QQMusicPlaylist> qqMusicPlaylists = null;
     if (platformId == 1) {
-      qqMusicPlaylists = qqMusicPlaylistService.getPlaylist(uid, qqMusicCookieService.getCookie(1));
+      qqMusicPlaylists =
+          qqMusicPlaylistService.getPlaylists(uid, qqMusicCookieService.getCookie(1));
     }
     return qqMusicPlaylists;
   }
