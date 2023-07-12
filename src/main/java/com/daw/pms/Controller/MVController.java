@@ -1,7 +1,7 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Service.MVService;
+import com.daw.pms.Service.PMS.MVService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,14 +15,42 @@ public class MVController {
     this.mvService = mvService;
   }
 
-  @GetMapping("/mv/{vid}/{platformId}")
-  public Result getDetailMV(@PathVariable String vid, @PathVariable Integer platformId) {
-    return Result.ok(mvService.getDetailMV(vid, platformId));
+  /**
+   * Get detail video information according to its {@code vid}.
+   *
+   * @param vid The vid of the mv.
+   * @param platform The platform id.
+   * @return The detail information of the mv {@code vid}.
+   */
+  @GetMapping("/mv/{vid}")
+  public Result getDetailMV(
+      @PathVariable String vid, @RequestParam(value = "platform") Integer platform) {
+    return Result.ok(mvService.getDetailMV(vid, platform));
   }
 
-  @GetMapping("/mvlink/{platformId}")
+  /**
+   * Get all MVs links.
+   *
+   * @param vids The vid of the mv(s), multi vid separated by comma.
+   * @param platform The platform id.
+   * @return A map which key is the vid and value is a list of urls of this mv.
+   */
+  @GetMapping("/mvlink/{vids}")
   public Result getMVsLink(
-      @RequestParam(value = "vids") String vids, @PathVariable Integer platformId) {
-    return Result.ok(mvService.getMVsLink(vids, platformId));
+      @PathVariable(name = "vids") String vids, @RequestParam Integer platform) {
+    return Result.ok(mvService.getMVsLink(vids, platform));
+  }
+
+  /**
+   * Get all related videos according to the song with {@code songId}.
+   *
+   * @param songId The song id.
+   * @param platform The platform id.
+   * @return All the related video about the song with {@code songId}.
+   */
+  @GetMapping("/relatedmv/{songId}")
+  public Result getRelatedVideos(
+      @PathVariable(name = "songId") Integer songId, @RequestParam Integer platform) {
+    return Result.ok(mvService.getRelatedVideos(songId, platform));
   }
 }

@@ -1,8 +1,8 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.QQMusicBasicSong;
-import com.daw.pms.Service.SongService;
+import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,34 +17,65 @@ public class SongController {
     this.songService = songService;
   }
 
-  @GetMapping("/song/{songMid}/{platformId}")
+  /**
+   * Get detail song with song mid {@code songMid}.
+   *
+   * @param songMid The song mid.
+   * @param platform The platform id.
+   * @return The detail song.
+   */
+  @GetMapping("/song/{songMid}")
   public Result getDetailSong(
       @PathVariable(name = "songMid") String songMid,
-      @PathVariable(name = "platformId") Integer platformId) {
-    return Result.ok(songService.getDetailSong(songMid, platformId));
+      @RequestParam(value = "platform") Integer platform) {
+    return Result.ok(songService.getDetailSong(songMid, platform));
   }
 
-  @GetMapping("/similarsongs/{songId}/{platformId}")
+  /**
+   * Get similar songs with song mid {@code songMid}.
+   *
+   * @param songId The song mid.
+   * @param platform The platform id.
+   * @return The similar songs.
+   */
+  @GetMapping("/similarsongs/{songId}")
   public Result getSimilarSongs(
       @PathVariable(name = "songId") String songId,
-      @PathVariable(name = "platformId") Integer platformId) {
-    List<QQMusicBasicSong> similarSongs = songService.getSimilarSongs(songId, platformId);
+      @RequestParam(value = "platform") Integer platform) {
+    List<BasicSong> similarSongs = songService.getSimilarSongs(songId, platform);
     return Result.ok(similarSongs, (long) similarSongs.size());
   }
 
-  @GetMapping("/songlink/{platformId}")
+  /**
+   * Get song link with song mid {@code songMid}.
+   *
+   * @param songMid The song mid.
+   * @param mediaMid The media mid.
+   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
+   * @param platform The platform id.
+   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
+   *     {@code type}.
+   */
+  @GetMapping("/songlink/{songMid}")
   public Result getSongLink(
-      @PathVariable(name = "platformId") Integer platformId,
-      @RequestParam(value = "songMid") String songMid,
+      @PathVariable(name = "songMid") String songMid,
       @RequestParam(value = "mediaMid") String mediaMid,
-      @RequestParam(value = "type") String type) {
-    return Result.ok(songService.getSongLink(songMid, type, mediaMid, platformId));
+      @RequestParam(value = "type") String type,
+      @RequestParam(value = "platform") Integer platform) {
+    return Result.ok(songService.getSongLink(songMid, type, mediaMid, platform));
   }
 
-  @GetMapping("/songslink/{platformId}")
+  /**
+   * Get songs link.
+   *
+   * @param songMids The song mids.
+   * @param platform The platform id.
+   * @return The urls of your songs with mid {@code songMids}.
+   */
+  @GetMapping("/songslink/{songMids}")
   public Result getSongsLink(
-      @PathVariable(name = "platformId") Integer platformId,
-      @RequestParam(value = "songMids") String songMids) {
-    return Result.ok(songService.getSongsLink(songMids, platformId));
+      @PathVariable(name = "songMids") String songMids,
+      @RequestParam(value = "platform") Integer platform) {
+    return Result.ok(songService.getSongsLink(songMids, platform));
   }
 }

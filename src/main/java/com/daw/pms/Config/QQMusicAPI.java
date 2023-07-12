@@ -25,4 +25,5 @@ public class QQMusicAPI {
   public static final String SEARCH_SONGS = "/search";
   public static final String GET_MV_INFO = "/mv";
   public static final String GET_MV_LINK = "/mv/url";
+  public static final String GET_RELATED_MV = "/song/mv";
 }

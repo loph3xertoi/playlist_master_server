@@ -1,10 +1,11 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Service.UserService;
-import java.util.Map;
+import com.daw.pms.Entity.Basic.BasicUser;
+import com.daw.pms.Service.PMS.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,9 +23,19 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/user/{uid}")
-  public Result getUser(@PathVariable(name = "uid") String uid) {
-    Map<String, Object> userInfo = userService.getUserInfo(uid);
+  /**
+   * Get user information for specific platform.
+   *
+   * @param id Your user id in pms.
+   * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
+   *     represents netease music, 3 represents bilibili.
+   * @return User information for specific platform.
+   * @apiNote GET /user/{id}?platform={@code platform}
+   */
+  @GetMapping("/user/{id}")
+  public Result getUser(
+      @PathVariable(name = "id") String id, @RequestParam(value = "platform") Integer platform) {
+    BasicUser userInfo = userService.getUserInfo(id, platform);
     return Result.ok(userInfo);
   }
 }
