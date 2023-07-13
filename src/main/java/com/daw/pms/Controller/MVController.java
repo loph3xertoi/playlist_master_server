@@ -1,13 +1,18 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.Entity.Basic.BasicVideo;
 import com.daw.pms.Service.PMS.MVService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CacheConfig(cacheNames = "mv-cache")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
 public class MVController {
   private final MVService mvService;
 
@@ -25,7 +30,8 @@ public class MVController {
   @GetMapping("/mv/{vid}")
   public Result getDetailMV(
       @PathVariable String vid, @RequestParam(value = "platform") Integer platform) {
-    return Result.ok(mvService.getDetailMV(vid, platform));
+    BasicVideo video = mvService.getDetailMV(vid, platform);
+    return Result.ok(video);
   }
 
   /**

@@ -3,6 +3,8 @@ package com.daw.pms.Controller;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicUser;
 import com.daw.pms.Service.PMS.UserService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 6/27/23
  */
 @RestController
+@CacheConfig(cacheNames = "user-cache")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
 public class UserController {
   private final UserService userService;
 

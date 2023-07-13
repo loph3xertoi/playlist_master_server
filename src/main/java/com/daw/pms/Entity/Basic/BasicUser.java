@@ -1,5 +1,6 @@
 package com.daw.pms.Entity.Basic;
 
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
  * @since 7/11/23
  */
 @Data
-public class BasicUser {
+public class BasicUser implements Serializable {
   /** Your name. */
   private String name;
 

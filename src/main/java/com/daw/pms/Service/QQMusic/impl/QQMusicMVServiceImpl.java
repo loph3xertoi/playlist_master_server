@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
  * @since 6/2/23
  */
 @Service
-public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVService {
+public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVService, Serializable {
   /**
    * Get detail video information according to its {@code vid}.
    *
@@ -148,7 +149,7 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
 
   private List<BasicVideo> extractRelatedMV(String rawRelatedMVs) {
     List<BasicVideo> relatedMVs = new ArrayList<>();
-    TypeReference<List<JsonNode>> typeRef = new TypeReference<List<JsonNode>>() {};
+    //    TypeReference<List<JsonNode>> typeRef = new TypeReference<List<JsonNode>>() {};
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -157,8 +158,7 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
       throw new RuntimeException(e);
     }
     JsonNode mapNode = jsonNode.get("data");
-    List<JsonNode> jsonNodeList = objectMapper.convertValue(mapNode, typeRef);
-    jsonNodeList.forEach(
+    mapNode.forEach(
         videoNode ->
             relatedMVs.add(
                 new QQMusicVideo() {
@@ -168,9 +168,8 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
                     setSingers(
                         new ArrayList<BasicSinger>() {
                           {
-                            List<JsonNode> jsonNodeList =
-                                objectMapper.convertValue(videoNode.get("singers"), typeRef);
-                            jsonNodeList.forEach(
+                            JsonNode singersNode = videoNode.get("singers");
+                            singersNode.forEach(
                                 singerNode ->
                                     add(
                                         new QQMusicSinger() {

@@ -1,5 +1,6 @@
 package com.daw.pms.Entity.QQMusic;
 
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
  * @since 6/2/23
  */
 @Data
-public class QQMusicLyrics {
+public class QQMusicLyrics implements Serializable {
   /** Lyrics of song. */
   private String lyric;
 

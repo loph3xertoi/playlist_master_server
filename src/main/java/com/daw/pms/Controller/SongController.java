@@ -4,12 +4,16 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CacheConfig(cacheNames = "song-cache")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
 public class SongController {
   private final SongService songService;
 

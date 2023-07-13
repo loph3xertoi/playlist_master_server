@@ -1,5 +1,6 @@
 package com.daw.pms.Entity.Basic;
 
+import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import lombok.Data;
  * @since 7/11/23
  */
 @Data
-public class BasicVideo {
+public class BasicVideo implements Serializable {
   /** The video name. */
   private String name;
 
