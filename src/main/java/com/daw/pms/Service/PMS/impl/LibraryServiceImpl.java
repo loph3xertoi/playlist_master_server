@@ -7,6 +7,7 @@ import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,7 @@ public class LibraryServiceImpl implements LibraryService {
       // Get all songs' mid for get the song's link in one http request.
       List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
       qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+      Collections.shuffle(songMids);
       Map<String, String> songsLink =
           qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
       qqMusicDetailPlaylist
