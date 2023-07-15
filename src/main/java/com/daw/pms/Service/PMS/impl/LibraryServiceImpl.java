@@ -37,7 +37,7 @@ public class LibraryServiceImpl implements LibraryService {
   @Override
   public List<BasicLibrary> getLibraries(String id, Integer platform) {
     List<BasicLibrary> libraries = null;
-    if (platform == 1) {
+    if (platform == 1 && "0".equals(id)) {
       libraries =
           qqMusicPlaylistService.getPlaylists("2804161589", qqMusicCookieService.getCookie(1));
     }

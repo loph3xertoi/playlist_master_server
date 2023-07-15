@@ -28,7 +28,7 @@ public class QQMusicUser extends BasicUser {
   /** The number of your qq music fans. */
   private Integer fansNum;
 
-  /** The number of people you followed. */
+  /** The number of people you are following. */
   private Integer followNum;
 
   /** The number of qq friends. */

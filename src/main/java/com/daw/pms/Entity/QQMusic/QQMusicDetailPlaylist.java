@@ -23,7 +23,7 @@ public class QQMusicDetailPlaylist extends BasicLibrary {
   /** Listen times of this playlist. */
   private Integer listenNum;
 
-  /** The dirId(local id) of this playlist. */
+  /** The dirId(local dawid) of this playlist. */
   private Integer dirId;
 
   /** The tid(global id) of this playlist. */
