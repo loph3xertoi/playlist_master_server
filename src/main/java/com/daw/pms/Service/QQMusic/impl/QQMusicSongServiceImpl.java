@@ -7,6 +7,7 @@ import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service;
  * @since 6/3/23
  */
 @Service
-public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongService {
+public class QQMusicSongServiceImpl extends QQMusicBase
+    implements QQMusicSongService, Serializable {
   /**
    * Get songs id from playlist {@code dirId}.
    *
@@ -428,8 +430,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
             new HashMap<String, String>() {
               {
                 put("key", name);
-                put("type", String.valueOf(pageNo));
-                put("mediaId", String.valueOf(pageSize));
+                put("pageNo", String.valueOf(pageNo));
+                put("pageSize", String.valueOf(pageSize));
               }
             },
             Optional.of(cookie)));
@@ -450,7 +452,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
       throw new RuntimeException(e);
     }
     QQMusicSearchSongPagedResult pagedResult = new QQMusicSearchSongPagedResult();
-    ArrayList<QQMusicSong> basicSongList = new ArrayList<>();
+    List<QQMusicSong> basicSongList = new ArrayList<>();
     JsonNode dataNode = jsonNode.get("data");
     JsonNode listNode = dataNode.get("list");
 
@@ -467,7 +469,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
                     setSongId(songNode.get("songid").asText());
                     setSongMid(songNode.get("songmid").textValue());
                     setMediaMid(songNode.get("strMediaMid").textValue());
-                    setSingers(
+                    List<BasicSinger> singers =
                         new ArrayList<BasicSinger>() {
                           {
                             songNode
@@ -487,7 +489,22 @@ public class QQMusicSongServiceImpl extends QQMusicBase implements QQMusicSongSe
                                               }
                                             }));
                           }
-                        });
+                        };
+                    setSingers(singers);
+                    String albumMid = songNode.get("albummid").textValue();
+                    String songCoverUri;
+                    if (!albumMid.isEmpty()) {
+                      songCoverUri =
+                          "https://y.qq.com/music/photo_new/T002R300x300M000" + albumMid + "_2.jpg";
+                    } else {
+                      QQMusicSinger singer = (QQMusicSinger) singers.get(0);
+                      String singerMid = singer.getMid();
+                      songCoverUri =
+                          "https://y.qq.com/music/photo_new/T001R300x300M000"
+                              + singerMid
+                              + "_3.jpg";
+                    }
+                    setCover(songCoverUri);
                     setPayPlay(songNode.get("pay").get("pay_play").intValue());
                   }
                 }));

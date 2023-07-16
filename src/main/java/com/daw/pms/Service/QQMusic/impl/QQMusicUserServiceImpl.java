@@ -6,6 +6,7 @@ import com.daw.pms.Service.QQMusic.QQMusicUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service;
  * @since 6/1/23
  */
 @Service
-public class QQMusicUserServiceImpl extends QQMusicBase implements QQMusicUserService {
+public class QQMusicUserServiceImpl extends QQMusicBase
+    implements QQMusicUserService, Serializable {
   /**
    * Return the user info for your qq music.
    *

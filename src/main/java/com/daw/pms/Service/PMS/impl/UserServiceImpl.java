@@ -6,6 +6,7 @@ import com.daw.pms.Entity.QQMusic.QQMusicUser;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @since 7/11/23
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, Serializable {
   private final QQMusicUserService qqMusicUserService;
   private final QQMusicCookieService qqMusicCookieService;
 

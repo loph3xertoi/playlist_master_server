@@ -2,6 +2,7 @@ package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service;
  * @since 5/31/23
  */
 @Service
-public class QQMusicCookieServiceImpl extends QQMusicBase implements QQMusicCookieService {
+public class QQMusicCookieServiceImpl extends QQMusicBase
+    implements QQMusicCookieService, Serializable {
 
   /**
    * Store your qq music cookie to QQMusicAPI server.

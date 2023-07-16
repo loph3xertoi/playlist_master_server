@@ -1,26 +1,22 @@
 package com.daw.pms.Entity.QQMusic;
 
+import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import java.util.List;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * POJO for paged result.
+ * Paged qq music songs.
  *
  * @author Daw Loph
  * @version 1.0
  * @since 6/2/23
  */
 @Data
-public class QQMusicSearchSongPagedResult {
-  /** Basic songs returned by one page. */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class QQMusicSearchSongPagedResult extends BasicPagedSongs {
+  /** Songs returned by one page. */
   private List<QQMusicSong> songs;
-
-  /** Page order. */
-  private Integer pageNo;
-
-  /** Count of songs returned one-page result. */
-  private Integer pageSize;
-
-  /** Total numbers of all matched songs. */
-  private Integer total;
 }

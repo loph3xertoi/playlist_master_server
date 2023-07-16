@@ -6,6 +6,7 @@ import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LibraryServiceImpl implements LibraryService {
+public class LibraryServiceImpl implements LibraryService, Serializable {
   private final QQMusicPlaylistService qqMusicPlaylistService;
   private final QQMusicCookieService qqMusicCookieService;
   private final QQMusicSongService qqMusicSongService;

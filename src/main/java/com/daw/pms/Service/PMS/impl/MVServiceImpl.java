@@ -5,13 +5,14 @@ import com.daw.pms.Entity.QQMusic.QQMusicDetailVideo;
 import com.daw.pms.Service.PMS.MVService;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicMVService;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MVServiceImpl implements MVService {
+public class MVServiceImpl implements MVService, Serializable {
   private final QQMusicMVService qqMusicMVService;
   private final QQMusicCookieService qqMusicCookieService;
 

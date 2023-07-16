@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS;
 
+import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,36 @@ public interface SongService {
    */
   List<BasicSong> getSimilarSongs(String songId, Integer platform);
 
+  /**
+   * Get song's link.
+   *
+   * @param songMid The song mid.
+   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
+   * @param mediaMid The media mid.
+   * @param platform The platform id.
+   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
+   *     {@code type}.
+   */
   String getSongLink(String songMid, String type, String mediaMid, Integer platform);
 
+  /**
+   * Get the songs' links.
+   *
+   * @param songMids The song mids.
+   * @param platform The platform id.
+   * @return The urls of your songs with mid {@code songMids}.
+   */
   Map<String, String> getSongsLink(String songMids, Integer platform);
+
+  /**
+   * Search song by name.
+   *
+   * @param songName The song name to search.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
+   * @param platform The platform id.
+   * @return The search result with page.
+   */
+  BasicPagedSongs searchSongByName(
+      String songName, Integer pageNo, Integer pageSize, Integer platform);
 }

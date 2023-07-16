@@ -1,19 +1,19 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailSong;
+import com.daw.pms.Entity.QQMusic.QQMusicSearchSongPagedResult;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.PMS.SongService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import com.daw.pms.Service.QQMusic.impl.QQMusicCookieServiceImpl;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SongServiceImpl implements SongService {
+public class SongServiceImpl implements SongService, Serializable {
   private final QQMusicSongService qqMusicSongService;
   private final QQMusicCookieServiceImpl qqMusicCookieService;
 
@@ -74,6 +74,16 @@ public class SongServiceImpl implements SongService {
     return similarSongs;
   }
 
+  /**
+   * Get song's link.
+   *
+   * @param songMid The song mid.
+   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
+   * @param mediaMid The media mid.
+   * @param platform The platform id.
+   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
+   *     {@code type}.
+   */
   @Override
   public String getSongLink(String songMid, String type, String mediaMid, Integer platform) {
     String songLink = null;
@@ -85,6 +95,13 @@ public class SongServiceImpl implements SongService {
     return songLink;
   }
 
+  /**
+   * Get the songs' links.
+   *
+   * @param songMids The song mids.
+   * @param platform The platform id.
+   * @return The urls of your songs with mid {@code songMids}.
+   */
   @Override
   public Map<String, String> getSongsLink(String songMids, Integer platform) {
     Map<String, String> map = new HashMap<>();
@@ -92,5 +109,39 @@ public class SongServiceImpl implements SongService {
       map = qqMusicSongService.getSongsLink(songMids, qqMusicCookieService.getCookie(1));
     }
     return map;
+  }
+
+  /**
+   * Search song by name.
+   *
+   * @param songName The song name to search.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
+   * @param platform The platform id.
+   * @return The search result with page.
+   */
+  @Override
+  public BasicPagedSongs searchSongByName(
+      String songName, Integer pageNo, Integer pageSize, Integer platform) {
+    BasicPagedSongs pagedSongs = new BasicPagedSongs();
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      pagedSongs = qqMusicSongService.searchSongByName(songName, pageNo, pageSize, cookie);
+      QQMusicSearchSongPagedResult qqMusicSongs = (QQMusicSearchSongPagedResult) pagedSongs;
+      // Get all songs' mid for get the song's link in one http request.
+      List<String> songMids = new ArrayList<>(qqMusicSongs.getPageSize());
+      qqMusicSongs.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+      Collections.shuffle(songMids);
+      Map<String, String> songsLink =
+          qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
+      qqMusicSongs
+          .getSongs()
+          .forEach(
+              song -> {
+                song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+                song.setIsTakenDown(song.getSongLink().isEmpty());
+              });
+    }
+    return pagedSongs;
   }
 }

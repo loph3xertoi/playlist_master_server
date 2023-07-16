@@ -82,4 +82,22 @@ public class SongController {
       @RequestParam(value = "platform") Integer platform) {
     return Result.ok(songService.getSongsLink(songMids, platform));
   }
+
+  /**
+   * Search song by name.
+   *
+   * @param name The song name to search.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
+   * @param platform The platform id.
+   * @return The search result with page.
+   */
+  @GetMapping("/search/song/{name}")
+  public Result searchSong(
+      @PathVariable(name = "name") String name,
+      @RequestParam(value = "pageNo") Integer pageNo,
+      @RequestParam(value = "pageSize") Integer pageSize,
+      @RequestParam(value = "platform") Integer platform) {
+    return Result.ok(songService.searchSongByName(name, pageNo, pageSize, platform));
+  }
 }
