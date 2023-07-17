@@ -26,10 +26,10 @@ public class MVController {
    * @param vid The vid of the mv.
    * @param platform The platform id.
    * @return The detail information of the mv {@code vid}.
+   * @apiNote GET /mv/{@code vid}?platform={@code platform}
    */
   @GetMapping("/mv/{vid}")
-  public Result getDetailMV(
-      @PathVariable String vid, @RequestParam(value = "platform") Integer platform) {
+  public Result getDetailMV(@PathVariable String vid, @RequestParam Integer platform) {
     BasicVideo video = mvService.getDetailMV(vid, platform);
     return Result.ok(video);
   }
@@ -40,10 +40,10 @@ public class MVController {
    * @param vids The vid of the mv(s), multi vid separated by comma.
    * @param platform The platform id.
    * @return A map which key is the vid and value is a list of urls of this mv.
+   * @apiNote GET /mvLink/{@code vids}?platform={@code platform}
    */
-  @GetMapping("/mvlink/{vids}")
-  public Result getMVsLink(
-      @PathVariable(name = "vids") String vids, @RequestParam Integer platform) {
+  @GetMapping("/mvLink/{vids}")
+  public Result getMVsLink(@PathVariable String vids, @RequestParam Integer platform) {
     return Result.ok(mvService.getMVsLink(vids, platform));
   }
 
@@ -53,10 +53,10 @@ public class MVController {
    * @param songId The song id.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
+   * @apiNote GET /relatedMV/{@code songId}?platform={@code platform}
    */
-  @GetMapping("/relatedmv/{songId}")
-  public Result getRelatedVideos(
-      @PathVariable(name = "songId") Integer songId, @RequestParam Integer platform) {
+  @GetMapping("/relatedMV/{songId}")
+  public Result getRelatedVideos(@PathVariable Integer songId, @RequestParam Integer platform) {
     return Result.ok(mvService.getRelatedVideos(songId, platform));
   }
 }

@@ -6,6 +6,9 @@ import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +53,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    * Get detail library with {@code libraryId} in {@code platform}.
    *
    * @param libraryId The library id.
-   * @param platform Which platform the user belongs to.
+   * @param platform Which platform the library belongs to.
    * @return Detail library.
    */
   @Override
@@ -80,5 +83,58 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
               });
     }
     return detailLibrary;
+  }
+
+  /**
+   * Create new library.
+   *
+   * @param library A map that contains the name of library.
+   * @param platform Which platform the library belongs to.
+   * @return Map result for creating library, need to be parsed.
+   */
+  @Override
+  public Map<String, Object> createLibrary(Map<String, String> library, Integer platform) {
+    Map<String, Object> result;
+    ObjectMapper objectMapper = new ObjectMapper();
+    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      String jsonString = qqMusicPlaylistService.createPlaylist(library.get("name"), cookie);
+      try {
+        result = objectMapper.readValue(jsonString, typeRef);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException("Only implement qq music platform");
+    }
+    return result;
+  }
+
+  /**
+   * Delete the library.
+   *
+   * @param libraryId The id of library.
+   * @param platform Which platform the library belongs to.
+   * @return Map result for deleting library, need to be parsed.
+   */
+  @Override
+  public Map<String, Object> deleteLibrary(String libraryId, Integer platform) {
+    Map<String, Object> result;
+    ObjectMapper objectMapper = new ObjectMapper();
+    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      String jsonString =
+          qqMusicPlaylistService.deletePlaylist(Integer.parseInt(libraryId), cookie);
+      try {
+        result = objectMapper.readValue(jsonString, typeRef);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException("Only implement qq music platform");
+    }
+    return result;
   }
 }

@@ -27,11 +27,10 @@ public class SongController {
    * @param songMid The song mid.
    * @param platform The platform id.
    * @return The detail song.
+   * @apiNote GET /song/{@code songMid}?platform={@code platform}
    */
   @GetMapping("/song/{songMid}")
-  public Result getDetailSong(
-      @PathVariable(name = "songMid") String songMid,
-      @RequestParam(value = "platform") Integer platform) {
+  public Result getDetailSong(@PathVariable String songMid, @RequestParam Integer platform) {
     return Result.ok(songService.getDetailSong(songMid, platform));
   }
 
@@ -41,11 +40,10 @@ public class SongController {
    * @param songId The song mid.
    * @param platform The platform id.
    * @return The similar songs.
+   * @apiNote GET /similarSongs/{@code songId}?platform={@code platform}
    */
-  @GetMapping("/similarsongs/{songId}")
-  public Result getSimilarSongs(
-      @PathVariable(name = "songId") String songId,
-      @RequestParam(value = "platform") Integer platform) {
+  @GetMapping("/similarSongs/{songId}")
+  public Result getSimilarSongs(@PathVariable String songId, @RequestParam Integer platform) {
     List<BasicSong> similarSongs = songService.getSimilarSongs(songId, platform);
     return Result.ok(similarSongs, (long) similarSongs.size());
   }
@@ -59,13 +57,15 @@ public class SongController {
    * @param platform The platform id.
    * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
    *     {@code type}.
+   * @apiNote GET /songLink/{@code songMid}?mediaMid={@code mediaMid}&type={@code
+   *     type}&platform={@code platform}
    */
-  @GetMapping("/songlink/{songMid}")
+  @GetMapping("/songLink/{songMid}")
   public Result getSongLink(
-      @PathVariable(name = "songMid") String songMid,
-      @RequestParam(value = "mediaMid") String mediaMid,
-      @RequestParam(value = "type") String type,
-      @RequestParam(value = "platform") Integer platform) {
+      @PathVariable String songMid,
+      @RequestParam String mediaMid,
+      @RequestParam String type,
+      @RequestParam Integer platform) {
     return Result.ok(songService.getSongLink(songMid, type, mediaMid, platform));
   }
 
@@ -75,11 +75,10 @@ public class SongController {
    * @param songMids The song mids.
    * @param platform The platform id.
    * @return The urls of your songs with mid {@code songMids}.
+   * @apiNote GET /songsLink/{@code songMids}?platform={@code platform}
    */
-  @GetMapping("/songslink/{songMids}")
-  public Result getSongsLink(
-      @PathVariable(name = "songMids") String songMids,
-      @RequestParam(value = "platform") Integer platform) {
+  @GetMapping("/songsLink/{songMids}")
+  public Result getSongsLink(@PathVariable String songMids, @RequestParam Integer platform) {
     return Result.ok(songService.getSongsLink(songMids, platform));
   }
 
@@ -94,10 +93,10 @@ public class SongController {
    */
   @GetMapping("/search/song/{name}")
   public Result searchSong(
-      @PathVariable(name = "name") String name,
-      @RequestParam(value = "pageNo") Integer pageNo,
-      @RequestParam(value = "pageSize") Integer pageSize,
-      @RequestParam(value = "platform") Integer platform) {
+      @PathVariable String name,
+      @RequestParam Integer pageNo,
+      @RequestParam Integer pageSize,
+      @RequestParam Integer platform) {
     return Result.ok(songService.searchSongByName(name, pageNo, pageSize, platform));
   }
 }

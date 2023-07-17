@@ -34,11 +34,10 @@ public class UserController {
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
    *     represents netease music, 3 represents bilibili.
    * @return User information for specific platform.
-   * @apiNote GET /user/{id}?platform={@code platform}
+   * @apiNote GET /user/{@code id}?platform={@code platform}
    */
   @GetMapping("/user/{id}")
-  public Result getUser(
-      @PathVariable(name = "id") String id, @RequestParam(value = "platform") Integer platform) {
+  public Result getUser(@PathVariable String id, @RequestParam Integer platform) {
     BasicUser userInfo = userService.getUserInfo(id, platform);
     return Result.ok(userInfo);
   }

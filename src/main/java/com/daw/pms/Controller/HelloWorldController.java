@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloWorldController {
-  @GetMapping("hello")
+  @GetMapping("/hello")
   public Map<String, Object> helloWorld() {
     Map<String, Object> map = new HashMap<>();
     map.put("The date right now", new Date());

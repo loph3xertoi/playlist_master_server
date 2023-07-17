@@ -2,6 +2,7 @@ package com.daw.pms.Service.PMS;
 
 import com.daw.pms.Entity.Basic.BasicLibrary;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for handle playlists or favorites.
@@ -25,9 +26,26 @@ public interface LibraryService {
    * Get detail library with {@code libraryId} in {@code platform}.
    *
    * @param libraryId The library id.
-   * @param platform Which platform the user belongs to.
+   * @param platform Which platform the library belongs to.
    * @return Detail library.
    */
   BasicLibrary getDetailLibrary(String libraryId, Integer platform);
-  //  Integer createLibrary()
+
+  /**
+   * Create new library.
+   *
+   * @param library A map that contains the name of library.
+   * @param platform Which platform the library belongs to.
+   * @return Map result for creating library, need to be parsed.
+   */
+  Map<String, Object> createLibrary(Map<String, String> library, Integer platform);
+
+  /**
+   * Delete the library.
+   *
+   * @param libraryId The id of library.
+   * @param platform Which platform the library belongs to.
+   * @return Map result for deleting library, need to be parsed.
+   */
+  Map<String, Object> deleteLibrary(String libraryId, Integer platform);
 }
