@@ -68,19 +68,22 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       if (qqMusicDetailPlaylist.getTid() == null) {
         return null;
       }
-      // Get all songs' mid for get the song's link in one http request.
-      List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
-      qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
-      Collections.shuffle(songMids);
-      Map<String, String> songsLink =
-          qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
-      qqMusicDetailPlaylist
-          .getSongs()
-          .forEach(
-              song -> {
-                song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
-                song.setIsTakenDown(song.getSongLink().isEmpty());
-              });
+      Integer songCount = qqMusicDetailPlaylist.getItemCount();
+      if (songCount > 0) {
+        // Get all songs' mid for get the song's link in one http request.
+        List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
+        qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+        Collections.shuffle(songMids);
+        Map<String, String> songsLink =
+            qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
+        qqMusicDetailPlaylist
+            .getSongs()
+            .forEach(
+                song -> {
+                  song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+                  song.setIsTakenDown(song.getSongLink().isEmpty());
+                });
+      }
     }
     return detailLibrary;
   }
