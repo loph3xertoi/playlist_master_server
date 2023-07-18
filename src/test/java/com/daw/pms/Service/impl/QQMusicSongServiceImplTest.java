@@ -59,27 +59,4 @@ class QQMusicSongServiceImplTest {
     System.out.println(
         qqMusicSongService.searchSongByName("洛天依", 1, 20, QQMusicCookieServiceImplTest.cookie));
   }
-
-  @Test
-  void addSongsToPlaylist() {
-    System.out.println(
-        qqMusicSongService.addSongsToPlaylist(
-            "20",
-            "003nkjOy4dtZxc,000idahy2pT761,001OgIGc0B4OEL",
-            QQMusicCookieServiceImplTest.cookie));
-  }
-
-  @Test
-  void moveSongsToOtherPlaylist() {
-    System.out.println(
-        qqMusicSongService.moveSongsToOtherPlaylist(
-            "105302677,414119681,414478884", "20", "21", QQMusicCookieServiceImplTest.cookie));
-  }
-
-  @Test
-  void removeSongsFromPlaylist() {
-    System.out.println(
-        qqMusicSongService.removeSongsFromPlaylist(
-            "21", "105302677,414119681,414478884", QQMusicCookieServiceImplTest.cookie));
-  }
 }

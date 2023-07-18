@@ -140,4 +140,64 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     }
     return result;
   }
+
+  @Override
+  public Map<String, Object> addSongsToLibrary(Integer dirId, String songsMid, Integer platform) {
+    Map<String, Object> result;
+    ObjectMapper objectMapper = new ObjectMapper();
+    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      String jsonString = qqMusicPlaylistService.addSongsToPlaylist(dirId, songsMid, cookie);
+      try {
+        result = objectMapper.readValue(jsonString, typeRef);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException("Only implement qq music platform");
+    }
+    return result;
+  }
+
+  @Override
+  public Map<String, Object> moveSongsToOtherLibrary(
+      String songsId, Integer fromDirId, Integer toDirId, Integer platform) {
+    Map<String, Object> result;
+    ObjectMapper objectMapper = new ObjectMapper();
+    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      String jsonString =
+          qqMusicPlaylistService.moveSongsToOtherPlaylist(songsId, fromDirId, toDirId, cookie);
+      try {
+        result = objectMapper.readValue(jsonString, typeRef);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException("Only implement qq music platform");
+    }
+    return result;
+  }
+
+  @Override
+  public Map<String, Object> removeSongsFromLibrary(
+      Integer dirId, String songsId, Integer platform) {
+    Map<String, Object> result;
+    ObjectMapper objectMapper = new ObjectMapper();
+    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    if (platform == 1) {
+      String cookie = qqMusicCookieService.getCookie(1);
+      String jsonString = qqMusicPlaylistService.removeSongsFromPlaylist(dirId, songsId, cookie);
+      try {
+        result = objectMapper.readValue(jsonString, typeRef);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException("Only implement qq music platform");
+    }
+    return result;
+  }
 }
