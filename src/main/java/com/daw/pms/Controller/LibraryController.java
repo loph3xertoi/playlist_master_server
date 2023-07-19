@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class LibraryController {
   private final LibraryService libraryService;
 
-  public LibraryController(LibraryService libraryService) {
-    this.libraryService = libraryService;
-  }
-
   /**
    * Get all libraries with {@code platform}.
    *
@@ -31,9 +27,14 @@ public class LibraryController {
    * @apiNote GET /libraries?id={@code id}&platform={@code platform}
    */
   @GetMapping("/libraries")
+  @CacheEvict
   public Result getLibraries(@RequestParam String id, @RequestParam Integer platform) {
     List<BasicLibrary> libraries = libraryService.getLibraries(id, platform);
     return Result.ok(libraries, (long) libraries.size());
+  }
+
+  public LibraryController(LibraryService libraryService) {
+    this.libraryService = libraryService;
   }
 
   /**
@@ -95,13 +96,9 @@ public class LibraryController {
    *     {"dirid":"dirId","mid":"songsMid","tid":"tid"}
    */
   @PostMapping("/addSongsToLibrary")
-  @Caching(
-      evict = {
-        @CacheEvict(
-            value = "library-cache",
-            key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
-      })
+  @CacheEvict(
+      value = "library-cache",
+      key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'")
   public Result addSongsToLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     Integer dirId = Integer.parseInt(requestBody.get("dirid"));
@@ -127,8 +124,7 @@ public class LibraryController {
             key = "'getDetailLibrary('+#requestBody.get('fromTid')+','+#platform+')'"),
         @CacheEvict(
             value = "library-cache",
-            key = "'getDetailLibrary('+#requestBody.get('toTid')+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+            key = "'getDetailLibrary('+#requestBody.get('toTid')+','+#platform+')'")
       })
   public Result moveSongsToOtherLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
@@ -152,11 +148,7 @@ public class LibraryController {
    *     songsId}&platform={@code platform}
    */
   @DeleteMapping("/removeSongsFromLibrary")
-  @Caching(
-      evict = {
-        @CacheEvict(value = "library-cache", key = "'getDetailLibrary('+#tid+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
-      })
+  @CacheEvict(value = "library-cache", key = "'getDetailLibrary('+#tid+','+#platform+')'")
   public Result removeSongsFromLibrary(
       @RequestParam Integer dirId,
       @RequestParam String tid,
