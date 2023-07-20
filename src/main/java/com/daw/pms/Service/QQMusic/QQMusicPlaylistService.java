@@ -45,12 +45,12 @@ public interface QQMusicPlaylistService {
   /**
    * Delete playlist with dirId {@code dirId}.
    *
-   * @param dirId The dirId of playlist you want to delete.
+   * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return Result for deleting playlist.
    * @apiNote /GET /playlist/delete?dirid={@code dirId}
    */
-  String deletePlaylist(Integer dirId, String cookie);
+  String deletePlaylist(String dirId, String cookie);
 
   /**
    * Add songs with mids {@code songsMid} to playlist with dirId {@code dirId}

@@ -117,7 +117,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   /**
    * Delete the library.
    *
-   * @param libraryId The id of library.
+   * @param libraryId The id of library, multiple libraries separated with comma.
    * @param platform Which platform the library belongs to.
    * @return Map result for deleting library, need to be parsed.
    */
@@ -128,8 +128,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
     if (platform == 1) {
       String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString =
-          qqMusicPlaylistService.deletePlaylist(Integer.parseInt(libraryId), cookie);
+      String jsonString = qqMusicPlaylistService.deletePlaylist(libraryId, cookie);
       try {
         result = objectMapper.readValue(jsonString, typeRef);
       } catch (JsonProcessingException e) {

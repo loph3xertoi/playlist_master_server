@@ -192,16 +192,16 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   /**
    * Delete playlist with dirId {@code dirId}.
    *
-   * @param dirId The dirId of playlist you want to delete.
+   * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return Result for deleting playlist.
    * @apiNote /GET /playlist/delete?dirid={@code dirId}
    */
   @Override
-  public String deletePlaylist(Integer dirId, String cookie) {
+  public String deletePlaylist(String dirId, String cookie) {
     return requestGetAPI(
         QQMusicAPI.DELETE_PLAYLIST,
-        new HashMap<String, Integer>() {
+        new HashMap<String, String>() {
           {
             put("dirid", dirId);
           }

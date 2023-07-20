@@ -32,7 +32,7 @@ class QQMusicPlaylistServiceImplTest {
   @Test
   void deletePlaylist() {
     System.out.println(
-        qqMusicPlaylistService.deletePlaylist(22, QQMusicCookieServiceImplTest.cookie));
+        qqMusicPlaylistService.deletePlaylist("22,23", QQMusicCookieServiceImplTest.cookie));
   }
 
   @Test

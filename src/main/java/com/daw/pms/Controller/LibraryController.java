@@ -73,7 +73,7 @@ public class LibraryController {
   /**
    * Delete the library in {@code platform}.
    *
-   * @param libraryId The id of library.
+   * @param libraryId The id of library, multiple libraries separated with comma.
    * @param platform Which platform the library belongs to.
    * @return Map result for deleting library.
    * @apiNote DELETE /library/{@code libraryId}?platform={@code platform}
