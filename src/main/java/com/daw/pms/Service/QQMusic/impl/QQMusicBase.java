@@ -1,13 +1,13 @@
 package com.daw.pms.Service.QQMusic.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -43,13 +43,21 @@ public class QQMusicBase {
   public <K, V> String requestGetAPI(String api, Map<K, V> params, Optional<String> cookie) {
     String url = host + ":" + port + api;
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-    params.forEach((k, v) -> builder.queryParam((String) k, v));
+    params.forEach(
+        (k, v) -> {
+          try {
+            builder.queryParam((String) k, URLEncoder.encode(String.valueOf(v), "UTF-8"));
+          } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+          }
+        });
+    URI uri = builder.build(true).toUri();
     HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
     cookie.ifPresent(s -> headers.set("cookie", s));
     HttpEntity<?> entity = new HttpEntity<>(headers);
     ResponseEntity<String> response =
-        restTemplate.exchange(
-            builder.build(false).toUriString(), HttpMethod.GET, entity, String.class);
+        restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
     return response.getBody();
   }
 }
