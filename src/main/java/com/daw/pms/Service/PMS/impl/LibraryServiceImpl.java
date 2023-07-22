@@ -41,10 +41,10 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    */
   @Override
   public List<BasicLibrary> getLibraries(String id, Integer platform) {
-    List<BasicLibrary> libraries = null;
+    List<BasicLibrary> libraries = new ArrayList<>();
     if (platform == 1 && "0".equals(id)) {
-      libraries =
-          qqMusicPlaylistService.getPlaylists("2804161589", qqMusicCookieService.getCookie(1));
+      libraries.addAll(
+          qqMusicPlaylistService.getPlaylists("2804161589", qqMusicCookieService.getCookie(1)));
     }
     return libraries;
   }

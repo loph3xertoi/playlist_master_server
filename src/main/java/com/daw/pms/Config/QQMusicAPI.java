@@ -14,7 +14,6 @@ public class QQMusicAPI {
   public static final String ADD_SONGS_TO_PLAYLIST = "/playlist/add";
   public static final String GET_SONGS_ID_FROM_PLAYLIST = "/playlist/map";
   public static final String REMOVE_SONGS_FROM_PLAYLIST = "/playlist/remove";
-  public static final String COPY_SONGS_FROM_PLAYLIST_TO_ANOTHER_PLAYLIST = "/playlist/add";
   public static final String MOVE_SONGS_TO_OTHER_PLAYLIST = "/playlist/move";
   public static final String GET_SONG_DETAIL = "/song";
   public static final String GET_SIMILAR_SONGS = "/song/similar";

@@ -1,0 +1,72 @@
+package com.daw.pms.Utils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+/**
+ * Class for send http requests.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/21/23
+ */
+@Component
+public class HttpTools {
+  /** Host of proxy qq music api server. */
+  @Value("${pm.remoteapi.qqmusic.host}")
+  public String qqmusicHost;
+
+  /** Port of proxy qq music api server. */
+  @Value("${pm.remoteapi.qqmusic.port}")
+  public String qqmusicPort;
+
+  /** Host of proxy netease cloud music api server. */
+  @Value("${pm.remoteapi.ncm.host}")
+  public String ncmHost;
+
+  /** Port of proxy netease cloud music api server. */
+  @Value("${pm.remoteapi.ncm.port}")
+  public String ncmPort;
+
+  private final RestTemplate restTemplate;
+
+  public HttpTools(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+
+  /**
+   * Send http request to {@code api} with parameters {@code params} and {@code cookie}.
+   *
+   * @param url Remote url you want to call.
+   * @param params Request parameters.
+   * @param cookie Your qq music cookie.
+   * @return Result in string form.
+   */
+  public <K, V> String requestGetAPI(String url, Map<K, V> params, Optional<String> cookie) {
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+    params.forEach(
+        (k, v) -> {
+          try {
+            builder.queryParam((String) k, URLEncoder.encode(String.valueOf(v), "UTF-8"));
+          } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+          }
+        });
+    URI uri = builder.build(true).toUri();
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+    cookie.ifPresent(s -> headers.set("cookie", s));
+    HttpEntity<?> entity = new HttpEntity<>(headers);
+    ResponseEntity<String> response =
+        restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+    return response.getBody();
+  }
+}

@@ -1,7 +1,7 @@
 package com.daw.pms.Service.QQMusic;
 
-import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
+import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ public interface QQMusicPlaylistService {
    * @return All playlists created by {@code qid}.
    * @apiNote GET /user/playlist?id={@code qid}
    */
-  List<BasicLibrary> getPlaylists(String qid, String cookie);
+  List<QQMusicPlaylist> getPlaylists(String qid, String cookie);
 
   /**
    * Get detail playlist with {@code tid}.
@@ -48,7 +48,7 @@ public interface QQMusicPlaylistService {
    * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return Result for deleting playlist.
-   * @apiNote /GET /playlist/delete?dirid={@code dirId}
+   * @apiNote GET /playlist/delete?dirid={@code dirId}
    */
   String deletePlaylist(String dirId, String cookie);
 

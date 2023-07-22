@@ -16,6 +16,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class QQMusicUser extends BasicUser {
+  /** QQ number. */
+  private Long qqNum;
+
   /** The icon for your qq music vip. */
   private String lvPic;
 

@@ -1,7 +1,6 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
-import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
@@ -37,7 +36,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @apiNote GET /user/playlist?id={@code qid}
    */
   @Override
-  public List<BasicLibrary> getPlaylists(String qid, String cookie) {
+  public List<QQMusicPlaylist> getPlaylists(String qid, String cookie) {
     return extractQQMusicPlaylists(
         requestGetAPI(
             QQMusicAPI.GET_PLAYLIST,
@@ -55,14 +54,15 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @param rawAllPlaylists Raw json string returned by remote QQMusicAPI server.
    * @return A list of QQMusicPlaylist.
    */
-  private List<BasicLibrary> extractQQMusicPlaylists(String rawAllPlaylists) {
+  private List<QQMusicPlaylist> extractQQMusicPlaylists(String rawAllPlaylists) {
+    List<QQMusicPlaylist> playlists = new ArrayList<>();
+    ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
-      jsonNode = new ObjectMapper().readTree(rawAllPlaylists);
+      jsonNode = objectMapper.readTree(rawAllPlaylists);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    List<BasicLibrary> playlists = new ArrayList<>();
     int playlistCount = jsonNode.get("data").get("creator").get("total").intValue();
     JsonNode listNode = jsonNode.get("data").get("list");
     for (int i = 0; i < playlistCount; i++) {
@@ -195,7 +195,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return Result for deleting playlist.
-   * @apiNote /GET /playlist/delete?dirid={@code dirId}
+   * @apiNote GET /playlist/delete?dirid={@code dirId}
    */
   @Override
   public String deletePlaylist(String dirId, String cookie) {

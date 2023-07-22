@@ -1,6 +1,6 @@
-package com.daw.pms.Service.impl;
+package com.daw.pms.Service.QQMusic.impl;
 
-import com.daw.pms.Service.QQMusic.impl.QQMusicPlaylistServiceImpl;
+import com.daw.pms.GlobalConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,49 +12,44 @@ class QQMusicPlaylistServiceImplTest {
   @Test
   void getPlaylists() {
     System.out.println(
-        qqMusicPlaylistService.getPlaylists(
-            QQMusicCookieServiceImplTest.id, QQMusicCookieServiceImplTest.cookie));
+        qqMusicPlaylistService.getPlaylists(GlobalConfig.qqMusicId, GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void getDetailPlaylist() {
     System.out.println(
-        qqMusicPlaylistService.getDetailPlaylist(
-            "8729577481", QQMusicCookieServiceImplTest.cookie));
+        qqMusicPlaylistService.getDetailPlaylist("8729577481", GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void createPlaylist() {
     System.out.println(
-        qqMusicPlaylistService.createPlaylist("my playlist", QQMusicCookieServiceImplTest.cookie));
+        qqMusicPlaylistService.createPlaylist("my playlist", GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void deletePlaylist() {
-    System.out.println(
-        qqMusicPlaylistService.deletePlaylist("22,23", QQMusicCookieServiceImplTest.cookie));
+    System.out.println(qqMusicPlaylistService.deletePlaylist("22,23", GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void addSongsToPlaylist() {
     System.out.println(
         qqMusicPlaylistService.addSongsToPlaylist(
-            22,
-            "003nkjOy4dtZxc,000idahy2pT761,001OgIGc0B4OEL",
-            QQMusicCookieServiceImplTest.cookie));
+            22, "003nkjOy4dtZxc,000idahy2pT761,001OgIGc0B4OEL", GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void moveSongsToOtherPlaylist() {
     System.out.println(
         qqMusicPlaylistService.moveSongsToOtherPlaylist(
-            "105302677,414119681,414478884", 20, 21, QQMusicCookieServiceImplTest.cookie));
+            "105302677,414119681,414478884", 20, 21, GlobalConfig.qqMusicCookie));
   }
 
   @Test
   void removeSongsFromPlaylist() {
     System.out.println(
         qqMusicPlaylistService.removeSongsFromPlaylist(
-            22, "105302677,414119681,414478884", QQMusicCookieServiceImplTest.cookie));
+            22, "105302677,414119681,414478884", GlobalConfig.qqMusicCookie));
   }
 }

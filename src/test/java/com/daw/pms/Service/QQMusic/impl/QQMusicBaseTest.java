@@ -1,7 +1,7 @@
-package com.daw.pms.Service.impl;
+package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
-import com.daw.pms.Service.QQMusic.impl.QQMusicBase;
+import com.daw.pms.GlobalConfig;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -30,9 +30,9 @@ class QQMusicBaseTest {
             QQMusicAPI.GET_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("id", QQMusicCookieServiceImplTest.id);
+                put("id", GlobalConfig.qqMusicId);
               }
             },
-            Optional.of(QQMusicCookieServiceImplTest.cookie)));
+            Optional.of(GlobalConfig.qqMusicCookie)));
   }
 }

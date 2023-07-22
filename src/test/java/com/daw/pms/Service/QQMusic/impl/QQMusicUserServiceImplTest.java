@@ -1,5 +1,6 @@
-package com.daw.pms.Service.impl;
+package com.daw.pms.Service.QQMusic.impl;
 
+import com.daw.pms.GlobalConfig;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ class QQMusicUserServiceImplTest {
   @Test
   void getUserInfo() {
     System.out.println(
-        qqMusicUserService.getUserInfo(
-            QQMusicCookieServiceImplTest.id, QQMusicCookieServiceImplTest.cookie));
+        qqMusicUserService.getUserInfo(GlobalConfig.qqMusicId, GlobalConfig.qqMusicCookie));
   }
 }
