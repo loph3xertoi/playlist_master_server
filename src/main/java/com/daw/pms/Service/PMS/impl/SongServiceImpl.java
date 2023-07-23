@@ -1,46 +1,52 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
-import com.daw.pms.Entity.QQMusic.QQMusicDetailSong;
-import com.daw.pms.Entity.QQMusic.QQMusicSearchSongPagedResult;
-import com.daw.pms.Entity.QQMusic.QQMusicSong;
+import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import com.daw.pms.Service.PMS.SongService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
-import com.daw.pms.Service.QQMusic.impl.QQMusicCookieServiceImpl;
 import java.io.Serializable;
 import java.util.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SongServiceImpl implements SongService, Serializable {
-  private final QQMusicSongService qqMusicSongService;
-  private final QQMusicCookieServiceImpl qqMusicCookieService;
+  @Value("${qqmusic.cookie}")
+  private String qqMusicCookie;
 
-  public SongServiceImpl(
-      QQMusicSongService qqMusicSongService, QQMusicCookieServiceImpl qqMusicCookieService) {
+  @Value("${ncm.cookie}")
+  private String ncmCookie;
+
+  private final QQMusicSongService qqMusicSongService;
+  private final NCMSongService ncmSongService;
+
+  public SongServiceImpl(QQMusicSongService qqMusicSongService, NCMSongService ncmSongService) {
     this.qqMusicSongService = qqMusicSongService;
-    this.qqMusicCookieService = qqMusicCookieService;
+    this.ncmSongService = ncmSongService;
   }
 
   /**
    * Get the detail information of the song.
    *
-   * @param songMid The song mid.
+   * @param ids The song mid.
    * @param platform The platform this song belongs to.
    * @return Detail song.
    */
   @Override
-  public BasicSong getDetailSong(String songMid, Integer platform) {
-    BasicSong detailSong = null;
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      QQMusicDetailSong song = qqMusicSongService.getDetailSong(songMid, cookie);
-      String songLink =
-          qqMusicSongService.getSongLink(song.getSongMid(), "128", song.getMediaMid(), cookie);
-      song.setSongLink(songLink);
-      song.setIsTakenDown(songLink.isEmpty());
-      detailSong = song;
+  public BasicSong getDetailSong(String ids, Integer platform) {
+    BasicSong detailSong;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      detailSong = qqMusicSongService.getDetailSong(ids, qqMusicCookie);
+    } else if (platform == 2) {
+      detailSong = ncmSongService.getDetailSong(ids, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
     return detailSong;
   }
@@ -54,94 +60,99 @@ public class SongServiceImpl implements SongService, Serializable {
    */
   @Override
   public List<BasicSong> getSimilarSongs(String songId, Integer platform) {
-    List<BasicSong> similarSongs = new ArrayList<>();
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      List<QQMusicSong> songs = qqMusicSongService.getSimilarSongs(songId, cookie);
-      // Set the song link.
-      List<String> midsList = new ArrayList<>(songs.size());
-      for (QQMusicSong song : songs) {
-        midsList.add(song.getSongMid());
-      }
-      String mids = String.join(",", midsList);
-      Map<String, String> songsLink = qqMusicSongService.getSongsLink(mids, cookie);
-      for (QQMusicSong song : songs) {
-        song.setSongLink(songsLink.get(song.getSongMid()));
-        song.setIsTakenDown(song.getSongLink().isEmpty());
-        similarSongs.add(song);
-      }
+    List<BasicSong> similarSongs;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      similarSongs = new ArrayList<>(qqMusicSongService.getSimilarSongs(songId, qqMusicCookie));
+    } else if (platform == 2) {
+      similarSongs =
+          new ArrayList<>(ncmSongService.getSimilarSongs(Long.valueOf(songId), ncmCookie));
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
     return similarSongs;
   }
 
   /**
-   * Get song's link.
+   * Get the lyrics of the song with {@code id}.
    *
-   * @param songMid The song mid.
-   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
-   * @param mediaMid The media mid.
-   * @param platform The platform id.
-   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
-   *     {@code type}.
+   * @param id The id of song.
+   * @param platform The platform this song belongs to.
+   * @return Lyrics of your song in netease cloud music.
    */
   @Override
-  public String getSongLink(String songMid, String type, String mediaMid, Integer platform) {
-    String songLink = null;
-    if (platform == 1) {
-      songLink =
-          qqMusicSongService.getSongLink(
-              songMid, type, mediaMid, qqMusicCookieService.getCookie(1));
+  public BasicLyrics getLyrics(Long id, Integer platform) {
+    BasicLyrics lyrics;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      lyrics = qqMusicSongService.getLyrics(id.toString(), qqMusicCookie);
+    } else if (platform == 2) {
+      lyrics = ncmSongService.getLyrics(id, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
-    return songLink;
+    return lyrics;
   }
 
   /**
    * Get the songs' links.
    *
-   * @param songMids The song mids.
+   * @param ids The song's id, multiple songs id separated with comma.
+   * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
+   *     jymaster.
    * @param platform The platform id.
-   * @return The urls of your songs with mid {@code songMids}.
+   * @return The urls of your songs with ids {@code ids}.
    */
   @Override
-  public Map<String, String> getSongsLink(String songMids, Integer platform) {
-    Map<String, String> map = new HashMap<>();
-    if (platform == 1) {
-      map = qqMusicSongService.getSongsLink(songMids, qqMusicCookieService.getCookie(1));
+  public Map<String, String> getSongsLink(String ids, String level, Integer platform) {
+    Map<String, String> songsLink;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      songsLink = qqMusicSongService.getSongsLink(ids, qqMusicCookie);
+    } else if (platform == 2) {
+      songsLink = ncmSongService.getSongsLink(ids, level, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
-    return map;
+    return songsLink;
   }
 
   /**
-   * Search song by name.
+   * Search resources of type {@code type} by {@code keywords}.
    *
-   * @param songName The song name to search.
-   * @param pageNo The page number.
-   * @param pageSize The page size.
+   * @param keywords The keywords to search.
+   * @param offset The offset with the first searched resource.
+   * @param limit The mounts of the searched resources.
+   * @param type The type of the searched resources.
    * @param platform The platform id.
-   * @return The search result with page.
+   * @return Paged searched result.
    */
   @Override
-  public BasicPagedSongs searchSongByName(
-      String songName, Integer pageNo, Integer pageSize, Integer platform) {
-    BasicPagedSongs pagedSongs = new BasicPagedSongs();
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      pagedSongs = qqMusicSongService.searchSongByName(songName, pageNo, pageSize, cookie);
-      QQMusicSearchSongPagedResult qqMusicSongs = (QQMusicSearchSongPagedResult) pagedSongs;
-      // Get all songs' mid for get the song's link in one http request.
-      List<String> songMids = new ArrayList<>(qqMusicSongs.getPageSize());
-      qqMusicSongs.getSongs().forEach(song -> songMids.add(song.getSongMid()));
-      Collections.shuffle(songMids);
-      Map<String, String> songsLink =
-          qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
-      qqMusicSongs
-          .getSongs()
-          .forEach(
-              song -> {
-                song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
-                song.setIsTakenDown(song.getSongLink().isEmpty());
-              });
+  public BasicPagedSongs searchResourcesByKeywords(
+      String keywords, Integer offset, Integer limit, Integer type, Integer platform) {
+    BasicPagedSongs searchedResult;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      searchedResult =
+          qqMusicSongService.searchResourcesByKeywords(keywords, offset, limit, qqMusicCookie);
+    } else if (platform == 2) {
+      searchedResult =
+          ncmSongService.searchResourcesByKeywords(keywords, offset, limit, type, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
-    return pagedSongs;
+    return searchedResult;
   }
 }

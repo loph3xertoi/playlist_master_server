@@ -86,7 +86,10 @@ public class QQMusicSongServiceImpl extends QQMusicBase
                 },
                 Optional.of(cookie)));
     qqMusicSong.setLyrics(qqMusicLyrics);
-    //    qqMusicSong.setPmPlaylists();
+    String songLink =
+        getSongLink(qqMusicSong.getSongMid(), "128", qqMusicSong.getMediaMid(), cookie);
+    qqMusicSong.setSongLink(songLink);
+    qqMusicSong.setIsTakenDown(songLink.isEmpty());
     return qqMusicSong;
   }
 
@@ -165,21 +168,32 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    *
    * @param songId The id of song.
    * @param cookie Your qq music cookie.
-   * @return A list of songs that is similar to song {@code songId}, songLink and isTakenDown needs
-   *     to be completed.
+   * @return A list of songs that is similar to song {@code songId}.
    * @apiNote GET /song/similar?id={@code songId}
    */
   @Override
   public List<QQMusicSong> getSimilarSongs(String songId, String cookie) {
-    return extractSimilarSongs(
-        requestGetAPI(
-            QQMusicAPI.GET_SIMILAR_SONGS,
-            new HashMap<String, String>() {
-              {
-                put("id", songId);
-              }
-            },
-            Optional.of(cookie)));
+    List<QQMusicSong> similarSongs =
+        extractSimilarSongs(
+            requestGetAPI(
+                QQMusicAPI.GET_SIMILAR_SONGS,
+                new HashMap<String, String>() {
+                  {
+                    put("id", songId);
+                  }
+                },
+                Optional.of(cookie)));
+    List<String> midsList = new ArrayList<>(similarSongs.size());
+    for (QQMusicSong song : similarSongs) {
+      midsList.add(song.getSongMid());
+    }
+    String mids = String.join(",", midsList);
+    Map<String, String> songsLink = getSongsLink(mids, cookie);
+    for (QQMusicSong song : similarSongs) {
+      song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+      song.setIsTakenDown(song.getSongLink().isEmpty());
+    }
+    return similarSongs;
   }
 
   /**
@@ -422,19 +436,32 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
   @Override
-  public QQMusicSearchSongPagedResult searchSongByName(
+  public QQMusicSearchSongPagedResult searchResourcesByKeywords(
       String name, Integer pageNo, Integer pageSize, String cookie) {
-    return extractSearchSongPagedResult(
-        requestGetAPI(
-            QQMusicAPI.SEARCH_SONGS,
-            new HashMap<String, String>() {
-              {
-                put("key", name);
-                put("pageNo", String.valueOf(pageNo));
-                put("pageSize", String.valueOf(pageSize));
-              }
-            },
-            Optional.of(cookie)));
+    QQMusicSearchSongPagedResult searchedResult =
+        extractSearchSongPagedResult(
+            requestGetAPI(
+                QQMusicAPI.SEARCH_SONGS,
+                new HashMap<String, String>() {
+                  {
+                    put("key", name);
+                    put("pageNo", String.valueOf(pageNo));
+                    put("pageSize", String.valueOf(pageSize));
+                  }
+                },
+                Optional.of(cookie)));
+    List<String> songMids = new ArrayList<>(searchedResult.getPageSize());
+    searchedResult.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+    Collections.shuffle(songMids);
+    Map<String, String> songsLink = getSongsLink(String.join(",", songMids), cookie);
+    searchedResult
+        .getSongs()
+        .forEach(
+            song -> {
+              song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+              song.setIsTakenDown(song.getSongLink().isEmpty());
+            });
+    return searchedResult;
   }
 
   /**

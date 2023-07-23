@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS;
 
+import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import java.util.List;
@@ -16,11 +17,11 @@ public interface SongService {
   /**
    * Get the detail information of the song.
    *
-   * @param songMid The song mid.
+   * @param ids The song mid.
    * @param platform The platform this song belongs to.
    * @return Detail song.
    */
-  BasicSong getDetailSong(String songMid, Integer platform);
+  BasicSong getDetailSong(String ids, Integer platform);
 
   /**
    * Return a list of similar song with {@code songId}.
@@ -32,35 +33,35 @@ public interface SongService {
   List<BasicSong> getSimilarSongs(String songId, Integer platform);
 
   /**
-   * Get song's link.
+   * Get the lyrics of the song with {@code id}.
    *
-   * @param songMid The song mid.
-   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
-   * @param mediaMid The media mid.
-   * @param platform The platform id.
-   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
-   *     {@code type}.
+   * @param id The id of song.
+   * @param platform The platform this song belongs to.
+   * @return Lyrics of your song in netease cloud music.
    */
-  String getSongLink(String songMid, String type, String mediaMid, Integer platform);
+  BasicLyrics getLyrics(Long id, Integer platform);
 
   /**
    * Get the songs' links.
    *
-   * @param songMids The song mids.
+   * @param ids The song's id, multiple songs id separated with comma.
+   * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
+   *     jymaster.
    * @param platform The platform id.
-   * @return The urls of your songs with mid {@code songMids}.
+   * @return The urls of your songs with ids {@code ids}.
    */
-  Map<String, String> getSongsLink(String songMids, Integer platform);
+  Map<String, String> getSongsLink(String ids, String level, Integer platform);
 
   /**
-   * Search song by name.
+   * Search resources of type {@code type} by {@code keywords}.
    *
-   * @param songName The song name to search.
-   * @param pageNo The page number.
-   * @param pageSize The page size.
+   * @param keywords The keywords to search.
+   * @param offset The offset with the first searched resource.
+   * @param limit The mounts of the searched resources.
+   * @param type The type of the searched resources.
    * @param platform The platform id.
-   * @return The search result with page.
+   * @return Paged searched result.
    */
-  BasicPagedSongs searchSongByName(
-      String songName, Integer pageNo, Integer pageSize, Integer platform);
+  BasicPagedSongs searchResourcesByKeywords(
+      String keywords, Integer offset, Integer limit, Integer type, Integer platform);
 }

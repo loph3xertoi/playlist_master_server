@@ -28,7 +28,7 @@ public interface QQMusicSongService {
   /**
    * Get detail song with mid {@code songMid}.
    *
-   * @param songMid The mid of this song.
+   * @param songMid The of this song.
    * @param cookie Your qq music cookie.
    * @return Detail song with {@code songMid}, songLink and isTakenDown needs to be completed.
    * @apiNote GET /song?songmid={@code songMid}
@@ -40,8 +40,7 @@ public interface QQMusicSongService {
    *
    * @param songId The id of song.
    * @param cookie Your qq music cookie.
-   * @return A list of songs that is similar to song {@code songId}, songLink and isTakenDown needs
-   *     to be completed.
+   * @return A list of songs that is similar to song {@code songId}.
    * @apiNote GET /song/similar?id={@code songId}
    */
   List<QQMusicSong> getSimilarSongs(String songId, String cookie);
@@ -100,6 +99,6 @@ public interface QQMusicSongService {
    * @return A list of paged QQMusicSong wrapped by QQMusicSearchSongPagedResult.
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
-  QQMusicSearchSongPagedResult searchSongByName(
+  QQMusicSearchSongPagedResult searchResourcesByKeywords(
       String name, Integer pageNo, Integer pageSize, String cookie);
 }

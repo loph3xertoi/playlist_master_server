@@ -27,7 +27,7 @@ class QQMusicPlaylistServiceImplTest {
 
   @Test
   void createPlaylist() {
-    System.out.println(qqMusicPlaylistService.createPlaylist("my playlist", qqMusicCookie));
+    System.out.println(qqMusicPlaylistService.createPlaylist("my playlist1", qqMusicCookie));
   }
 
   @Test

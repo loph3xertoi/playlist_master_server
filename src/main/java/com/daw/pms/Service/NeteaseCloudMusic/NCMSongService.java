@@ -59,7 +59,7 @@ public interface NCMSongService {
   Map<String, String> getSongsLink(String ids, String level, String cookie);
 
   /**
-   * Search and return paged songs according to the given keywords {@code name}.
+   * Search and return paged songs/resources according to the given keywords {@code name}.
    *
    * @param keywords Your search keywords.
    * @param offset Offset from the first result.
@@ -71,6 +71,6 @@ public interface NCMSongService {
    * @return A list of paged NCMSong wrapped by NCMSearchSongsPagedResult.
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
-  NCMSearchSongsPagedResult searchSongs(
+  NCMSearchSongsPagedResult searchResourcesByKeywords(
       String keywords, Integer offset, Integer limit, Integer type, String cookie);
 }

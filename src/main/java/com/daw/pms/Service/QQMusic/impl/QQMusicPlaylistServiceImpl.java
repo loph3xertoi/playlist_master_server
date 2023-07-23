@@ -7,14 +7,12 @@ import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
 import com.daw.pms.Entity.QQMusic.QQMusicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
+import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +25,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class QQMusicPlaylistServiceImpl extends QQMusicBase
     implements QQMusicPlaylistService, Serializable {
+  private final QQMusicSongService qqMusicSongService;
+
+  public QQMusicPlaylistServiceImpl(QQMusicSongService qqMusicSongService) {
+    this.qqMusicSongService = qqMusicSongService;
+  }
+
   /**
    * Get all playlists of user {@code qid} in qq music platform.
    *
@@ -83,20 +87,41 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param tid The playlist's global tid.
    * @param cookie Your qq music cookie.
-   * @return Detail playlist, songLink and isTakenDown in songs field needs to be completed.
+   * @return Detail playlist.
    * @apiNote GET /playlist?id={@code tid}
    */
   @Override
   public QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie) {
-    return extractDetailPlaylist(
-        requestGetAPI(
-            QQMusicAPI.GET_DETAIL_PLAYLIST,
-            new HashMap<String, String>() {
-              {
-                put("id", tid);
-              }
-            },
-            Optional.of(cookie)));
+    QQMusicDetailPlaylist qqMusicDetailPlaylist =
+        extractDetailPlaylist(
+            requestGetAPI(
+                QQMusicAPI.GET_DETAIL_PLAYLIST,
+                new HashMap<String, String>() {
+                  {
+                    put("id", tid);
+                  }
+                },
+                Optional.of(cookie)));
+
+    if (qqMusicDetailPlaylist.getTid() == null) {
+      return null;
+    }
+    Integer songCount = qqMusicDetailPlaylist.getItemCount();
+    if (songCount > 0) {
+      List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
+      qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+      Collections.shuffle(songMids);
+      Map<String, String> songsLink =
+          qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
+      qqMusicDetailPlaylist
+          .getSongs()
+          .forEach(
+              song -> {
+                song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+                song.setIsTakenDown(song.getSongLink().isEmpty());
+              });
+    }
+    return qqMusicDetailPlaylist;
   }
 
   /**
@@ -174,19 +199,35 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for qq music.
-   * @return Result for creating playlist.
+   * @return The dirId of new created playlist, null if failure.
    * @apiNote GET /playlist/create?name={@code name}
    */
   @Override
-  public String createPlaylist(String name, String cookie) {
-    return requestGetAPI(
-        QQMusicAPI.CREATE_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("name", name);
-          }
-        },
-        Optional.of(cookie));
+  public Long createPlaylist(String name, String cookie) {
+    return extractCreatingPlaylistResult(
+        requestGetAPI(
+            QQMusicAPI.CREATE_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("name", name);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Long extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawCreatingPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int result = jsonNode.get("result").intValue();
+    if (result == 100) {
+      return jsonNode.get("data").get("dirid").longValue();
+    }
+    return null;
   }
 
   /**

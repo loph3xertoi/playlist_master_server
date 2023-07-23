@@ -29,12 +29,14 @@ public class MVServiceImpl implements MVService, Serializable {
    */
   @Override
   public BasicVideo getDetailMV(String vid, Integer platform) {
-    BasicVideo mvInfo = null;
+    BasicVideo mvInfo;
     if (platform == 1) {
       String cookie = qqMusicCookieService.getCookie(1);
       mvInfo = qqMusicMVService.getDetailMV(vid, cookie);
       Map<String, List<String>> mVsLink = qqMusicMVService.getMVsLink(vid, cookie);
       ((QQMusicDetailVideo) mvInfo).setLinks(mVsLink.get(vid));
+    } else {
+      throw new RuntimeException("Not yet implement other platform.");
     }
     return mvInfo;
   }
@@ -60,10 +62,12 @@ public class MVServiceImpl implements MVService, Serializable {
    */
   @Override
   public List<BasicVideo> getRelatedVideos(Integer songId, Integer platform) {
-    List<BasicVideo> relatedVideos = null;
+    List<BasicVideo> relatedVideos;
     if (platform == 1) {
       String cookie = qqMusicCookieService.getCookie(1);
       relatedVideos = qqMusicMVService.getRelatedVideos(songId, cookie);
+    } else {
+      throw new RuntimeException("Not yet implement other platform.");
     }
     return relatedVideos;
   }

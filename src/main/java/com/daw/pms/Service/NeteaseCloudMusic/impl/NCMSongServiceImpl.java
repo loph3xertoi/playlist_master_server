@@ -56,7 +56,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                   Optional.of(cookie))));
     }
     Map<String, String> links = getSongsLink(ids, "standard", cookie);
-    detailSong.setSongLink(links.get(detailSong.getId().toString()));
+    detailSong.setSongLink(links.getOrDefault(detailSong.getId().toString(), ""));
     detailSong.setIsTakenDown(detailSong.getSongLink().isEmpty());
     return detailSong;
   }
@@ -139,7 +139,7 @@ public class NCMSongServiceImpl implements NCMSongService {
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links = getSongsLink(ids, "standard", cookie);
     for (NCMSong song : songs) {
-      song.setSongLink(links.get(song.getId().toString()));
+      song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
     }
     return songs;
@@ -210,7 +210,7 @@ public class NCMSongServiceImpl implements NCMSongService {
       throw new RuntimeException(e);
     }
     if (jsonNode.get("lrc") != null) {
-      lyrics.setLrc(jsonNode.get("lrc").get("lyric").textValue());
+      lyrics.setLyric(jsonNode.get("lrc").get("lyric").textValue());
     }
     if (jsonNode.get("klyric") != null) {
       lyrics.setKLyric(jsonNode.get("klyric").get("lyric").textValue());
@@ -287,7 +287,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
   @Override
-  public NCMSearchSongsPagedResult searchSongs(
+  public NCMSearchSongsPagedResult searchResourcesByKeywords(
       String keywords, Integer offset, Integer limit, Integer type, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMSearchSongsPagedResult pagedSongs =
@@ -308,7 +308,7 @@ public class NCMSongServiceImpl implements NCMSongService {
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links = getSongsLink(ids, "standard", cookie);
     for (NCMSong song : songs) {
-      song.setSongLink(links.get(song.getId().toString()));
+      song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
     }
     pagedSongs.setPageNo(offset);

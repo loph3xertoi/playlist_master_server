@@ -1,7 +1,9 @@
 package com.daw.pms.Entity.NeteaseCloudMusic;
 
-import java.io.Serializable;
+import com.daw.pms.Entity.Basic.BasicLyrics;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Lyrics for song in netease cloud music
@@ -11,10 +13,9 @@ import lombok.Data;
  * @since 7/22/23
  */
 @Data
-public class NCMLyrics implements Serializable {
-  /** LRC format. */
-  private String lrc;
-
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class NCMLyrics extends BasicLyrics {
   /** Pin yin format. */
   private String kLyric;
 

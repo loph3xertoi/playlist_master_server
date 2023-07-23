@@ -132,7 +132,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links = ncmSongService.getSongsLink(ids, "standard", cookie);
     for (NCMSong song : songs) {
-      song.setSongLink(links.get(song.getId().toString()));
+      song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
     }
     return songs;
@@ -292,7 +292,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
   public String moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie) {
     addSongsToPlaylist(toPid, tracks, cookie);
     removeSongsFromPlaylist(fromPid, tracks, cookie);
-    return "success";
+    return "{\"result\":\"success\"}";
   }
 
   /**

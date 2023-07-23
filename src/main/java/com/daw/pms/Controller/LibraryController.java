@@ -22,13 +22,13 @@ public class LibraryController {
    *
    * @param id Your user id in pms.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     * represents netease music, 3 represents bilibili.
+   *     * represents netease cloud music, 3 represents bilibili.
    * @return All libraries for specific platform.
    * @apiNote GET /libraries?id={@code id}&platform={@code platform}
    */
   @GetMapping("/libraries")
   @CacheEvict
-  public Result getLibraries(@RequestParam String id, @RequestParam Integer platform) {
+  public Result getLibraries(@RequestParam Long id, @RequestParam Integer platform) {
     List<BasicLibrary> libraries = libraryService.getLibraries(id, platform);
     return Result.ok(libraries, (long) libraries.size());
   }
@@ -59,15 +59,19 @@ public class LibraryController {
    *
    * @param library A map that contains the name of library.
    * @param platform Which platform the library belongs to.
-   * @return Map result for creating library.
+   * @return If success, return the library id of created library; if failure, return failure tip.
    * @apiNote POST /library?platform={@code platform} {"name": "{@code name}"}
    */
   @PostMapping("/library")
   @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
   public Result createLibrary(
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
-    Map<String, Object> result = libraryService.createLibrary(library, platform);
-    return Result.ok(result);
+    Long createdLibraryId = libraryService.createLibrary(library, platform);
+    if (createdLibraryId != null) {
+      return Result.ok(createdLibraryId);
+    } else {
+      return Result.fail("Fail to create library.");
+    }
   }
 
   /**
@@ -86,14 +90,14 @@ public class LibraryController {
   }
 
   /**
-   * Add songs {@code songsMid} to library {@code dirId} in platform {@code platform}, tid is used
-   * to evict cache.
+   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}, tid is
+   * used to evict cache.
    *
-   * @param requestBody A map that contains songs mid and target library's dir id.
+   * @param requestBody A map that contains songs id and target library's id.
    * @param platform Which platform the library belongs to.
    * @return Map result for adding songs.
    * @apiNote POST /addSongsToLibrary?platform={@code platform}
-   *     {"dirid":"dirId","mid":"songsMid","tid":"tid"}
+   *     {"libraryId":"libraryId","songsId":"songsId","tid":"tid"}
    */
   @PostMapping("/addSongsToLibrary")
   @CacheEvict(
@@ -101,20 +105,21 @@ public class LibraryController {
       key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'")
   public Result addSongsToLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
-    Integer dirId = Integer.parseInt(requestBody.get("dirid"));
-    String songsMid = requestBody.get("mid");
-    Map<String, Object> result = libraryService.addSongsToLibrary(dirId, songsMid, platform);
+    String libraryId = requestBody.get("libraryId");
+    String songsId = requestBody.get("songsId");
+    Map<String, Object> result = libraryService.addSongsToLibrary(libraryId, songsId, platform);
     return Result.ok(result);
   }
 
   /**
-   * Move songs {@code songsId} from library with {@code fromDirId} to library with {@code toDirId}.
+   * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with
+   * {@code toLibrary}.
    *
    * @param requestBody A map that contains parameters, fromTid and toTid are used to evict cache.
    * @param platform Which platform the library belongs to.
    * @return Map result for moving songs.
    * @apiNote PUT /moveSongsToOtherLibrary?platform={@code platform}
-   *     {"songsId":"songsId","fromDirId":"fromDirId","toDirId":"toDirId","fromTid":"fromTid","toTid":"toTid"}
+   *     {"songsId":"songsId","fromLibrary":"fromLibrary","toLibrary":"toLibrary","fromTid":"fromTid","toTid":"toTid"}
    */
   @PutMapping("/moveSongsToOtherLibrary")
   @Caching(
@@ -129,32 +134,33 @@ public class LibraryController {
   public Result moveSongsToOtherLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String songsId = requestBody.get("songsId");
-    Integer fromDirId = Integer.parseInt(requestBody.get("fromDirId"));
-    Integer toDirId = Integer.parseInt(requestBody.get("toDirId"));
+    String fromLibrary = requestBody.get("fromDirId");
+    String toLibrary = requestBody.get("toDirId");
     Map<String, Object> result =
-        libraryService.moveSongsToOtherLibrary(songsId, fromDirId, toDirId, platform);
+        libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
     return Result.ok(result);
   }
 
   /**
    * Remove songs {@code songsId} from library with {@code libraryId} in platform {@code platform}.
    *
-   * @param dirId The id of library.
-   * @param tid The tid of library, used to evict cache.
+   * @param libraryId The id of library.
    * @param songsId The id of songs, multiple songs id separated with comma.
    * @param platform Which platform the library belongs to.
+   * @param tid The tid of library, used to evict cache.
    * @return Map result for removing songs.
-   * @apiNote DELETE /removeSongsFromLibrary?dirId={@code dirId}&tid={@code tid}&songsId={@code
-   *     songsId}&platform={@code platform}
+   * @apiNote DELETE /removeSongsFromLibrary?libraryId={@code libraryId}&songsId={@code
+   *     songsId}&platform={@code platform}&tid={@code tid}
    */
   @DeleteMapping("/removeSongsFromLibrary")
   @CacheEvict(value = "library-cache", key = "'getDetailLibrary('+#tid+','+#platform+')'")
   public Result removeSongsFromLibrary(
-      @RequestParam Integer dirId,
-      @RequestParam String tid,
+      @RequestParam String libraryId,
       @RequestParam String songsId,
-      @RequestParam Integer platform) {
-    Map<String, Object> result = libraryService.removeSongsFromLibrary(dirId, songsId, platform);
+      @RequestParam Integer platform,
+      @RequestParam String tid) {
+    Map<String, Object> result =
+        libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
     return Result.ok(result);
   }
 }

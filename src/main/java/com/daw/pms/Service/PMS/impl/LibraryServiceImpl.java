@@ -1,34 +1,42 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.Entity.Basic.BasicLibrary;
-import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
+import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
+import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
-import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
-import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LibraryServiceImpl implements LibraryService, Serializable {
+  @Value("${qqmusic.id}")
+  private Long qqMusicId;
+
+  @Value("${qqmusic.cookie}")
+  private String qqMusicCookie;
+
+  @Value("${ncm.id}")
+  private Long ncmId;
+
+  @Value("${ncm.cookie}")
+  private String ncmCookie;
+
   private final QQMusicPlaylistService qqMusicPlaylistService;
-  private final QQMusicCookieService qqMusicCookieService;
-  private final QQMusicSongService qqMusicSongService;
+  private final NCMPlaylistService ncmPlaylistService;
 
   public LibraryServiceImpl(
-      QQMusicPlaylistService qqMusicPlaylistService,
-      QQMusicCookieService qqMusicCookieService,
-      QQMusicSongService qqMusicSongService) {
+      QQMusicPlaylistService qqMusicPlaylistService, NCMPlaylistService ncmPlaylistService) {
     this.qqMusicPlaylistService = qqMusicPlaylistService;
-    this.qqMusicCookieService = qqMusicCookieService;
-    this.qqMusicSongService = qqMusicSongService;
+    this.ncmPlaylistService = ncmPlaylistService;
   }
 
   /**
@@ -36,15 +44,25 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    *
    * @param id Your user id in pms.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     represents netease music, 3 represents bilibili.
+   *     represents netease cloud music, 3 represents bilibili.
    * @return All libraries for specific platform.
    */
   @Override
-  public List<BasicLibrary> getLibraries(String id, Integer platform) {
+  public List<BasicLibrary> getLibraries(Long id, Integer platform) {
     List<BasicLibrary> libraries = new ArrayList<>();
-    if (platform == 1 && "0".equals(id)) {
-      libraries.addAll(
-          qqMusicPlaylistService.getPlaylists("2804161589", qqMusicCookieService.getCookie(1)));
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      List<QQMusicPlaylist> playlists =
+          qqMusicPlaylistService.getPlaylists(qqMusicId.toString(), qqMusicCookie);
+      libraries.addAll(playlists);
+    } else if (platform == 2) {
+      List<NCMPlaylist> playlists = ncmPlaylistService.getPlaylists(ncmId, 0, 1000, ncmCookie);
+      libraries.addAll(playlists);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
     return libraries;
   }
@@ -58,32 +76,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    */
   @Override
   public BasicLibrary getDetailLibrary(String libraryId, Integer platform) {
-    BasicLibrary detailLibrary = null;
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      // The library return by qqMusicPlaylistService is not complete, its songs field need to
-      // complete.
-      detailLibrary = qqMusicPlaylistService.getDetailPlaylist(libraryId, cookie);
-      QQMusicDetailPlaylist qqMusicDetailPlaylist = (QQMusicDetailPlaylist) detailLibrary;
-      if (qqMusicDetailPlaylist.getTid() == null) {
-        return null;
-      }
-      Integer songCount = qqMusicDetailPlaylist.getItemCount();
-      if (songCount > 0) {
-        // Get all songs' mid for get the song's link in one http request.
-        List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
-        qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
-        Collections.shuffle(songMids);
-        Map<String, String> songsLink =
-            qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
-        qqMusicDetailPlaylist
-            .getSongs()
-            .forEach(
-                song -> {
-                  song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
-                  song.setIsTakenDown(song.getSongLink().isEmpty());
-                });
-      }
+    BasicLibrary detailLibrary;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      detailLibrary = qqMusicPlaylistService.getDetailPlaylist(libraryId, qqMusicCookie);
+    } else if (platform == 2) {
+      detailLibrary = ncmPlaylistService.getDetailPlaylist(Long.valueOf(libraryId), ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
+    } else {
+      throw new RuntimeException("Invalid platform.");
     }
     return detailLibrary;
   }
@@ -96,22 +99,20 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    * @return Map result for creating library, need to be parsed.
    */
   @Override
-  public Map<String, Object> createLibrary(Map<String, String> library, Integer platform) {
-    Map<String, Object> result;
-    ObjectMapper objectMapper = new ObjectMapper();
-    TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString = qqMusicPlaylistService.createPlaylist(library.get("name"), cookie);
-      try {
-        result = objectMapper.readValue(jsonString, typeRef);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
+  public Long createLibrary(Map<String, String> library, Integer platform) {
+    Long libraryId;
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      libraryId = qqMusicPlaylistService.createPlaylist(library.get("name"), qqMusicCookie);
+    } else if (platform == 2) {
+      libraryId = ncmPlaylistService.createPlaylist(library.get("name"), ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Only implement qq music platform");
+      throw new RuntimeException("Invalid platform.");
     }
-    return result;
+    return libraryId;
   }
 
   /**
@@ -124,78 +125,136 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   @Override
   public Map<String, Object> deleteLibrary(String libraryId, Integer platform) {
     Map<String, Object> result;
-    ObjectMapper objectMapper = new ObjectMapper();
+    String resultJson;
     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString = qqMusicPlaylistService.deletePlaylist(libraryId, cookie);
-      try {
-        result = objectMapper.readValue(jsonString, typeRef);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
+    ObjectMapper objectMapper = new ObjectMapper();
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      resultJson = qqMusicPlaylistService.deletePlaylist(libraryId, qqMusicCookie);
+    } else if (platform == 2) {
+      resultJson = ncmPlaylistService.deletePlaylist(libraryId, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Only implement qq music platform");
+      throw new RuntimeException("Invalid platform.");
+    }
+    try {
+      result = objectMapper.readValue(resultJson, typeRef);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
     return result;
   }
 
+  /**
+   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
+   *
+   * @param libraryId Library's id.
+   * @param songsId Songs' id, multiple songs id separated with comma.
+   * @param platform Which platform the library belongs to.
+   * @return 100 for success, 200 for failure.
+   */
   @Override
-  public Map<String, Object> addSongsToLibrary(Integer dirId, String songsMid, Integer platform) {
+  public Map<String, Object> addSongsToLibrary(String libraryId, String songsId, Integer platform) {
     Map<String, Object> result;
-    ObjectMapper objectMapper = new ObjectMapper();
+    String resultJson;
     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString = qqMusicPlaylistService.addSongsToPlaylist(dirId, songsMid, cookie);
-      try {
-        result = objectMapper.readValue(jsonString, typeRef);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
+    ObjectMapper objectMapper = new ObjectMapper();
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      resultJson =
+          qqMusicPlaylistService.addSongsToPlaylist(
+              Integer.valueOf(libraryId), songsId, qqMusicCookie);
+    } else if (platform == 2) {
+      resultJson =
+          ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Only implement qq music platform");
+      throw new RuntimeException("Invalid platform.");
+    }
+    try {
+      result = objectMapper.readValue(resultJson, typeRef);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
     return result;
   }
 
+  /**
+   * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with
+   * {@code toLibrary}.
+   *
+   * @param songsId Songs id to be moved, multiple songs id separated with comma.
+   * @param fromLibrary Source library's id.
+   * @param toLibrary Target library's id.
+   * @param platform Which platform these libraries belongs to.
+   * @return 100 for success, 200 for failure.
+   */
   @Override
   public Map<String, Object> moveSongsToOtherLibrary(
-      String songsId, Integer fromDirId, Integer toDirId, Integer platform) {
+      String songsId, String fromLibrary, String toLibrary, Integer platform) {
     Map<String, Object> result;
-    ObjectMapper objectMapper = new ObjectMapper();
+    String resultJson;
     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString =
-          qqMusicPlaylistService.moveSongsToOtherPlaylist(songsId, fromDirId, toDirId, cookie);
-      try {
-        result = objectMapper.readValue(jsonString, typeRef);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
+    ObjectMapper objectMapper = new ObjectMapper();
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      resultJson =
+          qqMusicPlaylistService.moveSongsToOtherPlaylist(
+              songsId, Integer.valueOf(fromLibrary), Integer.valueOf(toLibrary), qqMusicCookie);
+    } else if (platform == 2) {
+      resultJson =
+          ncmPlaylistService.moveSongsToOtherPlaylist(
+              songsId, Long.valueOf(fromLibrary), Long.valueOf(toLibrary), ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Only implement qq music platform");
+      throw new RuntimeException("Invalid platform.");
+    }
+    try {
+      result = objectMapper.readValue(resultJson, typeRef);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
     return result;
   }
 
+  /**
+   * Remove songs {@code songsId} from library {@code libraryId}.
+   *
+   * @param libraryId Library's id.
+   * @param songsId The songs' id, multiple songs id separated with comma.
+   * @return 100 for success.
+   */
   @Override
   public Map<String, Object> removeSongsFromLibrary(
-      Integer dirId, String songsId, Integer platform) {
+      String libraryId, String songsId, Integer platform) {
     Map<String, Object> result;
-    ObjectMapper objectMapper = new ObjectMapper();
+    String resultJson;
     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
-    if (platform == 1) {
-      String cookie = qqMusicCookieService.getCookie(1);
-      String jsonString = qqMusicPlaylistService.removeSongsFromPlaylist(dirId, songsId, cookie);
-      try {
-        result = objectMapper.readValue(jsonString, typeRef);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
+    ObjectMapper objectMapper = new ObjectMapper();
+    if (platform == 0) {
+      throw new RuntimeException("Not yet implement pms platform.");
+    } else if (platform == 1) {
+      resultJson =
+          qqMusicPlaylistService.removeSongsFromPlaylist(
+              Integer.valueOf(libraryId), songsId, qqMusicCookie);
+    } else if (platform == 2) {
+      resultJson =
+          ncmPlaylistService.removeSongsFromPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Only implement qq music platform");
+      throw new RuntimeException("Invalid platform.");
+    }
+    try {
+      result = objectMapper.readValue(resultJson, typeRef);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
     return result;
   }

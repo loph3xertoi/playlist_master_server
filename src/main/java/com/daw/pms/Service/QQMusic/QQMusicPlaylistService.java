@@ -37,10 +37,10 @@ public interface QQMusicPlaylistService {
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for qq music.
-   * @return Result for creating playlist.
+   * @return The dirId of new created playlist, null if failure.
    * @apiNote GET /playlist/create?name={@code name}
    */
-  String createPlaylist(String name, String cookie);
+  Long createPlaylist(String name, String cookie);
 
   /**
    * Delete playlist with dirId {@code dirId}.

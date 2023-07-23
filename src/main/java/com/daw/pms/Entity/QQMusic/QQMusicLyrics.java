@@ -1,7 +1,9 @@
 package com.daw.pms.Entity.QQMusic;
 
-import java.io.Serializable;
+import com.daw.pms.Entity.Basic.BasicLyrics;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * POJO for lyrics of song in qq music.
@@ -11,10 +13,9 @@ import lombok.Data;
  * @since 6/2/23
  */
 @Data
-public class QQMusicLyrics implements Serializable {
-  /** Lyrics of song. */
-  private String lyric;
-
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class QQMusicLyrics extends BasicLyrics {
   /** Translate of lyrics. */
   private String trans;
 }

@@ -49,7 +49,8 @@ class NCMSongServiceImplTest {
 
   @Test
   void searchSongs() {
-    NCMSearchSongsPagedResult songs = ncmSongService.searchSongs("洛天依", 0, 10, 1, ncmCookie);
+    NCMSearchSongsPagedResult songs =
+        ncmSongService.searchResourcesByKeywords("洛天依", 0, 10, 1, ncmCookie);
     System.out.println(songs);
   }
 }

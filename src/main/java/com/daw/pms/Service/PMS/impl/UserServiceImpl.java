@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService, Serializable {
    *
    * @param id Your user id in pms.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     represents netease music, 3 represents bilibili.
+   *     represents netease cloud music, 3 represents bilibili.
    * @return User information for specific platform.
    */
   @Override
