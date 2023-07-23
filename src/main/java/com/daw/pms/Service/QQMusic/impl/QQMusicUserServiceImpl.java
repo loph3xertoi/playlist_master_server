@@ -30,16 +30,19 @@ public class QQMusicUserServiceImpl extends QQMusicBase
    * @apiNote GET /user/detail?id={@code qid}
    */
   @Override
-  public QQMusicUser getUserInfo(String qid, String cookie) {
-    return extractQQMusicUser(
-        requestGetAPI(
-            QQMusicAPI.GET_USERINFO,
-            new HashMap<String, String>() {
-              {
-                put("id", qid);
-              }
-            },
-            Optional.of(cookie)));
+  public QQMusicUser getUserInfo(Long qid, String cookie) {
+    QQMusicUser qqMusicUser =
+        extractQQMusicUser(
+            requestGetAPI(
+                QQMusicAPI.GET_USERINFO,
+                new HashMap<String, String>() {
+                  {
+                    put("id", qid.toString());
+                  }
+                },
+                Optional.of(cookie)));
+    qqMusicUser.setQqNumber(qid);
+    return qqMusicUser;
   }
 
   /**

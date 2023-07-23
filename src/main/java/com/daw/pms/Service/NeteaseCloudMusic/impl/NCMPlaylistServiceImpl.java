@@ -151,6 +151,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     for (JsonNode songNode : songsNode) {
       NCMSong song = new NCMSong();
       song.setId(songNode.get("id").longValue());
+      song.setMvId(songNode.get("mv").longValue());
       song.setName(songNode.get("name").textValue());
 
       List<BasicSinger> singers = new ArrayList<>();

@@ -17,5 +17,5 @@ public interface NCMUserService {
    * @param cookie Your cookie for netease cloud music.
    * @return Your user info for your netease cloud music wrapped in NCMUser.
    */
-  NCMUser getUserInfo(String uid, String cookie);
+  NCMUser getUserInfo(Long uid, String cookie);
 }

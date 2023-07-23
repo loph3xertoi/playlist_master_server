@@ -18,5 +18,5 @@ public interface UserService {
    *     represents netease music, 3 represents bilibili.
    * @return User information for specific platform.
    */
-  BasicUser getUserInfo(String id, Integer platform);
+  BasicUser getUserInfo(Long id, Integer platform);
 }

@@ -20,6 +20,9 @@ public class NCMDetailSong extends BasicSong {
   /** The id of this song. */
   private Long id;
 
+  /** The mv id of this song. */
+  private Long mvId;
+
   /** The album name of this song. */
   private String albumName;
 

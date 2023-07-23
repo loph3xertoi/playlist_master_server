@@ -12,7 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class PMSUser extends BasicUser {
   /** User id in playlist master server. */
-  private String id;
+  private Long id;
 
   /** All managed sub users in playlist master server. */
   private Map<String, BasicUser> subUsers;

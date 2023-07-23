@@ -1,26 +1,29 @@
 package com.daw.pms.Service.QQMusic.impl;
 
-import com.daw.pms.GlobalConfig;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 class QQMusicCookieServiceImplTest {
+  @Value("${qqmusic.cookie}")
+  private String qqMusicCookie;
+
   @Autowired private QQMusicCookieService qqMusicCookieService;
 
   @Order(1)
   @Test
   void setCookie() {
-    System.out.println(qqMusicCookieService.setCookie(GlobalConfig.qqMusicCookie));
+    System.out.println(qqMusicCookieService.setCookie(qqMusicCookie));
   }
 
   @Order(2)
   @Test
   void applyCookie() {
-    System.out.println(qqMusicCookieService.applyCookie(GlobalConfig.qqMusicId));
+    System.out.println(qqMusicCookieService.applyCookie(qqMusicCookie));
   }
 
   @Order(3)

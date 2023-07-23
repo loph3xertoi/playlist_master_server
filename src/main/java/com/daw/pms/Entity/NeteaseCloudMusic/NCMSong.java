@@ -18,4 +18,7 @@ import lombok.ToString;
 public class NCMSong extends BasicSong {
   /** The id of this song. */
   private Long id;
+
+  /** The mv id of this song. */
+  private Long mvId;
 }

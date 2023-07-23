@@ -98,6 +98,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     detailSong.setCover(songNode.get("al").get("picUrl").textValue());
     detailSong.setPayPlay(songNode.get("fee").intValue());
     detailSong.setId(songNode.get("id").longValue());
+    detailSong.setMvId(songNode.get("mv").longValue());
     detailSong.setAlbumName(songNode.get("al").get("name").textValue());
     detailSong.setDuration(songNode.get("dt").intValue());
     detailSong.setPublishTime(songNode.get("publishTime").asText());
@@ -157,6 +158,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     for (JsonNode songNode : songsNode) {
       NCMSong song = new NCMSong();
       song.setId(songNode.get("id").longValue());
+      song.setMvId(songNode.get("mvid").longValue());
       song.setName(songNode.get("name").textValue());
 
       List<BasicSinger> singers = new ArrayList<>();
@@ -330,6 +332,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     for (JsonNode songNode : songsNode) {
       NCMSong song = new NCMSong();
       song.setId(songNode.get("id").longValue());
+      song.setMvId(songNode.get("mv").longValue());
       song.setName(songNode.get("name").textValue());
       List<BasicSinger> singers = new ArrayList<>();
       JsonNode singersNode = songNode.get("ar");

@@ -1,15 +1,17 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.Entity.Basic.BasicUser;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMUser;
 import com.daw.pms.Entity.PMS.PMSUser;
 import com.daw.pms.Entity.QQMusic.QQMusicUser;
+import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
-import com.daw.pms.Service.QQMusic.QQMusicCookieService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,13 +23,36 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService, Serializable {
-  private final QQMusicUserService qqMusicUserService;
-  private final QQMusicCookieService qqMusicCookieService;
+  @Value("${pms.id}")
+  private Long pmsId;
 
-  public UserServiceImpl(
-      QQMusicUserService qqMusicUserService, QQMusicCookieService qqMusicCookieService) {
+  @Value("${pms.name}")
+  private String pmsName;
+
+  @Value("${pms.headPic}")
+  private String pmsHeadPic;
+
+  @Value("${pms.bgPic}")
+  private String pmsBgPic;
+
+  @Value("${qqmusic.id}")
+  private Long qqMusicId;
+
+  @Value("${qqmusic.cookie}")
+  private String qqMusicCookie;
+
+  @Value("${ncm.id}")
+  private Long ncmId;
+
+  @Value("${ncm.cookie}")
+  private String ncmCookie;
+
+  private final QQMusicUserService qqMusicUserService;
+  private final NCMUserService ncmUserService;
+
+  public UserServiceImpl(QQMusicUserService qqMusicUserService, NCMUserService ncmUserService) {
     this.qqMusicUserService = qqMusicUserService;
-    this.qqMusicCookieService = qqMusicCookieService;
+    this.ncmUserService = ncmUserService;
   }
 
   /**
@@ -39,25 +64,24 @@ public class UserServiceImpl implements UserService, Serializable {
    * @return User information for specific platform.
    */
   @Override
-  public BasicUser getUserInfo(String id, @NotNull Integer platform) {
+  public BasicUser getUserInfo(Long id, @NotNull Integer platform) {
     PMSUser user = new PMSUser();
-    user.setName("Daw Loph");
-    user.setHeadPic(
-        "https://img0.baidu.com/it/u=819122015,412168181&fm=253&fmt=auto&app=138&f=JPEG?w=320&h=320");
-    user.setBgPic(
-        "https://img0.baidu.com/it/u=819122015,412168181&fm=253&fmt=auto&app=138&f=JPEG?w=320&h=320");
-    user.setId("0");
+    user.setName(pmsName);
+    user.setHeadPic(pmsHeadPic);
+    user.setBgPic(pmsBgPic);
+    user.setId(pmsId);
     Map<String, BasicUser> subUsers = new HashMap<>();
-    QQMusicUser qqMusicUser =
-        qqMusicUserService.getUserInfo("2804161589", qqMusicCookieService.getCookie(1));
+    QQMusicUser qqMusicUser = qqMusicUserService.getUserInfo(qqMusicId, qqMusicCookie);
+    NCMUser ncmUser = ncmUserService.getUserInfo(ncmId, ncmCookie);
     subUsers.put("qqmusic", qqMusicUser);
+    subUsers.put("ncm", ncmUser);
     user.setSubUsers(subUsers);
 
     switch (platform) {
       case 1:
         return user.getSubUsers().get("qqmusic");
       case 2:
-        return user.getSubUsers().get("neteasemusic");
+        return user.getSubUsers().get("ncm");
       case 3:
         return user.getSubUsers().get("bilibili");
       default:

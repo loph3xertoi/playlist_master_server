@@ -3,7 +3,6 @@ package com.daw.pms.Service.NeteaseCloudMusic.impl;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
-import com.daw.pms.GlobalConfig;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import java.util.List;
 import java.util.Optional;
@@ -12,11 +11,18 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 class NCMPlaylistServiceImplTest {
+  @Value("${ncm.id}")
+  private Long ncmId;
+
+  @Value("${ncm.cookie}")
+  private String ncmCookie;
+
   @Autowired NCMPlaylistService ncmPlaylistService;
 
   private static Long newCreatedPlaylistId1;
@@ -24,15 +30,13 @@ class NCMPlaylistServiceImplTest {
 
   @Test
   void getPlaylists() {
-    List<NCMPlaylist> playlists =
-        ncmPlaylistService.getPlaylists(GlobalConfig.ncmId, 0, 10, GlobalConfig.ncmCookie);
+    List<NCMPlaylist> playlists = ncmPlaylistService.getPlaylists(ncmId, 0, 10, ncmCookie);
     System.out.println(playlists);
   }
 
   @Test
   void getDetailPlaylist() {
-    NCMDetailPlaylist detailPlaylist =
-        ncmPlaylistService.getDetailPlaylist(8574846185L, GlobalConfig.ncmCookie);
+    NCMDetailPlaylist detailPlaylist = ncmPlaylistService.getDetailPlaylist(8574846185L, ncmCookie);
     System.out.println(detailPlaylist);
   }
 
@@ -40,16 +44,16 @@ class NCMPlaylistServiceImplTest {
   void getAllSongsFromPlaylist() {
     List<NCMSong> allSongsFromPlaylist =
         ncmPlaylistService.getAllSongsFromPlaylist(
-            8574846185L, Optional.empty(), Optional.empty(), GlobalConfig.ncmCookie);
+            8574846185L, Optional.empty(), Optional.empty(), ncmCookie);
     System.out.println(allSongsFromPlaylist);
   }
 
   @Test
   @Order(1)
   void createPlaylist() throws InterruptedException {
-    newCreatedPlaylistId1 = ncmPlaylistService.createPlaylist("test1", GlobalConfig.ncmCookie);
+    newCreatedPlaylistId1 = ncmPlaylistService.createPlaylist("test1", ncmCookie);
     Thread.sleep(2000);
-    newCreatedPlaylistId2 = ncmPlaylistService.createPlaylist("test2", GlobalConfig.ncmCookie);
+    newCreatedPlaylistId2 = ncmPlaylistService.createPlaylist("test2", ncmCookie);
     System.out.println(newCreatedPlaylistId1 + "," + newCreatedPlaylistId2);
   }
 
@@ -58,7 +62,7 @@ class NCMPlaylistServiceImplTest {
   void addSongsToPlaylist() {
     String result =
         ncmPlaylistService.addSongsToPlaylist(
-            newCreatedPlaylistId1, "347231,1860591464", GlobalConfig.ncmCookie);
+            newCreatedPlaylistId1, "347231,1860591464", ncmCookie);
     System.out.println(result);
   }
 
@@ -67,10 +71,7 @@ class NCMPlaylistServiceImplTest {
   void moveSongsToOtherPlaylist() {
     String result =
         ncmPlaylistService.moveSongsToOtherPlaylist(
-            "347231,1860591464",
-            newCreatedPlaylistId1,
-            newCreatedPlaylistId2,
-            GlobalConfig.ncmCookie);
+            "347231,1860591464", newCreatedPlaylistId1, newCreatedPlaylistId2, ncmCookie);
     System.out.println(result);
   }
 
@@ -79,7 +80,7 @@ class NCMPlaylistServiceImplTest {
   void removeSongsFromPlaylist() {
     String result =
         ncmPlaylistService.removeSongsFromPlaylist(
-            newCreatedPlaylistId2, "347231,1860591464", GlobalConfig.ncmCookie);
+            newCreatedPlaylistId2, "347231,1860591464", ncmCookie);
     System.out.println(result);
   }
 
@@ -88,7 +89,7 @@ class NCMPlaylistServiceImplTest {
   void deletePlaylist() {
     String result =
         ncmPlaylistService.deletePlaylist(
-            newCreatedPlaylistId1 + "," + newCreatedPlaylistId2, GlobalConfig.ncmCookie);
+            newCreatedPlaylistId1 + "," + newCreatedPlaylistId2, ncmCookie);
     System.out.println(result);
   }
 }

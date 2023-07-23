@@ -1,11 +1,11 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
-import com.daw.pms.GlobalConfig;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +21,12 @@ class QQMusicBaseTest {
     }
   }
 
+  @Value("${qqmusic.id}")
+  private Long qqMusicId;
+
+  @Value("${qqmusic.cookie}")
+  private String qqMusicCookie;
+
   @Autowired private QQMusicBase qqMusicBase;
 
   @Test
@@ -30,9 +36,9 @@ class QQMusicBaseTest {
             QQMusicAPI.GET_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("id", GlobalConfig.qqMusicId);
+                put("id", qqMusicId.toString());
               }
             },
-            Optional.of(GlobalConfig.qqMusicCookie)));
+            Optional.of(qqMusicCookie)));
   }
 }

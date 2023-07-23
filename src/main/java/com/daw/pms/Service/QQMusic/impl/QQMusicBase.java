@@ -22,11 +22,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class QQMusicBase {
   /** Host of proxy qq music api server. */
-  @Value("${pm.remoteapi.qqmusic.host}")
+  @Value("${qqmusic.proxy.host}")
   public String host;
 
   /** Port of proxy qq music api server. */
-  @Value("${pm.remoteapi.qqmusic.port}")
+  @Value("${qqmusic.proxy.port}")
   public String port;
 
   /** RestTemplate to send http request. */

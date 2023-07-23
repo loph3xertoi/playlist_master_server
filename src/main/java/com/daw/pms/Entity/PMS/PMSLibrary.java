@@ -17,5 +17,5 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class PMSLibrary extends BasicLibrary {
   /** The id of this library in playlist master server. */
-  private String id;
+  private Long id;
 }

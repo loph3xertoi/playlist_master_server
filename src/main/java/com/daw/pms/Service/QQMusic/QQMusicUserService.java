@@ -18,5 +18,5 @@ public interface QQMusicUserService {
    * @return Your user info for your qq music wrapped in QQMusicUser.
    * @apiNote GET /user/detail?id={@code qid}
    */
-  QQMusicUser getUserInfo(String qid, String cookie);
+  QQMusicUser getUserInfo(Long qid, String cookie);
 }

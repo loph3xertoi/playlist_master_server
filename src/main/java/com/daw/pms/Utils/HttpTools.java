@@ -21,19 +21,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class HttpTools {
   /** Host of proxy qq music api server. */
-  @Value("${pm.remoteapi.qqmusic.host}")
+  @Value("${qqmusic.proxy.host}")
   public String qqmusicHost;
 
   /** Port of proxy qq music api server. */
-  @Value("${pm.remoteapi.qqmusic.port}")
+  @Value("${qqmusic.proxy.port}")
   public String qqmusicPort;
 
   /** Host of proxy netease cloud music api server. */
-  @Value("${pm.remoteapi.ncm.host}")
+  @Value("${ncm.proxy.host}")
   public String ncmHost;
 
   /** Port of proxy netease cloud music api server. */
-  @Value("${pm.remoteapi.ncm.port}")
+  @Value("${ncm.proxy.port}")
   public String ncmPort;
 
   private final RestTemplate restTemplate;

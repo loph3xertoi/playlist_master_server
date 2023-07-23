@@ -27,7 +27,7 @@ public class NCMUserServiceImpl implements NCMUserService {
    * @return Your user info for your netease cloud music wrapped in NCMUser.
    */
   @Override
-  public NCMUser getUserInfo(String uid, String cookie) {
+  public NCMUser getUserInfo(Long uid, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMUser ncmUser =
         extractNCMUser(
@@ -35,7 +35,7 @@ public class NCMUserServiceImpl implements NCMUserService {
                 baseUrl + NCMAPI.USER_DETAIL,
                 new HashMap<String, String>() {
                   {
-                    put("uid", uid);
+                    put("uid", uid.toString());
                   }
                 },
                 Optional.of(cookie)));
