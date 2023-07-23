@@ -29,7 +29,12 @@ public class LibraryController {
   @GetMapping("/libraries")
   @CacheEvict
   public Result getLibraries(@RequestParam Long id, @RequestParam Integer platform) {
-    List<BasicLibrary> libraries = libraryService.getLibraries(id, platform);
+    List<BasicLibrary> libraries;
+    try {
+      libraries = libraryService.getLibraries(id, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(libraries, (long) libraries.size());
   }
 
@@ -47,7 +52,12 @@ public class LibraryController {
    */
   @GetMapping("/library/{library}")
   public Result getDetailLibrary(@PathVariable String library, @RequestParam Integer platform) {
-    BasicLibrary detailLibrary = libraryService.getDetailLibrary(library, platform);
+    BasicLibrary detailLibrary;
+    try {
+      detailLibrary = libraryService.getDetailLibrary(library, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     if (detailLibrary == null && platform == 1) {
       return Result.fail("The tid of playlist doesn't exist.");
     }
@@ -66,7 +76,12 @@ public class LibraryController {
   @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
   public Result createLibrary(
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
-    Long createdLibraryId = libraryService.createLibrary(library, platform);
+    Long createdLibraryId;
+    try {
+      createdLibraryId = libraryService.createLibrary(library, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     if (createdLibraryId != null) {
       return Result.ok(createdLibraryId);
     } else {
@@ -85,7 +100,12 @@ public class LibraryController {
   @DeleteMapping("/library/{libraryId}")
   @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam Integer platform) {
-    Map<String, Object> result = libraryService.deleteLibrary(libraryId, platform);
+    Map<String, Object> result;
+    try {
+      result = libraryService.deleteLibrary(libraryId, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(result);
   }
 
@@ -107,7 +127,12 @@ public class LibraryController {
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String libraryId = requestBody.get("libraryId");
     String songsId = requestBody.get("songsId");
-    Map<String, Object> result = libraryService.addSongsToLibrary(libraryId, songsId, platform);
+    Map<String, Object> result;
+    try {
+      result = libraryService.addSongsToLibrary(libraryId, songsId, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(result);
   }
 
@@ -134,10 +159,14 @@ public class LibraryController {
   public Result moveSongsToOtherLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String songsId = requestBody.get("songsId");
-    String fromLibrary = requestBody.get("fromDirId");
-    String toLibrary = requestBody.get("toDirId");
-    Map<String, Object> result =
-        libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
+    String fromLibrary = requestBody.get("fromLibrary");
+    String toLibrary = requestBody.get("toLibrary");
+    Map<String, Object> result;
+    try {
+      result = libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(result);
   }
 
@@ -159,8 +188,12 @@ public class LibraryController {
       @RequestParam String songsId,
       @RequestParam Integer platform,
       @RequestParam String tid) {
-    Map<String, Object> result =
-        libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
+    Map<String, Object> result;
+    try {
+      result = libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(result);
   }
 }
