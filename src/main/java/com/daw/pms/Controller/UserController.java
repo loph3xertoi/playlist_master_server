@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for handle user's information.
+ * User controller.
  *
  * @author Daw Loph
  * @version 1.0

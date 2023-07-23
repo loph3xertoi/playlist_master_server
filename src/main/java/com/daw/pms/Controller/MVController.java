@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * MV controller.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/23/23
+ */
 @RestController
 @CacheConfig(cacheNames = "mv-cache")
 @Cacheable(key = "#root.methodName + '(' + #root.args + ')'")

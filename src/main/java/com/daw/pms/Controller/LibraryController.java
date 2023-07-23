@@ -11,11 +11,22 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Library controller.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/23/23
+ */
 @RestController
 @CacheConfig(cacheNames = "library-cache")
 @Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
 public class LibraryController {
   private final LibraryService libraryService;
+
+  public LibraryController(LibraryService libraryService) {
+    this.libraryService = libraryService;
+  }
 
   /**
    * Get all libraries with {@code platform}.
@@ -36,10 +47,6 @@ public class LibraryController {
       return Result.fail(e.getMessage());
     }
     return Result.ok(libraries, (long) libraries.size());
-  }
-
-  public LibraryController(LibraryService libraryService) {
-    this.libraryService = libraryService;
   }
 
   /**
