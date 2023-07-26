@@ -41,7 +41,7 @@ public class QQMusicDetailSong extends BasicSong {
   /** The release time of this song */
   private String pubTime;
 
-  /** PMSSong's lyrics. */
+  /** Lyrics. */
   private QQMusicLyrics lyrics;
 
   /** The list of playlist in pm server the song belongs to. */

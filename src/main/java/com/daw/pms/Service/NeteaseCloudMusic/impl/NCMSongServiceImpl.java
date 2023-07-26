@@ -42,15 +42,22 @@ public class NCMSongServiceImpl implements NCMSongService {
                   }
                 },
                 Optional.of(cookie)));
+    NCMLyrics lyrics = getLyrics(Long.valueOf(ids), cookie);
+    detailSong.setLyrics(lyrics);
     List<BasicSinger> singers = detailSong.getSingers();
     for (BasicSinger singer : singers) {
+      String singerId = ((NCMSinger) singer).getId().toString();
+      if (singerId.equals("0")) {
+        singer.setHeadPic("");
+        continue;
+      }
       singer.setHeadPic(
           extractSingerAvatar(
               httpTools.requestGetAPI(
                   baseUrl + NCMAPI.ARTIST_DETAIL,
                   new HashMap<String, String>() {
                     {
-                      put("id", ((NCMSinger) singer).getId().toString());
+                      put("id", singerId);
                     }
                   },
                   Optional.of(cookie))));
@@ -209,23 +216,36 @@ public class NCMSongServiceImpl implements NCMSongService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    if (jsonNode.get("lrc") != null) {
-      lyrics.setLyric(jsonNode.get("lrc").get("lyric").textValue());
+    if (jsonNode.has("lrc")) {
+      String lyricValue = jsonNode.get("lrc").get("lyric").textValue();
+      lyrics.setLyric(lyricValue);
+    } else {
+      lyrics.setLyric("");
     }
-    if (jsonNode.get("klyric") != null) {
+    if (jsonNode.has("klyric")) {
       lyrics.setKLyric(jsonNode.get("klyric").get("lyric").textValue());
+    } else {
+      lyrics.setKLyric("");
     }
-    if (jsonNode.get("tlyric") != null) {
+    if (jsonNode.has("tlyric")) {
       lyrics.setTLyric(jsonNode.get("tlyric").get("lyric").textValue());
+    } else {
+      lyrics.setTLyric("");
     }
-    if (jsonNode.get("romalrc") != null) {
+    if (jsonNode.has("romalrc")) {
       lyrics.setRomaLrc(jsonNode.get("romalrc").get("lyric").textValue());
+    } else {
+      lyrics.setRomaLrc("");
     }
-    if (jsonNode.get("yrc") != null) {
+    if (jsonNode.has("yrc")) {
       lyrics.setYrc(jsonNode.get("yrc").get("lyric").textValue());
+    } else {
+      lyrics.setYrc("");
     }
-    if (jsonNode.get("ytlrc") != null) {
+    if (jsonNode.has("ytlrc")) {
       lyrics.setYtLrc(jsonNode.get("ytlrc").get("lyric").textValue());
+    } else {
+      lyrics.setYtLrc("");
     }
     return lyrics;
   }

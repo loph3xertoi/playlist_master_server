@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLibrary;
 import java.util.List;
 import java.util.Map;
@@ -36,18 +37,18 @@ public interface LibraryService {
    *
    * @param library A map that contains the name of library.
    * @param platform Which platform the library belongs to.
-   * @return The library id of created library, null if failure.
+   * @return The response of request wrapped by Result DTO.
    */
-  Long createLibrary(Map<String, String> library, Integer platform);
+  Result createLibrary(Map<String, String> library, Integer platform);
 
   /**
    * Delete the library.
    *
    * @param libraryId The id of library, multiple libraries separated with comma.
    * @param platform Which platform the library belongs to.
-   * @return Map result for deleting library, need to be parsed.
+   * @return The response of request wrapped by Result DTO.
    */
-  Map<String, Object> deleteLibrary(String libraryId, Integer platform);
+  Result deleteLibrary(String libraryId, Integer platform);
 
   /**
    * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
@@ -55,9 +56,9 @@ public interface LibraryService {
    * @param libraryId Library's id.
    * @param songsId Songs' id, multiple songs id separated with comma.
    * @param platform Which platform the library belongs to.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    */
-  Map<String, Object> addSongsToLibrary(String libraryId, String songsId, Integer platform);
+  Result addSongsToLibrary(String libraryId, String songsId, Integer platform);
 
   /**
    * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with
@@ -67,9 +68,9 @@ public interface LibraryService {
    * @param fromLibrary Source library's id.
    * @param toLibrary Target library's id.
    * @param platform Which platform these libraries belongs to.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    */
-  Map<String, Object> moveSongsToOtherLibrary(
+  Result moveSongsToOtherLibrary(
       String songsId, String fromLibrary, String toLibrary, Integer platform);
 
   /**
@@ -77,7 +78,7 @@ public interface LibraryService {
    *
    * @param libraryId Library's id.
    * @param songsId The songs' id, multiple songs id separated with comma.
-   * @return 100 for success.
+   * @return The response of request wrapped by Result DTO.
    */
-  Map<String, Object> removeSongsFromLibrary(String libraryId, String songsId, Integer platform);
+  Result removeSongsFromLibrary(String libraryId, String songsId, Integer platform);
 }

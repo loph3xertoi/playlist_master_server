@@ -1,10 +1,10 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Service.PMS.LibraryService;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,29 +84,29 @@ class LibraryServiceImplTest {
     HashMap<String, String> library = new HashMap<>();
     library.put("name", "Test Library Name");
     try {
-      Long pmsLibraryId = libraryService.createLibrary(library, 0);
-      System.out.println("pmsLibraryId: \n" + pmsLibraryId);
+      Result result = libraryService.createLibrary(library, 0);
+      System.out.println("pmsResult: \n" + result);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Long qqmusicLibraryId = libraryService.createLibrary(library, 1);
-      System.out.println("qqmusicLibraryId: \n" + qqmusicLibraryId);
+      Result result = libraryService.createLibrary(library, 1);
+      System.out.println("qqmusicResult: \n" + result);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Long ncmLibraryId = libraryService.createLibrary(library, 2);
-      System.out.println("ncmLibraryId: \n" + ncmLibraryId);
+      Result result = libraryService.createLibrary(library, 2);
+      System.out.println("ncmResult: \n" + result);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Long bilibiliLibraryId = libraryService.createLibrary(library, 3);
-      System.out.println("bilibiliLibraryId: \n" + bilibiliLibraryId);
+      Result result = libraryService.createLibrary(library, 3);
+      System.out.println("bilibiliResult: \n" + result);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -115,28 +115,28 @@ class LibraryServiceImplTest {
   @Test
   void deleteLibrary() {
     try {
-      Map<String, Object> pmsDeletingResult = libraryService.deleteLibrary("1", 0);
+      Result pmsDeletingResult = libraryService.deleteLibrary("1", 0);
       System.out.println("pmsDeletingResult: \n" + pmsDeletingResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> qqmusicDeletingResult = libraryService.deleteLibrary("1", 1);
+      Result qqmusicDeletingResult = libraryService.deleteLibrary("1", 1);
       System.out.println("qqmusicDeletingResult: \n" + qqmusicDeletingResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> ncmDeletingResult = libraryService.deleteLibrary("1", 2);
+      Result ncmDeletingResult = libraryService.deleteLibrary("1", 2);
       System.out.println("ncmDeletingResult: \n" + ncmDeletingResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> bilibiliDeletingResult = libraryService.deleteLibrary("1", 3);
+      Result bilibiliDeletingResult = libraryService.deleteLibrary("1", 3);
       System.out.println("bilibiliDeletingResult: \n" + bilibiliDeletingResult);
     } catch (Exception e) {
       e.printStackTrace();
@@ -146,30 +146,28 @@ class LibraryServiceImplTest {
   @Test
   void addSongsToLibrary() {
     try {
-      Map<String, Object> pmsAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 0);
+      Result pmsAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 0);
       System.out.println("pmsAddingSongsResult: \n" + pmsAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> qqmusicAddingSongsResult =
-          libraryService.addSongsToLibrary("1", "1,2", 1);
+      Result qqmusicAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 1);
       System.out.println("qqmusicAddingSongsResult: \n" + qqmusicAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> ncmAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 2);
+      Result ncmAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 2);
       System.out.println("ncmAddingSongsResult: \n" + ncmAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> bilibiliAddingSongsResult =
-          libraryService.addSongsToLibrary("1", "1,2", 3);
+      Result bilibiliAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 3);
       System.out.println("bilibiliAddingSongsResult: \n" + bilibiliAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
@@ -179,32 +177,28 @@ class LibraryServiceImplTest {
   @Test
   void moveSongsToOtherLibrary() {
     try {
-      Map<String, Object> pmsMovingSongsResult =
-          libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 0);
+      Result pmsMovingSongsResult = libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 0);
       System.out.println("pmsMovingSongsResult: \n" + pmsMovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> qqmusicMovingSongsResult =
-          libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 1);
+      Result qqmusicMovingSongsResult = libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 1);
       System.out.println("qqmusicMovingSongsResult: \n" + qqmusicMovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> ncmMovingSongsResult =
-          libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 2);
+      Result ncmMovingSongsResult = libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 2);
       System.out.println("ncmMovingSongsResult: \n" + ncmMovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> bilibiliMovingSongsResult =
-          libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 3);
+      Result bilibiliMovingSongsResult = libraryService.moveSongsToOtherLibrary("1,2", "1", "2", 3);
       System.out.println("bilibiliMovingSongsResult: \n" + bilibiliMovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
@@ -214,32 +208,28 @@ class LibraryServiceImplTest {
   @Test
   void removeSongsFromLibrary() {
     try {
-      Map<String, Object> pmsRemovingSongsResult =
-          libraryService.removeSongsFromLibrary("1", "1,2", 0);
+      Result pmsRemovingSongsResult = libraryService.removeSongsFromLibrary("1", "1,2", 0);
       System.out.println("pmsRemovingSongsResult: \n" + pmsRemovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> qqmusicRemovingSongsResult =
-          libraryService.removeSongsFromLibrary("1", "1,2", 1);
+      Result qqmusicRemovingSongsResult = libraryService.removeSongsFromLibrary("1", "1,2", 1);
       System.out.println("qqmusicRemovingSongsResult: \n" + qqmusicRemovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> ncmRemovingSongsResult =
-          libraryService.removeSongsFromLibrary("1", "1,2", 2);
+      Result ncmRemovingSongsResult = libraryService.removeSongsFromLibrary("1", "1,2", 2);
       System.out.println("ncmRemovingSongsResult: \n" + ncmRemovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, Object> bilibiliRemovingSongsResult =
-          libraryService.removeSongsFromLibrary("1", "1,2", 3);
+      Result bilibiliRemovingSongsResult = libraryService.removeSongsFromLibrary("1", "1,2", 3);
       System.out.println("bilibiliRemovingSongsResult: \n" + bilibiliRemovingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.daw.pms.Service.NeteaseCloudMusic;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
@@ -53,20 +54,20 @@ public interface NCMPlaylistService {
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for netease cloud music.
-   * @return Created playlist's id.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/create?name={@code name}
    */
-  Long createPlaylist(String name, String cookie);
+  Result createPlaylist(String name, String cookie);
 
   /**
    * Delete playlist with ids {@code ids}.
    *
    * @param ids The id of playlist you want to delete, multiple id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Result for deleting playlist.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/delete?id={@code ids}
    */
-  String deletePlaylist(String ids, String cookie);
+  Result deletePlaylist(String ids, String cookie);
 
   /**
    * Add songs with tracks {@code tracks} to playlist with pid {@code pid}
@@ -74,10 +75,10 @@ public interface NCMPlaylistService {
    * @param pid The id of the playlist.
    * @param tracks The id of songs, multiple id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=add&pid={@code pid}&tracks={@code tracks}
    */
-  String addSongsToPlaylist(Long pid, String tracks, String cookie);
+  Result addSongsToPlaylist(Long pid, String tracks, String cookie);
 
   /**
    * Move songs {@code tracks} from playlist with {@code fromPid} to playlist with {@code toPid}.
@@ -86,11 +87,11 @@ public interface NCMPlaylistService {
    * @param fromPid Source playlist's pid.
    * @param toPid Target playlist's pid.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=mov&fromPid={@code fromPid}&toPid={@code toPid}&tracks={@code
    *     tracks}
    */
-  String moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie);
+  Result moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie);
 
   /**
    * Remove songs with song id {@code tracks} from playlist with pid {@code pid}.
@@ -98,8 +99,8 @@ public interface NCMPlaylistService {
    * @param pid The id of playlist that you want to remove songs from.
    * @param tracks The songs' id, multiple songs id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=del&pid={@code pid}&tracks={@code tracks}
    */
-  String removeSongsFromPlaylist(Long pid, String tracks, String cookie);
+  Result removeSongsFromPlaylist(Long pid, String tracks, String cookie);
 }

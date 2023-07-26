@@ -1,6 +1,7 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
@@ -199,11 +200,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for qq music.
-   * @return The dirId of new created playlist, null if failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/create?name={@code name}
    */
   @Override
-  public Long createPlaylist(String name, String cookie) {
+  public Result createPlaylist(String name, String cookie) {
     return extractCreatingPlaylistResult(
         requestGetAPI(
             QQMusicAPI.CREATE_PLAYLIST,
@@ -215,7 +216,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Long extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
+  Result extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -223,11 +224,17 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int result = jsonNode.get("result").intValue();
-    if (result == 100) {
-      return jsonNode.get("data").get("dirid").longValue();
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode == 100) {
+      Integer dirId = jsonNode.get("data").get("dirid").intValue();
+      return Result.ok(dirId);
+    } else if (resultCode == 200) {
+      return Result.fail("Library already exists");
+    } else if (resultCode == 301) {
+      return Result.fail("QQ music proxy server needs to login");
+    } else {
+      return Result.fail(rawCreatingPlaylistResult);
     }
-    return null;
   }
 
   /**
@@ -235,19 +242,40 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
-   * @return Result for deleting playlist.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/delete?dirid={@code dirId}
    */
   @Override
-  public String deletePlaylist(String dirId, String cookie) {
-    return requestGetAPI(
-        QQMusicAPI.DELETE_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("dirid", dirId);
-          }
-        },
-        Optional.of(cookie));
+  public Result deletePlaylist(String dirId, String cookie) {
+    return extractDeletingPlaylistResult(
+        requestGetAPI(
+            QQMusicAPI.DELETE_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("dirid", dirId);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawDeletingPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode == 100) {
+      return Result.ok();
+    } else if (resultCode == 200) {
+      return Result.fail("Library delete failed: Invalid parameters");
+    } else if (resultCode == 301) {
+      return Result.fail("QQ music proxy server needs to login");
+    } else {
+      return Result.fail(rawDeletingPlaylistResult);
+    }
   }
 
   /**
@@ -256,20 +284,41 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @param dirId The dirId of the playlist.
    * @param songsMid The mid of songs, multiple mid separated with comma.
    * @param cookie Your qq music cookie.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
    */
   @Override
-  public String addSongsToPlaylist(Integer dirId, String songsMid, String cookie) {
-    return requestGetAPI(
-        QQMusicAPI.ADD_SONGS_TO_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("dirid", dirId.toString());
-            put("mid", songsMid);
-          }
-        },
-        Optional.of(cookie));
+  public Result addSongsToPlaylist(Integer dirId, String songsMid, String cookie) {
+    return extractAddingSongsToPlaylistResult(
+        requestGetAPI(
+            QQMusicAPI.ADD_SONGS_TO_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("dirid", dirId.toString());
+                put("mid", songsMid);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawAddingSongsToPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode == 100) {
+      return Result.ok();
+    } else if (resultCode == 200) {
+      return Result.fail("Add songs failed: Invalid parameters");
+    } else if (resultCode == 301) {
+      return Result.fail("QQ music proxy server needs to login");
+    } else {
+      return Result.fail(rawAddingSongsToPlaylistResult);
+    }
   }
 
   /**
@@ -280,22 +329,43 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @param fromDirId DirId of from-playlist.
    * @param toDirId DirId of to-playlist.
    * @param cookie Your qq music cookie.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /move?id={@code songsId}&from_dir={@code fromDirId}&to_dir={@code toDirId}
    */
   @Override
-  public String moveSongsToOtherPlaylist(
+  public Result moveSongsToOtherPlaylist(
       String songsId, Integer fromDirId, Integer toDirId, String cookie) {
-    return requestGetAPI(
-        QQMusicAPI.MOVE_SONGS_TO_OTHER_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("id", songsId);
-            put("from_dir", fromDirId.toString());
-            put("to_dir", toDirId.toString());
-          }
-        },
-        Optional.of(cookie));
+    return extractMovingSongsToOtherPlaylist(
+        requestGetAPI(
+            QQMusicAPI.MOVE_SONGS_TO_OTHER_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("id", songsId);
+                put("from_dir", fromDirId.toString());
+                put("to_dir", toDirId.toString());
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractMovingSongsToOtherPlaylist(String rawMovingSongsToOtherPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawMovingSongsToOtherPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode == 100) {
+      return Result.ok();
+    } else if (resultCode == 200) {
+      return Result.fail("Move songs failed: Invalid parameters");
+    } else if (resultCode == 301) {
+      return Result.fail("QQ music proxy server needs to login");
+    } else {
+      return Result.fail(rawMovingSongsToOtherPlaylistResult);
+    }
   }
 
   /**
@@ -304,19 +374,40 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @param dirId The dirId of playlist that you want to remove songs from.
    * @param songsId The songs' id, multiple songs id separated with comma.
    * @param cookie Your qq music cookie.
-   * @return 100 for success.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
    */
   @Override
-  public String removeSongsFromPlaylist(Integer dirId, String songsId, String cookie) {
-    return requestGetAPI(
-        QQMusicAPI.REMOVE_SONGS_FROM_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("dirid", dirId.toString());
-            put("id", songsId);
-          }
-        },
-        Optional.of(cookie));
+  public Result removeSongsFromPlaylist(Integer dirId, String songsId, String cookie) {
+    return extractRemovingPlaylistResult(
+        requestGetAPI(
+            QQMusicAPI.REMOVE_SONGS_FROM_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("dirid", dirId.toString());
+                put("id", songsId);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractRemovingPlaylistResult(String rawRemovingPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawRemovingPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode == 100) {
+      return Result.ok();
+    } else if (resultCode == 200) {
+      return Result.fail("Remove songs failed: Invalid parameters");
+    } else if (resultCode == 301) {
+      return Result.fail("QQ music proxy server needs to login");
+    } else {
+      return Result.fail(rawRemovingPlaylistResult);
+    }
   }
 }

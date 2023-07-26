@@ -1,6 +1,7 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.Config.NCMAPI;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.NeteaseCloudMusic.*;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
@@ -204,13 +205,13 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for netease cloud music.
-   * @return Result for creating playlist.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/create?name={@code name}
    */
   @Override
-  public Long createPlaylist(String name, String cookie) {
+  public Result createPlaylist(String name, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return extractPlaylistId(
+    return extractCreatingPlaylistResult(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.CREATE_PLAYLIST,
             new HashMap<String, String>() {
@@ -221,15 +222,21 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
             Optional.of(cookie)));
   }
 
-  private Long extractPlaylistId(String rawPlaylistId) {
+  private Result extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
-      jsonNode = objectMapper.readTree(rawPlaylistId);
+      jsonNode = objectMapper.readTree(rawCreatingPlaylistResult);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    return jsonNode.get("id").longValue();
+    int resultCode = jsonNode.get("code").intValue();
+    if (resultCode == 200) {
+      Integer id = jsonNode.get("id").intValue();
+      return Result.ok(id);
+    } else {
+      return Result.fail(rawCreatingPlaylistResult);
+    }
   }
 
   /**
@@ -237,20 +244,39 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    *
    * @param ids The id of playlist you want to delete, multiple id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Result for deleting playlist.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/delete?id={@code ids}
    */
   @Override
-  public String deletePlaylist(String ids, String cookie) {
+  public Result deletePlaylist(String ids, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return httpTools.requestGetAPI(
-        baseUrl + NCMAPI.DELETE_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("id", ids);
-          }
-        },
-        Optional.of(cookie));
+    return extractDeletingPlaylistResult(
+        httpTools.requestGetAPI(
+            baseUrl + NCMAPI.DELETE_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("id", ids);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawDeletingPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("code").intValue();
+    if (resultCode == 200) {
+      return Result.ok();
+    } else if (resultCode == 400) {
+      return Result.fail("No such library");
+    } else {
+      return Result.fail(rawDeletingPlaylistResult);
+    }
   }
 
   /**
@@ -259,22 +285,48 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    * @param pid The id of the playlist.
    * @param tracks The id of songs, multiple id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=add&pid={@code pid}&tracks={@code tracks}
    */
   @Override
-  public String addSongsToPlaylist(Long pid, String tracks, String cookie) {
+  public Result addSongsToPlaylist(Long pid, String tracks, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return httpTools.requestGetAPI(
-        baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("op", "add");
-            put("pid", pid.toString());
-            put("tracks", tracks);
-          }
-        },
-        Optional.of(cookie));
+    return extractAddingSongsToPlaylistResult(
+        httpTools.requestGetAPI(
+            baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("op", "add");
+                put("pid", pid.toString());
+                put("tracks", tracks);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawAddingSongsToPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+
+    if (jsonNode.has("code") && jsonNode.get("code").intValue() == 404) {
+      return Result.fail("No such library");
+    }
+    if (jsonNode.has("status") && jsonNode.get("status").intValue() == 200) {
+      int resultCode = jsonNode.get("body").get("code").intValue();
+      if (resultCode == 200) {
+        return Result.ok();
+      } else if (resultCode == 502) {
+        return Result.fail("The songs is already in the playlist");
+      } else if (resultCode == 400) {
+        return Result.fail("Invalid parameters");
+      }
+    }
+    return Result.fail(rawAddingSongsToPlaylistResult);
   }
 
   /**
@@ -284,15 +336,23 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    * @param fromPid Source playlist's pid.
    * @param toPid Target playlist's pid.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=mov&fromPid={@code fromPid}&toPid={@code toPid}&tracks={@code
    *     tracks}
    */
   @Override
-  public String moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie) {
-    addSongsToPlaylist(toPid, tracks, cookie);
-    removeSongsFromPlaylist(fromPid, tracks, cookie);
-    return "{\"result\":\"success\"}";
+  public Result moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie) {
+    Result addResult = addSongsToPlaylist(toPid, tracks, cookie);
+    if (addResult.getSuccess()) {
+      Result removeResult = removeSongsFromPlaylist(fromPid, tracks, cookie);
+      if (removeResult.getSuccess()) {
+        return Result.ok();
+      } else {
+        return Result.fail(removeResult.getMessage());
+      }
+    } else {
+      return Result.fail(addResult.getMessage());
+    }
   }
 
   /**
@@ -301,21 +361,45 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    * @param pid The id of playlist that you want to remove songs from.
    * @param tracks The songs' id, multiple songs id separated with comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Operation result.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/tracks?op=del&pid={@code pid}&tracks={@code tracks}
    */
   @Override
-  public String removeSongsFromPlaylist(Long pid, String tracks, String cookie) {
+  public Result removeSongsFromPlaylist(Long pid, String tracks, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return httpTools.requestGetAPI(
-        baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,
-        new HashMap<String, String>() {
-          {
-            put("op", "del");
-            put("pid", pid.toString());
-            put("tracks", tracks);
-          }
-        },
-        Optional.of(cookie));
+    return extractRemovingSongsFromPlaylistResult(
+        httpTools.requestGetAPI(
+            baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,
+            new HashMap<String, String>() {
+              {
+                put("op", "del");
+                put("pid", pid.toString());
+                put("tracks", tracks);
+              }
+            },
+            Optional.of(cookie)));
+  }
+
+  Result extractRemovingSongsFromPlaylistResult(String rawRemovingSongsFromPlaylistResult) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawRemovingSongsFromPlaylistResult);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+
+    if (jsonNode.has("code") && jsonNode.get("code").intValue() == 404) {
+      return Result.fail("No such library");
+    }
+    if (jsonNode.has("status") && jsonNode.get("status").intValue() == 200) {
+      int resultCode = jsonNode.get("body").get("code").intValue();
+      if (resultCode == 200) {
+        return Result.ok();
+      } else if (resultCode == 400) {
+        return Result.fail("Invalid parameters");
+      }
+    }
+    return Result.fail(rawRemovingSongsFromPlaylistResult);
   }
 }

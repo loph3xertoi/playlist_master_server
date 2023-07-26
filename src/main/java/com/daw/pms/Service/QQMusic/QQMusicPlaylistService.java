@@ -1,5 +1,6 @@
 package com.daw.pms.Service.QQMusic;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
 import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
 import java.util.List;
@@ -37,20 +38,20 @@ public interface QQMusicPlaylistService {
    *
    * @param name The name of playlist.
    * @param cookie Your cookie for qq music.
-   * @return The dirId of new created playlist, null if failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/create?name={@code name}
    */
-  Long createPlaylist(String name, String cookie);
+  Result createPlaylist(String name, String cookie);
 
   /**
    * Delete playlist with dirId {@code dirId}.
    *
    * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
-   * @return Result for deleting playlist.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/delete?dirid={@code dirId}
    */
-  String deletePlaylist(String dirId, String cookie);
+  Result deletePlaylist(String dirId, String cookie);
 
   /**
    * Add songs with mids {@code songsMid} to playlist with dirId {@code dirId}
@@ -58,10 +59,10 @@ public interface QQMusicPlaylistService {
    * @param dirId The dirId of the playlist.
    * @param songsMid The mid of songs, multiple mid separated with comma.
    * @param cookie Your qq music cookie.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
    */
-  String addSongsToPlaylist(Integer dirId, String songsMid, String cookie);
+  Result addSongsToPlaylist(Integer dirId, String songsMid, String cookie);
 
   /**
    * Move songs {@code songsId} from playlist with {@code fromDirId} to playlist with {@code
@@ -71,10 +72,10 @@ public interface QQMusicPlaylistService {
    * @param fromDirId DirId of source playlist.
    * @param toDirId DirId of target playlist.
    * @param cookie Your qq music cookie.
-   * @return 100 for success, 200 for failure.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /move?id={@code songsId}&from_dir={@code fromDirId}&to_dir={@code toDirId}
    */
-  String moveSongsToOtherPlaylist(
+  Result moveSongsToOtherPlaylist(
       String songsId, Integer fromDirId, Integer toDirId, String cookie);
 
   /**
@@ -83,8 +84,8 @@ public interface QQMusicPlaylistService {
    * @param dirId The dirId of playlist that you want to remove songs from.
    * @param songsId The songs' id, multiple songs id separated with comma.
    * @param cookie Your qq music cookie.
-   * @return 100 for success.
+   * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
    */
-  String removeSongsFromPlaylist(Integer dirId, String songsId, String cookie);
+  Result removeSongsFromPlaylist(Integer dirId, String songsId, String cookie);
 }

@@ -19,6 +19,6 @@ public class NCMSong extends BasicSong {
   /** The id of this song. */
   private Long id;
 
-  /** The mv id of this song. */
+  /** The MV's id of this song. */
   private Long mvId;
 }

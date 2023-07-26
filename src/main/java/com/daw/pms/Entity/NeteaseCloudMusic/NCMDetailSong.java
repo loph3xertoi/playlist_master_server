@@ -32,6 +32,9 @@ public class NCMDetailSong extends BasicSong {
   /** The release time of this song */
   private String publishTime;
 
+  /** PMSSong's lyrics. */
+  private NCMLyrics lyrics;
+
   /** The list of playlist in pm server the song belongs to. */
   private List<Integer> pmPlaylists;
 

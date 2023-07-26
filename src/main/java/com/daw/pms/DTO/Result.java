@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result implements Serializable {
   private Boolean success;
-  private String errorMsg;
+  private String message;
   private Object data;
   private Long total;
 
@@ -21,6 +21,10 @@ public class Result implements Serializable {
 
   public static Result ok(Object data) {
     return new Result(true, null, data, null);
+  }
+
+  public static Result ok(String successMsg, Object data) {
+    return new Result(true, successMsg, data, null);
   }
 
   public static Result ok(List<?> data, Long total) {
