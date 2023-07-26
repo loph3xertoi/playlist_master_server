@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Song controller.
@@ -43,6 +44,15 @@ public class SongController {
     BasicSong detailSong;
     try {
       detailSong = songService.getDetailSong(songId, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -62,6 +72,15 @@ public class SongController {
     List<BasicSong> similarSongs;
     try {
       similarSongs = songService.getSimilarSongs(songId, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -103,6 +122,15 @@ public class SongController {
     Map<String, String> songsLink;
     try {
       songsLink = songService.getSongsLink(SongIds, "standard", platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -127,6 +155,15 @@ public class SongController {
     BasicPagedSongs pagedSongs;
     try {
       pagedSongs = songService.searchResourcesByKeywords(keywords, offset, limit, 1, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }

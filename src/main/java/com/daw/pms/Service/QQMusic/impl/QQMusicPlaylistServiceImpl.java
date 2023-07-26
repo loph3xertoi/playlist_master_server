@@ -104,7 +104,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
                 },
                 Optional.of(cookie)));
 
-    if (qqMusicDetailPlaylist.getTid() == null) {
+    if (qqMusicDetailPlaylist == null) {
       return null;
     }
     Integer songCount = qqMusicDetailPlaylist.getItemCount();
@@ -142,7 +142,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
 
     JsonNode dataNode = jsonNode.get("data");
     if (dataNode.isObject() && dataNode.size() == 0) {
-      return detailPlaylist;
+      return null;
     }
 
     detailPlaylist.setName(dataNode.get("dissname").textValue());

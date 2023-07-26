@@ -1,7 +1,6 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicUser;
 import com.daw.pms.Service.PMS.UserService;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * User controller.
@@ -38,7 +38,19 @@ public class UserController {
    */
   @GetMapping("/user/{id}")
   public Result getUser(@PathVariable Long id, @RequestParam Integer platform) {
-    BasicUser userInfo = userService.getUserInfo(id, platform);
-    return Result.ok(userInfo);
+    try {
+      return Result.ok(userService.getUserInfo(id, platform));
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
   }
 }

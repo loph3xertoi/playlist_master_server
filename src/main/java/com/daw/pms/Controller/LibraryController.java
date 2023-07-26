@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Library controller.
@@ -42,6 +43,15 @@ public class LibraryController {
     List<BasicLibrary> libraries;
     try {
       libraries = libraryService.getLibraries(id, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -61,11 +71,20 @@ public class LibraryController {
     BasicLibrary detailLibrary;
     try {
       detailLibrary = libraryService.getDetailLibrary(library, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
     if (detailLibrary == null && platform == 1) {
-      return Result.fail("The tid of playlist doesn't exist");
+      return Result.fail("This library cannot access");
     }
     return Result.ok(detailLibrary);
   }
@@ -84,6 +103,15 @@ public class LibraryController {
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
     try {
       return libraryService.createLibrary(library, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -102,6 +130,15 @@ public class LibraryController {
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam Integer platform) {
     try {
       return libraryService.deleteLibrary(libraryId, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -131,6 +168,15 @@ public class LibraryController {
     String songsId = requestBody.get("songsId");
     try {
       return libraryService.addSongsToLibrary(libraryId, songsId, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -164,6 +210,15 @@ public class LibraryController {
     String toLibrary = requestBody.get("toLibrary");
     try {
       return libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
@@ -193,6 +248,15 @@ public class LibraryController {
       @RequestParam String tid) {
     try {
       return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }

@@ -1,5 +1,6 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
@@ -25,8 +26,8 @@ class NCMPlaylistServiceImplTest {
 
   @Autowired NCMPlaylistService ncmPlaylistService;
 
-  private static Long newCreatedPlaylistId1;
-  private static Long newCreatedPlaylistId2;
+  private static Result library1;
+  private static Result library2;
 
   @Test
   void getPlaylists() {
@@ -51,45 +52,52 @@ class NCMPlaylistServiceImplTest {
   @Test
   @Order(1)
   void createPlaylist() throws InterruptedException {
-    newCreatedPlaylistId1 = ncmPlaylistService.createPlaylist("test1", ncmCookie);
+    library1 = ncmPlaylistService.createPlaylist("test1", ncmCookie);
     Thread.sleep(2000);
-    newCreatedPlaylistId2 = ncmPlaylistService.createPlaylist("test2", ncmCookie);
-    System.out.println(newCreatedPlaylistId1 + "," + newCreatedPlaylistId2);
+    library2 = ncmPlaylistService.createPlaylist("test2", ncmCookie);
+    System.out.println("library1: " + library1);
+    System.out.println("library2: " + library2);
   }
 
   @Test
   @Order(2)
   void addSongsToPlaylist() {
-    String result =
+    Result result =
         ncmPlaylistService.addSongsToPlaylist(
-            newCreatedPlaylistId1, "347231,1860591464", ncmCookie);
+            Long.valueOf(library1.getData().toString()), "347231,1860591464", ncmCookie);
     System.out.println(result);
   }
 
   @Test
   @Order(3)
   void moveSongsToOtherPlaylist() {
-    String result =
+    Result result =
         ncmPlaylistService.moveSongsToOtherPlaylist(
-            "347231,1860591464", newCreatedPlaylistId1, newCreatedPlaylistId2, ncmCookie);
+            "347231,1860591464",
+            Long.valueOf(library1.getData().toString()),
+            Long.valueOf(library2.getData().toString()),
+            ncmCookie);
     System.out.println(result);
   }
 
   @Test
   @Order(4)
   void removeSongsFromPlaylist() {
-    String result =
+    Result result =
         ncmPlaylistService.removeSongsFromPlaylist(
-            newCreatedPlaylistId2, "347231,1860591464", ncmCookie);
+            Long.valueOf(library2.getData().toString()), "347231,1860591464", ncmCookie);
     System.out.println(result);
   }
 
   @Test
   @Order(5)
   void deletePlaylist() {
-    String result =
+    Result result =
         ncmPlaylistService.deletePlaylist(
-            newCreatedPlaylistId1 + "," + newCreatedPlaylistId2, ncmCookie);
+            Long.valueOf(library1.getData().toString())
+                + ","
+                + Long.valueOf(library2.getData().toString()),
+            ncmCookie);
     System.out.println(result);
   }
 }
