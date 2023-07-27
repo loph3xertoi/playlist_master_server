@@ -109,14 +109,15 @@ public class NCMSongServiceImpl implements NCMSongService {
     detailSong.setAlbumName(songNode.get("al").get("name").textValue());
     detailSong.setDuration(songNode.get("dt").intValue());
     detailSong.setPublishTime(songNode.get("publishTime").asText());
-    detailSong.setHBr(songNode.get("h").get("br").intValue());
-    detailSong.setHSize(songNode.get("h").get("size").longValue());
-    detailSong.setMBr(songNode.get("m").get("br").intValue());
-    detailSong.setMSize(songNode.get("m").get("size").longValue());
-    detailSong.setLBr(songNode.get("l").get("br").intValue());
-    detailSong.setLSize(songNode.get("l").get("size").longValue());
-    detailSong.setSqBr(songNode.get("sq").get("br").intValue());
-    detailSong.setSqSize(songNode.get("sq").get("size").longValue());
+    detailSong.setHBr(songNode.get("h").isNull() ? 0 : songNode.get("h").get("br").intValue());
+    detailSong.setHSize(songNode.get("h").isNull() ? 0 : songNode.get("h").get("size").longValue());
+    detailSong.setMBr(songNode.get("m").isNull() ? 0 : songNode.get("m").get("br").intValue());
+    detailSong.setMSize(songNode.get("m").isNull() ? 0 : songNode.get("m").get("size").longValue());
+    detailSong.setLBr(songNode.get("l").isNull() ? 0 : songNode.get("l").get("br").intValue());
+    detailSong.setLSize(songNode.get("l").isNull() ? 0 : songNode.get("l").get("size").longValue());
+    detailSong.setSqBr(songNode.get("sq").isNull() ? 0 : songNode.get("sq").get("br").intValue());
+    detailSong.setSqSize(
+        songNode.get("sq").isNull() ? 0 : songNode.get("sq").get("size").longValue());
     return detailSong;
   }
 
