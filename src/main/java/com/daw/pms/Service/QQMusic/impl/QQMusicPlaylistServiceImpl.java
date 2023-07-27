@@ -148,7 +148,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     detailPlaylist.setName(dataNode.get("dissname").textValue());
     detailPlaylist.setCover(dataNode.get("logo").textValue());
     detailPlaylist.setItemCount(dataNode.get("songnum").intValue());
-    detailPlaylist.setDesc(dataNode.get("desc").textValue());
+    detailPlaylist.setDesc(dataNode.get("desc").isNull() ? "" : dataNode.get("desc").textValue());
     detailPlaylist.setListenNum(dataNode.get("visitnum").intValue());
     detailPlaylist.setDirId(dataNode.get("dirid").intValue());
     detailPlaylist.setTid(dataNode.get("disstid").textValue());

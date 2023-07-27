@@ -190,7 +190,10 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     playlist.setUpdateTime(playlistNode.get("updateTime").longValue());
     playlist.setCreateTime(playlistNode.get("createTime").longValue());
     playlist.setPlayCount(playlistNode.get("playCount").intValue());
-    playlist.setDescription(playlistNode.get("description").textValue());
+    playlist.setDescription(
+        playlistNode.get("description").isNull()
+            ? ""
+            : playlistNode.get("description").textValue());
     JsonNode tagsNode = playlistNode.get("tags");
     List<String> tags = new ArrayList<>();
     for (JsonNode tagNode : tagsNode) {
@@ -232,7 +235,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     }
     int resultCode = jsonNode.get("code").intValue();
     if (resultCode == 200) {
-      Integer id = jsonNode.get("id").intValue();
+      Long id = jsonNode.get("id").longValue();
       return Result.ok(id);
     } else {
       return Result.fail(rawCreatingPlaylistResult);

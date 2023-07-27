@@ -36,7 +36,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getLyrics() {
-    NCMLyrics lyrics = ncmSongService.getLyrics(185920L, ncmCookie);
+    NCMLyrics lyrics = ncmSongService.getLyrics(1478965386L, ncmCookie);
     System.out.println(lyrics);
   }
 
