@@ -23,7 +23,7 @@ import org.springframework.web.client.ResourceAccessException;
  */
 @RestController
 @CacheConfig(cacheNames = "song-cache")
-@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class SongController {
   private final SongService songService;
 

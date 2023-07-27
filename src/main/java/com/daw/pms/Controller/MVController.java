@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CacheConfig(cacheNames = "mv-cache")
-@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class MVController {
   private final MVService mvService;
 

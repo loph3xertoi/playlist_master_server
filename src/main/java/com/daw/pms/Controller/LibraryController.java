@@ -5,10 +5,7 @@ import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Service.PMS.LibraryService;
 import java.util.List;
 import java.util.Map;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -21,7 +18,7 @@ import org.springframework.web.client.ResourceAccessException;
  */
 @RestController
 @CacheConfig(cacheNames = "library-cache")
-@Cacheable(key = "#root.methodName + '(' + #root.args + ')'")
+@Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class LibraryController {
   private final LibraryService libraryService;
 
