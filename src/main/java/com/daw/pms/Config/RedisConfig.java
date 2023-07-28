@@ -48,7 +48,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     RedisCacheManager cacheManager =
         RedisCacheManager.builder(redisConnectionFactory())
             .cacheDefaults(
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1)))
+                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(25)))
             .build();
     return cacheManager;
   }
