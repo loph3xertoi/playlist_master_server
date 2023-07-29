@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class NCMVideo extends BasicVideo {
-  /** The id of the mv. */
+  /** The id of the mv, may be mvid or vid. */
   private String id;
 
   /** Viewed times of the video. */

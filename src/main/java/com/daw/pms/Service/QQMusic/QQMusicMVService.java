@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Service for handle mv in qq music.
+ * Service for handle mv in ncm.
  *
  * @author Daw Loph
  * @version 1.0
- * @since 6/2/23
+ * @since 7/28/23
  */
 public interface QQMusicMVService {
   /**
-   * Get detail video information according to its {@code vid}.
+   * Get detail video information according to its {@code mvid}.
    *
    * @param vid The vid of the mv.
    * @param cookie Your qq music cookie.

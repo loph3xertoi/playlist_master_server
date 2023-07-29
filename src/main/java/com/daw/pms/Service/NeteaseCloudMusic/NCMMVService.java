@@ -16,29 +16,52 @@ public interface NCMMVService {
   /**
    * Get detail video information according to its {@code id}.
    *
-   * @param id The id of the mv.
+   * @param id The id of this video.
    * @param cookie Your cookie for netease cloud music.
-   * @return The detail information of the mv {@code id}, links needs to be completed.
-   * @apiNote GET /mv/detail?mvid={@code id}
+   * @return The detail information of the mv {@code id}.
+   * @apiNote mvid: GET /mv/detail?mvid={@code id} | mlogId: GET /video/detail?id={@code id}
    */
   NCMDetailVideo getDetailMV(String id, String cookie);
 
   /**
-   * Get the url for the mv(s) {@code mvids}.
+   * Get the url of the mv.
    *
-   * @param vids The vid of the mv, multi vid separated by comma.
-   * @param cookie Your qq music cookie.
-   * @return A map which key is the vid and value is a list of urls of this mv.
-   * @apiNote GET /mv/url?id={@code vids}
+   * @param mvId The mvid of the mv.
+   * @param rate The rate of the mv.
+   * @param cookie Your cookie for netease cloud music.
+   * @return MV's link with rate {@code rate}.
+   * @apiNote GET /mv/url?id={@code mvId}&r={@code rate}
    */
-  Map<String, List<String>> getMVsLink(String vids, String cookie);
+  String getMVLink(String mvId, Integer rate, String cookie);
 
   /**
-   * Get all the related basic videos information according to its {@code songId}.
+   * Get mlog's links.
+   *
+   * @param mLogId The mlog's id.
+   * @param cookie Your cookie for netease cloud music.
+   * @return The mlog's links, the key is resolution, the value is the corresponding link.
+   * @apiNote GET /mlog/url?id={@code mLogId}
+   */
+  Map<String, String> getMLogLinks(String mLogId, String cookie);
+
+  /**
+   * Get all related videos with song {@code songId}.
    *
    * @param songId The song's id.
-   * @param cookie Your qq music cookie.
-   * @return A list of basic video information related to the song.
+   * @param mvId The mvid of the song.
+   * @param limit The count of related videos returned.
+   * @param cookie Your cookie for netease cloud music.
+   * @return A list of related videos.
+   * @apiNote GET /mlog/music/rcmd?songid={@code songId}&mvid={@code mvId}&limit={@code limit}
    */
-  List<BasicVideo> getRelatedVideos(Integer songId, String cookie);
+  List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, String cookie);
+
+  /**
+   * Convert mlog id to vid.
+   *
+   * @param mLogId Mlog id.
+   * @param cookie Your cookie for netease cloud music.
+   * @return The vid of the mlog.
+   */
+  String convertMLogIdToVid(String mLogId, String cookie);
 }

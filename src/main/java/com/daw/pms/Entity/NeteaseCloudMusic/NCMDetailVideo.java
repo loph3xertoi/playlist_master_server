@@ -1,7 +1,6 @@
 package com.daw.pms.Entity.NeteaseCloudMusic;
 
 import com.daw.pms.Entity.Basic.BasicVideo;
-import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,11 +10,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class NCMDetailVideo extends BasicVideo {
-  /** The id of the mv. */
+  /** The id of the mv, may be mvid or vid. */
   private String id;
-
-  /** The MV's id of this song. */
-  private Long mvId;
 
   /** The description of the mv. */
   private String desc;
@@ -32,12 +28,15 @@ public class NCMDetailVideo extends BasicVideo {
   /** Commented count of the video. */
   private Integer commentCount;
 
-  /** The duration of the mv. * */
+  /** The duration of the mv. */
   private Integer duration;
 
   /** The published time of the mv. */
   private String publishTime;
 
-  /** The bite rate and size of the mv. */
-  private List<Map<String, String>> brs;
+  /** The bite rate as key and the size of the mv as value. */
+  private Map<String, Integer> rates;
+
+  /** The links of the mv, the key is resolution and the value is the url. */
+  private Map<String, String> links;
 }

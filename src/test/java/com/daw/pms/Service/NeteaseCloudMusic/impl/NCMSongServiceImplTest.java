@@ -24,7 +24,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getDetailSong() {
-    NCMDetailSong detailSong = ncmSongService.getDetailSong("185920", ncmCookie);
+    NCMDetailSong detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
     System.out.println(detailSong);
   }
 
