@@ -248,13 +248,13 @@ public class NCMMVServiceImpl implements NCMMVService {
       JsonNode resourceNode = videoNode.get("resource");
       JsonNode mlogBaseDataNode = resourceNode.get("mlogBaseData");
       JsonNode mlogExtVONode = resourceNode.get("mlogExtVO");
-      JsonNode userProfileNode = mlogBaseDataNode.get("userProfile");
+      JsonNode userProfileNode = resourceNode.get("userProfile");
       NCMVideo ncmVideo = new NCMVideo();
       ncmVideo.setId(videoNode.get("id").textValue());
       ncmVideo.setName(mlogBaseDataNode.get("text").textValue());
 
       List<BasicSinger> singers = new ArrayList<>();
-      if (userProfileNode != null) {
+      if (!userProfileNode.isNull()) {
         NCMSinger singer = new NCMSinger();
         singer.setId(userProfileNode.get("userId").longValue());
         singer.setName(userProfileNode.get("nickname").textValue());

@@ -191,7 +191,9 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     playlist.setCreateTime(playlistNode.get("createTime").longValue());
     playlist.setPlayCount(playlistNode.get("playCount").intValue());
     playlist.setDescription(
-        playlistNode.get("description") == null ? "" : playlistNode.get("description").textValue());
+        playlistNode.get("description").isNull()
+            ? ""
+            : playlistNode.get("description").textValue());
     JsonNode tagsNode = playlistNode.get("tags");
     List<String> tags = new ArrayList<>();
     for (JsonNode tagNode : tagsNode) {

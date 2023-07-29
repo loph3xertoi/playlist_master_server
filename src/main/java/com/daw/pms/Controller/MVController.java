@@ -3,12 +3,14 @@ package com.daw.pms.Controller;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicVideo;
 import com.daw.pms.Service.PMS.MVService;
+import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * MV controller.
@@ -37,7 +39,21 @@ public class MVController {
    */
   @GetMapping("/mv/{vid}")
   public Result getDetailMV(@PathVariable String vid, @RequestParam Integer platform) {
-    BasicVideo video = mvService.getDetailMV(vid, platform);
+    BasicVideo video;
+    try {
+      video = mvService.getDetailMV(vid, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
     return Result.ok(video);
   }
 
@@ -48,6 +64,7 @@ public class MVController {
    * @param platform The platform id.
    * @return A map which key is the vid and value is a list of urls of this mv.
    * @apiNote GET /mvLink/{@code vids}?platform={@code platform}
+   * @deprecated DON'T USE, NEED TO CONFORM THE RESULT.
    */
   @GetMapping("/mvLink/{vids}")
   public Result getMVsLink(@PathVariable String vids, @RequestParam Integer platform) {
@@ -55,15 +72,35 @@ public class MVController {
   }
 
   /**
-   * Get all related videos according to the song with {@code songId}.
+   * Get all related videos with the song.
    *
-   * @param songId The song id.
+   * @param songId The song's id.
+   * @param mvId The mv's id, only in ncm platform.
+   * @param limit The limit of related videos, only in ncm platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
-   * @apiNote GET /relatedMV/{@code songId}?platform={@code platform}
    */
   @GetMapping("/relatedMV/{songId}")
-  public Result getRelatedVideos(@PathVariable Integer songId, @RequestParam Integer platform) {
-    return Result.ok(mvService.getRelatedVideos(songId, platform));
+  public Result getRelatedVideos(
+      @PathVariable Long songId,
+      @RequestParam(required = false) String mvId,
+      @RequestParam(required = false) Integer limit,
+      @RequestParam Integer platform) {
+    List<BasicVideo> relatedVideos;
+    try {
+      relatedVideos = mvService.getRelatedVideos(songId, mvId, limit, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage());
+    }
+    return Result.ok(relatedVideos, (long) relatedVideos.size());
   }
 }

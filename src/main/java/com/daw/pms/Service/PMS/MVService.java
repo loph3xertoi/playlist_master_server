@@ -23,13 +23,18 @@ public interface MVService {
    * @param vids The vids of the mv(s), multi vids separated by comma.
    * @param platform The platform id.
    * @return The urls for the mv(s).
+   * @deprecated Make a uniform result between different platforms.
    */
   Map<String, List<String>> getMVsLink(String vids, Integer platform);
 
   /**
-   * @param songId The song id.
+   * Get all related videos with the song.
+   *
+   * @param songId The song's id.
+   * @param mvId The mv's id, only in ncm platform.
+   * @param limit The limit of related videos, only in ncm platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
    */
-  List<BasicVideo> getRelatedVideos(Integer songId, Integer platform);
+  List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, Integer platform);
 }

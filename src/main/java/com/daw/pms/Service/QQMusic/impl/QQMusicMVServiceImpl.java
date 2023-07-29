@@ -29,20 +29,24 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
    *
    * @param vid The vid of the mv.
    * @param cookie Your qq music cookie.
-   * @return The detail information of the mv {@code vid}, links needs to be completed.
+   * @return The detail information of the mv {@code vid}.
    * @apiNote GET /mv?id={@code vid}
    */
   @Override
   public QQMusicDetailVideo getDetailMV(String vid, String cookie) {
-    return extractQQMusicMV(
-        requestGetAPI(
-            QQMusicAPI.GET_MV_INFO,
-            new HashMap<String, String>() {
-              {
-                put("id", vid);
-              }
-            },
-            Optional.of(cookie)));
+    QQMusicDetailVideo qqMusicDetailVideo =
+        extractQQMusicMV(
+            requestGetAPI(
+                QQMusicAPI.GET_MV_INFO,
+                new HashMap<String, String>() {
+                  {
+                    put("id", vid);
+                  }
+                },
+                Optional.of(cookie)));
+    Map<String, List<String>> mVsLink = getMVsLink(vid, cookie);
+    qqMusicDetailVideo.setLinks(mVsLink.get(vid));
+    return qqMusicDetailVideo;
   }
 
   /**

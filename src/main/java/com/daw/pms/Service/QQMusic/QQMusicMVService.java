@@ -18,7 +18,7 @@ public interface QQMusicMVService {
    *
    * @param vid The vid of the mv.
    * @param cookie Your qq music cookie.
-   * @return The detail information of the mv {@code vid}, links needs to be completed.
+   * @return The detail information of the mv {@code vid}.
    * @apiNote GET /mv?id={@code vid}
    */
   QQMusicDetailVideo getDetailMV(String vid, String cookie);
