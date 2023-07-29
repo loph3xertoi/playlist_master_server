@@ -32,7 +32,7 @@ public class MVController {
   /**
    * Get detail video information according to its {@code vid}.
    *
-   * @param vid The vid of the mv.
+   * @param vid The vid/mvid/mlogId of the mv.
    * @param platform The platform id.
    * @return The detail information of the mv {@code vid}.
    * @apiNote GET /mv/{@code vid}?platform={@code platform}
@@ -79,6 +79,8 @@ public class MVController {
    * @param limit The limit of related videos, only in ncm platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
+   * @apiNote GET /relatedMV/{@code songId}?mvId={@code mvId}&limit={@code limit}&platform={@code
+   *     platform}
    */
   @GetMapping("/relatedMV/{songId}")
   public Result getRelatedVideos(

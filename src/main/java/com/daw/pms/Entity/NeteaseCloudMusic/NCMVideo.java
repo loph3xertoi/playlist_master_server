@@ -14,4 +14,10 @@ public class NCMVideo extends BasicVideo {
 
   /** Viewed times of the video. */
   private Integer playCount;
+
+  /** The duration of the mv. */
+  private Integer duration;
+
+  /** The published time of the mv. */
+  private String publishTime;
 }

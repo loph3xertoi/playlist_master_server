@@ -227,7 +227,7 @@ public class NCMMVServiceImpl implements NCMMVService {
             new HashMap<String, String>() {
               {
                 put("songid", songId.toString());
-                put("mvid", mvId);
+                if (mvId != null) put("mvid", mvId);
                 put("limit", limit.toString());
               }
             },
@@ -266,7 +266,12 @@ public class NCMMVServiceImpl implements NCMMVService {
           NCMSinger singer = new NCMSinger();
           singer.setId(singerNode.get("id").longValue());
           singer.setName(singerNode.get("name").textValue());
-          singer.setHeadPic(singerNode.get("mlogUser").get("avatarUrl").textValue());
+          JsonNode mlogUserNode = singerNode.get("mlogUser");
+          String headPic =
+              mlogUserNode.isNull()
+                  ? singerNode.get("img1v1Url").textValue()
+                  : mlogUserNode.get("avatarUrl").textValue();
+          singer.setHeadPic(headPic);
           singers.add(singer);
         }
       }
@@ -274,6 +279,8 @@ public class NCMMVServiceImpl implements NCMMVService {
 
       ncmVideo.setCover(mlogBaseDataNode.get("coverUrl").textValue());
       ncmVideo.setPlayCount(mlogExtVONode.get("playCount").intValue());
+      ncmVideo.setDuration(mlogBaseDataNode.get("duration").intValue());
+      ncmVideo.setPublishTime(mlogBaseDataNode.get("pubTime").asText());
       relatedVideos.add(ncmVideo);
     }
     return relatedVideos;

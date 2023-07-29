@@ -27,7 +27,7 @@ public class MVServiceImpl implements MVService, Serializable {
   }
 
   /**
-   * @param vid The vid of the mv.
+   * @param vid The vid/mvid/mlogId of the mv.
    * @param platform The platform id.
    * @return The detail information of the mv {@code vid}.
    */
@@ -89,6 +89,9 @@ public class MVServiceImpl implements MVService, Serializable {
     } else if (platform == 1) {
       relatedVideos = qqMusicMVService.getRelatedVideos(songId.intValue(), qqMusicCookie);
     } else if (platform == 2) {
+      if (limit == null) {
+        throw new RuntimeException("Parameter invalid.");
+      }
       relatedVideos = ncmMVService.getRelatedVideos(songId, mvId, limit, ncmCookie);
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");

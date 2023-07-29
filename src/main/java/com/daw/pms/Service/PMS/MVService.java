@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface MVService {
   /**
-   * @param vid The vid of the mv.
+   * @param vid The vid/mvid/mlogId of the mv.
    * @param platform The platform id.
    * @return The detail information of the mv {@code vid}.
    */
