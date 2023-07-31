@@ -1,6 +1,8 @@
 package com.daw.pms.Config;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -43,27 +45,26 @@ public class RedisConfig extends CachingConfigurerSupport {
   }
 
   @Bean
-  @Override
-  public CacheManager cacheManager() {
-    RedisCacheManager cacheManager =
-        RedisCacheManager.builder(redisConnectionFactory())
-            .cacheDefaults(
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(25)))
-            .build();
-    return cacheManager;
+  public RedisCacheConfiguration defaultCacheConfiguration() {
+    return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(25));
   }
 
-  //  @Bean
-  //  public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-  //    RedisSerializer<Object> serializer = new JsonRedisSerializer<>(Object.class);
-  //    RedisCacheConfiguration cacheConfig =
-  //        RedisCacheConfiguration.defaultCacheConfig()
-  //            .entryTtl(Duration.ofDays(1))
-  //            .serializeKeysWith(
-  //                RedisSerializationContext.SerializationPair.fromSerializer(
-  //                    new StringRedisSerializer()))
-  //            .serializeValuesWith(
-  //                RedisSerializationContext.SerializationPair.fromSerializer(serializer));
-  //    return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(cacheConfig).build();
-  //  }
+  @Bean
+  public RedisCacheConfiguration bilibiliWbiKeyCacheConfiguration() {
+    return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1));
+  }
+
+  @Bean
+  @Override
+  public CacheManager cacheManager() {
+    Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+    cacheConfigurations.put("library-cache", defaultCacheConfiguration());
+    cacheConfigurations.put("mv-cache", defaultCacheConfiguration());
+    cacheConfigurations.put("song-cache", defaultCacheConfiguration());
+    cacheConfigurations.put("user-cache", defaultCacheConfiguration());
+    cacheConfigurations.put("bilibili-wbi-key", bilibiliWbiKeyCacheConfiguration());
+    return RedisCacheManager.builder(redisConnectionFactory())
+        .withInitialCacheConfigurations(cacheConfigurations)
+        .build();
+  }
 }

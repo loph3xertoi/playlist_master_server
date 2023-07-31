@@ -1,6 +1,7 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.Entity.Basic.BasicUser;
+import com.daw.pms.Service.Bilibili.BilibiliUserService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
@@ -42,12 +43,20 @@ public class UserServiceImpl implements UserService, Serializable {
   @Value("${ncm.cookie}")
   private String ncmCookie;
 
+  @Value("${bilibili.cookie}")
+  private String bilibiliCookie;
+
   private final QQMusicUserService qqMusicUserService;
   private final NCMUserService ncmUserService;
+  private final BilibiliUserService bilibiliUserService;
 
-  public UserServiceImpl(QQMusicUserService qqMusicUserService, NCMUserService ncmUserService) {
+  public UserServiceImpl(
+      QQMusicUserService qqMusicUserService,
+      NCMUserService ncmUserService,
+      BilibiliUserService bilibiliUserService) {
     this.qqMusicUserService = qqMusicUserService;
     this.ncmUserService = ncmUserService;
+    this.bilibiliUserService = bilibiliUserService;
   }
 
   /**
@@ -67,33 +76,9 @@ public class UserServiceImpl implements UserService, Serializable {
     } else if (platform == 2) {
       return ncmUserService.getUserInfo(ncmId, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      return bilibiliUserService.getUserInfo(bilibiliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-
-    //    }
-    //    PMSUser user = new PMSUser();
-    //    user.setName(pmsName);
-    //    user.setHeadPic(pmsHeadPic);
-    //    user.setBgPic(pmsBgPic);
-    //    user.setId(pmsId);
-    //    Map<String, BasicUser> subUsers = new HashMap<>();
-    //    QQMusicUser qqMusicUser = qqMusicUserService.getUserInfo(qqMusicId, qqMusicCookie);
-    //    NCMUser ncmUser = ncmUserService.getUserInfo(ncmId, ncmCookie);
-    //    subUsers.put("qqmusic", qqMusicUser);
-    //    subUsers.put("ncm", ncmUser);
-    //    user.setSubUsers(subUsers);
-    //
-    //    switch (platform) {
-    //      case 1:
-    //        return user.getSubUsers().get("qqmusic");
-    //      case 2:
-    //        return user.getSubUsers().get("ncm");
-    //      case 3:
-    //        return user.getSubUsers().get("bilibili");
-    //      default:
-    //        return user;
-    //    }
   }
 }

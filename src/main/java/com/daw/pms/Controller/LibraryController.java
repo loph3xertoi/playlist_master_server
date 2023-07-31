@@ -95,7 +95,7 @@ public class LibraryController {
    * @apiNote POST /library?platform={@code platform} {"name": "{@code name}"}
    */
   @PostMapping("/library")
-  @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+  @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
   public Result createLibrary(
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
     try {
@@ -123,7 +123,7 @@ public class LibraryController {
    * @apiNote DELETE /library/{@code libraryId}?platform={@code platform}
    */
   @DeleteMapping("/library/{libraryId}")
-  @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+  @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam Integer platform) {
     try {
       return libraryService.deleteLibrary(libraryId, platform);
@@ -154,10 +154,8 @@ public class LibraryController {
   @PostMapping("/addSongsToLibrary")
   @Caching(
       evict = {
-        @CacheEvict(
-            value = "library-cache",
-            key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'"),
+        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
       })
   public Result addSongsToLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
@@ -192,13 +190,9 @@ public class LibraryController {
   @PutMapping("/moveSongsToOtherLibrary")
   @Caching(
       evict = {
-        @CacheEvict(
-            value = "library-cache",
-            key = "'getDetailLibrary('+#requestBody.get('fromTid')+','+#platform+')'"),
-        @CacheEvict(
-            value = "library-cache",
-            key = "'getDetailLibrary('+#requestBody.get('toTid')+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('fromTid')+','+#platform+')'"),
+        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('toTid')+','+#platform+')'"),
+        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
       })
   public Result moveSongsToOtherLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
@@ -235,8 +229,8 @@ public class LibraryController {
   @DeleteMapping("/removeSongsFromLibrary")
   @Caching(
       evict = {
-        @CacheEvict(value = "library-cache", key = "'getDetailLibrary('+#tid+','+#platform+')'"),
-        @CacheEvict(value = "library-cache", key = "'getLibraries(0,'+#platform+')'")
+        @CacheEvict(key = "'getDetailLibrary('+#tid+','+#platform+')'"),
+        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
       })
   public Result removeSongsFromLibrary(
       @RequestParam String libraryId,
