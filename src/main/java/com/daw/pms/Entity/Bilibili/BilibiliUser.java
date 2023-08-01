@@ -19,8 +19,8 @@ public class BilibiliUser extends BasicUser {
   /** User id in bilibili. */
   private Long mid;
 
-  /** Your gender. */
-  private String gender;
+  /** Your gender, 0 represents secret, 1 represents male, 2 represents female. */
+  private Integer gender;
 
   /** Your sign. */
   private String sign;
@@ -114,4 +114,28 @@ public class BilibiliUser extends BasicUser {
 
   /** The border color of your fans badge. */
   private Long fansBadgeBorderColor;
+
+  /** The ip address. */
+  private String ip;
+
+  /** Your country. */
+  private String country;
+
+  /** Your province. */
+  private String province;
+
+  /** Your city. */
+  private String city;
+
+  /** Your ISP, 0 represents china mobile, 1 represents china telecom. */
+  private Integer isp;
+
+  /** Your latitude. */
+  private Double latitude;
+
+  /** Your longitude. */
+  private Double longitude;
+
+  /** Your country code. */
+  private Integer countryCode;
 }

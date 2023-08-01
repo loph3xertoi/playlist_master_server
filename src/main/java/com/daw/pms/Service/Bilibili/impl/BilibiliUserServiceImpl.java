@@ -45,7 +45,28 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     String rawUserState =
         httpTools.requestGetAPI(BilibiliAPI.GET_USER_STATE, null, Optional.of(cookie));
     assignUserState(user, rawUserState);
+    String rawIpInfo = httpTools.requestGetAPI(BilibiliAPI.GET_IP_INFO, null, Optional.of(cookie));
+    assignIpInfo(user, rawIpInfo);
     return user;
+  }
+
+  private void assignIpInfo(BilibiliUser user, String rawIpInfo) {
+    JsonNode jsonNode;
+    try {
+      jsonNode = new ObjectMapper().readTree(rawIpInfo);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    JsonNode dataNode = jsonNode.get("data");
+    user.setIp(dataNode.get("addr").textValue());
+    user.setCountry(dataNode.get("country").textValue());
+    user.setProvince(dataNode.get("province").textValue());
+    user.setCity(dataNode.get("city").textValue());
+    String isp = dataNode.get("isp").textValue();
+    user.setIsp("移动".equals(isp) ? 0 : "电信".equals(isp) ? 1 : 2);
+    user.setLatitude(dataNode.get("latitude").doubleValue());
+    user.setLongitude(dataNode.get("longitude").doubleValue());
+    user.setCountryCode(dataNode.get("country_code").intValue());
   }
 
   private void assignUserState(BilibiliUser user, String rawUserState) {
@@ -73,8 +94,10 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     JsonNode pendantNode = dataNode.get("pendant");
     JsonNode nameplateNode = dataNode.get("nameplate");
     JsonNode fansMedalNode = dataNode.get("fans_medal").get("medal");
-    user.setGender(dataNode.get("sex").textValue());
-    user.setBgPic(dataNode.get("top_photo").textValue());
+    String gender = dataNode.get("sex").textValue();
+    user.setGender("保密".equals(gender) ? 0 : "男".equals(gender) ? 1 : 2);
+    //    user.setBgPic(dataNode.get("top_photo").textValue());
+    user.setBgPic(dataNode.get("face").textValue());
     user.setSign(dataNode.get("sign").textValue());
     user.setPendantName(pendantNode.get("name").textValue());
     user.setPendantExpireTime(pendantNode.get("expire").longValue());
