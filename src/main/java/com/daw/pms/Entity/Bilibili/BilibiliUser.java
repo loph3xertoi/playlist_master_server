@@ -17,101 +17,101 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class BilibiliUser extends BasicUser {
   /** User id in bilibili. */
-  Long mid;
+  private Long mid;
 
   /** Your gender. */
-  String gender;
+  private String gender;
 
   /** Your sign. */
-  String sign;
+  private String sign;
 
   /** Your account's level in bilibili. */
-  Integer level;
+  private Integer level;
 
   /** Current level exp. */
-  Integer currentLevelExp;
+  private Integer currentLevelExp;
 
   /** Next level exp, if your level is 6, this value will be string "--". */
-  Integer nextLevelExp;
+  private Integer nextLevelExp;
 
   /** Your coins' count. */
-  Integer coins;
+  private Integer coins;
 
   /** Your bcoin's count. */
-  Integer bcoin;
+  private Integer bcoin;
 
   /** Upper you are following. */
-  Integer following;
+  private Integer following;
 
   /** Your follower's count. */
-  Integer follower;
+  private Integer follower;
 
   /** Your dynamic count, */
-  Integer dynamicCount;
+  private Integer dynamicCount;
 
   /** Your moral in bilibili. */
-  Integer moral;
+  private Integer moral;
 
   /** Whether bind email. */
-  Boolean bindEmail;
+  private Boolean bindEmail;
 
   /** Whether bind phone. */
-  Boolean bindPhone;
+  private Boolean bindPhone;
 
   /** Vip type, 0 means no vip, 1 means month vip, 2 means year vip. */
-  Integer vipType;
+  private Integer vipType;
 
   /** Vip state. */
-  Boolean vipActive;
+  private Boolean vipActive;
 
   /** Expire time of your vip. */
-  Long vipExpireTime;
+  private Long vipExpireTime;
 
   /** The icon corresponding to your vip level. */
-  String vipIcon;
+  private String vipIcon;
 
   /** The pendant name. */
-  String pendantName;
+  private String pendantName;
 
   /** The expired time of pendant. */
-  Long pendantExpireTime;
+  private Long pendantExpireTime;
 
   /** The pendant image. */
-  String pendantImage;
+  private String pendantImage;
 
   /** The dynamic pendant image. */
-  String dynamicPendantImage;
+  private String dynamicPendantImage;
 
   /** The name of nameplate. */
-  String nameplateName;
+  private String nameplateName;
 
   /** The image of nameplate. */
-  String nameplateImage;
+  private String nameplateImage;
 
   /** The small image of nameplate. */
-  String smallNameplateImage;
+  private String smallNameplateImage;
 
   /** The obtaining condition of nameplate. */
-  String nameplateCondition;
+  private String nameplateCondition;
 
   /** Your birthday. */
-  String birthday;
+  private String birthday;
 
   /** Whether wearing fans badge. */
-  Boolean wearingFansBadge;
+  private Boolean wearingFansBadge;
 
   /** The level of your fans badge. */
-  Integer fansBadgeLevel;
+  private Integer fansBadgeLevel;
 
   /** The text of your fans badge. */
-  String fansBadgeText;
+  private String fansBadgeText;
 
   /** The start color of your fans badge. */
-  Long fansBadgeStartColor;
+  private Long fansBadgeStartColor;
 
   /** The end color of your fans badge. */
-  Long fansBadgeEndColor;
+  private Long fansBadgeEndColor;
 
   /** The border color of your fans badge. */
-  Long fansBadgeBorderColor;
+  private Long fansBadgeBorderColor;
 }

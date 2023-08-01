@@ -86,11 +86,19 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     user.setNameplateCondition(nameplateNode.get("condition").textValue());
     user.setBirthday(dataNode.get("birthday").textValue());
     user.setWearingFansBadge(dataNode.get("fans_medal").get("wear").booleanValue());
-    user.setFansBadgeLevel(fansMedalNode.get("level").intValue());
-    user.setFansBadgeText(fansMedalNode.get("medal_name").textValue());
-    user.setFansBadgeStartColor(fansMedalNode.get("medal_color_start").longValue());
-    user.setFansBadgeEndColor(fansMedalNode.get("medal_color_end").longValue());
-    user.setFansBadgeBorderColor(fansMedalNode.get("medal_color_border").longValue());
+    if (!fansMedalNode.isNull()) {
+      user.setFansBadgeLevel(fansMedalNode.get("level").intValue());
+      user.setFansBadgeText(fansMedalNode.get("medal_name").textValue());
+      user.setFansBadgeStartColor(fansMedalNode.get("medal_color_start").longValue());
+      user.setFansBadgeEndColor(fansMedalNode.get("medal_color_end").longValue());
+      user.setFansBadgeBorderColor(fansMedalNode.get("medal_color_border").longValue());
+    } else {
+      user.setFansBadgeLevel(0);
+      user.setFansBadgeText("");
+      user.setFansBadgeStartColor(0L);
+      user.setFansBadgeEndColor(0L);
+      user.setFansBadgeBorderColor(0L);
+    }
   }
 
   private BilibiliUser extractLoginInfo(String rawLoginInfo) {
