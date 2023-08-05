@@ -1,8 +1,10 @@
 package com.daw.pms.Service.Bilibili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Bilibili.BiliDetailResource;
+import com.daw.pms.Entity.Bilibili.BiliResource;
 import com.daw.pms.Entity.Bilibili.BiliSubpageOfResource;
 import com.daw.pms.Service.Bilibili.BiliCookieService;
 import com.daw.pms.Service.Bilibili.BiliResourceService;
@@ -67,7 +69,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     }
     int code = jsonNode.get("code").intValue();
     if (code != 0) {
-      return Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
     JsonNode dataNode = jsonNode.get("data");
     JsonNode upperNode = dataNode.get("owner");
@@ -148,7 +150,6 @@ public class BiliResourceServiceImpl implements BiliResourceService {
   }
 
   private Result extractDashLinks(String rawResourceDashLinks) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -173,10 +174,96 @@ public class BiliResourceServiceImpl implements BiliResourceService {
               audioLinks.put(audioNode.get("id").asText(), audioNode.get("baseUrl").textValue()));
       data.put("video", videoLinks);
       data.put("audio", audioLinks);
-      result = Result.ok(data);
+      return Result.ok(data);
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
+  }
+
+  /**
+   * Search resources in bilibili.
+   *
+   * @param searchType The type of search, can be video, media_bangumi and so on.
+   * @param keyword The keyword to search.
+   * @param order The sorting order of searched result, totalrank: by overall, click: by click
+   *     times, pubdate: by publish date, dm: by danmaku number, stow: by collected times, scores:
+   *     by comments number.
+   * @param duration Filter the result by duration, 0: all duration, 1: less than 10 minutes, 2: 10
+   *     to 30 minutes, 3: 30 to 60 minutes, 4: more than 60 minutes.
+   * @param tids Filter by the section number, default is 0(all sections).
+   * @param page The page number.
+   * @param cookie Your cookie for bilibili.
+   * @return Searched resources wrapped with Result DTO, the data is PagedDataDTO<BiliResource>.
+   */
+  // String keyword, Integer offset, Integer limit, Integer type, String cookie
+  @Override
+  public Result searchResources(
+      String searchType,
+      String keyword,
+      String order,
+      Integer duration,
+      Integer tids,
+      Integer page,
+      String cookie) {
+    Map<String, Object> params = new HashMap<>();
+    if (keyword == null || page == null) {
+      throw new RuntimeException("Invalid parameters");
+    }
+    params.put("search_type", searchType == null ? "video" : searchType);
+    params.put("keyword", keyword);
+    params.put("order", order == null ? "totalrank" : order);
+    params.put("duration", duration == null ? 0 : duration);
+    params.put("tids", tids == null ? 0 : tids);
+    params.put("page", page);
+    Map<String, String> wbiKey = biliCookieService.getWbiKey();
+    String signedUri =
+        WbiBiliBili.wbiSignRequestParam(params, wbiKey.get("img_key"), wbiKey.get("sub_key"));
+    String url = BilibiliAPI.SEARCH_RESOURCES + "?" + signedUri;
+    String rawSearchedResources = httpTools.requestGetAPIByFinalUrl(url, Optional.of(cookie));
+    return extractSearchedResources(rawSearchedResources);
+  }
+
+  private Result extractSearchedResources(String rawSearchedResources) {
+    PagedDataDTO<BiliResource> pagedSongs = new PagedDataDTO<>();
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(rawSearchedResources);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    int resultCode = jsonNode.get("code").intValue();
+    if (resultCode != 0) {
+      String errorMsg = jsonNode.get("message").textValue();
+      throw new RuntimeException(errorMsg);
+    }
+    JsonNode dataNode = jsonNode.get("data");
+    int totalCount = dataNode.get("numResults").intValue();
+    pagedSongs.setCount(totalCount);
+    int currentPage = dataNode.get("page").intValue();
+    int numPages = dataNode.get("numPages").intValue();
+    pagedSongs.setHasMore(currentPage < numPages);
+    JsonNode resultNode = dataNode.get("result");
+    List<BiliResource> resources = new ArrayList<>();
+    for (JsonNode resourceNode : resultNode) {
+      BiliResource resource = new BiliResource();
+      resource.setId(resourceNode.get("id").longValue());
+      resource.setBvid(resourceNode.get("bvid").textValue());
+      resource.setTitle(resourceNode.get("title").textValue());
+      resource.setCover(resourceNode.get("pic").textValue());
+      resource.setType(2);
+      resource.setPage(1);
+      String durationStr = resourceNode.get("duration").textValue();
+      Integer durationInSecs =
+          Integer.parseInt(durationStr.split(":")[0]) * 60
+              + Integer.parseInt(durationStr.split(":")[1]);
+      resource.setDuration(durationInSecs);
+      resource.setUpperName(resourceNode.get("author").textValue());
+      resource.setPlayCount(resourceNode.get("play").longValue());
+      resource.setDanmakuCount(resourceNode.get("danmaku").longValue());
+      resources.add(resource);
+    }
+    pagedSongs.setList(resources);
+    return Result.ok(pagedSongs);
   }
 }

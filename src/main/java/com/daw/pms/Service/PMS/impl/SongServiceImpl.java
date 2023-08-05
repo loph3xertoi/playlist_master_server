@@ -2,7 +2,6 @@ package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
-import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.Bilibili.BiliResourceService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
@@ -142,32 +141,32 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Search resources of type {@code type} by {@code keywords}.
+   * Search resources of type {@code type} by {@code keyword}.
    *
-   * @param keywords The keywords to search.
+   * @param keyword The keyword to search.
    * @param offset The offset with the first searched resource.
    * @param limit The mounts of the searched resources.
    * @param type The type of the searched resources.
    * @param platform The platform id.
-   * @return Paged searched result.
+   * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
    */
   @Override
-  public BasicPagedSongs searchResourcesByKeywords(
-      String keywords, Integer offset, Integer limit, Integer type, Integer platform) {
-    BasicPagedSongs searchedResult;
+  public Result searchResourcesByKeyword(
+      String keyword, Integer offset, Integer limit, Integer type, Integer platform) {
+    Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      searchedResult =
-          qqMusicSongService.searchResourcesByKeywords(keywords, offset, limit, qqMusicCookie);
+      result = qqMusicSongService.searchSongsByKeyword(keyword, offset, limit, qqMusicCookie);
     } else if (platform == 2) {
-      searchedResult =
-          ncmSongService.searchResourcesByKeywords(keywords, offset, limit, type, ncmCookie);
+      result = ncmSongService.searchResourcesByKeyword(keyword, offset, limit, type, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliResourceService.searchResources(
+              "video", keyword, "totalrank", 0, 0, offset, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-    return searchedResult;
+    return result;
   }
 }

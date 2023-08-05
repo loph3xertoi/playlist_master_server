@@ -23,8 +23,8 @@ public class BilibiliAPI {
       "https://api.bilibili.com/x/v3/fav/resource/move";
   public static final String MULTI_DELETE_RESOURCES =
       "https://api.bilibili.com/x/v3/fav/resource/batch-del";
-
   public static final String GET_DETAIL_RESOURCE = "https://api.bilibili.com/x/web-interface/view";
-
   public static final String GET_RESOURCE_DASH_LINKS = "https://api.bilibili.com/x/player/playurl";
+  public static final String SEARCH_RESOURCES =
+      "https://api.bilibili.com/x/web-interface/search/type";
 }

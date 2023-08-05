@@ -1,6 +1,7 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.*;
@@ -443,14 +444,13 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    * @param pageNo Page order.
    * @param pageSize Size one page.
    * @param cookie Your qq music cookie.
-   * @return A list of paged QQMusicSong wrapped by QQMusicSearchSongPagedResult.
+   * @return Searched result wrapped in Result DTO, the data is PagedDataDTO<QQMusicSong>.
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
   @Override
-  public QQMusicSearchSongPagedResult searchResourcesByKeywords(
-      String name, Integer pageNo, Integer pageSize, String cookie) {
-    QQMusicSearchSongPagedResult searchedResult =
-        extractSearchSongPagedResult(
+  public Result searchSongsByKeyword(String name, Integer pageNo, Integer pageSize, String cookie) {
+    Result result =
+        extractSearchedSongs(
             requestGetAPI(
                 QQMusicAPI.SEARCH_SONGS,
                 new HashMap<String, String>() {
@@ -461,8 +461,16 @@ public class QQMusicSongServiceImpl extends QQMusicBase
                   }
                 },
                 Optional.of(cookie)));
-    List<String> songMids = new ArrayList<>(searchedResult.getPageSize());
-    searchedResult.getSongs().forEach(song -> songMids.add(song.getSongMid()));
+    if (!result.getSuccess()) {
+      return result;
+    }
+    PagedDataDTO<QQMusicSong> pagedSongs = (PagedDataDTO<QQMusicSong>) result.getData();
+    Integer count = pagedSongs.getCount();
+    Boolean hasMore = count > pageSize * pageNo;
+    pagedSongs.setHasMore(hasMore);
+    List<QQMusicSong> list = pagedSongs.getList();
+    List<String> songMids = new ArrayList<>(pageSize);
+    list.forEach(song -> songMids.add(song.getSongMid()));
     Collections.shuffle(songMids);
     Map<String, String> songsLink;
     Result linksResult = getSongsLink(String.join(",", songMids), cookie);
@@ -471,39 +479,38 @@ public class QQMusicSongServiceImpl extends QQMusicBase
     } else {
       throw new RuntimeException(linksResult.getMessage());
     }
-    searchedResult
-        .getSongs()
-        .forEach(
-            song -> {
-              song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
-              song.setIsTakenDown(song.getSongLink().isEmpty());
-            });
-    return searchedResult;
+    list.forEach(
+        song -> {
+          song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
+          song.setIsTakenDown(song.getSongLink().isEmpty());
+        });
+    pagedSongs.setList(list);
+    return result;
   }
 
   /**
-   * Extract raw search result with QQMusicSearchSongPagedResult.
+   * Extract raw search result.
    *
-   * @param rawSearchSongPagedResult Raw paged search result returned by proxy qq music api server.
-   * @return Wrapped with QQMusicSearchSongPagedResult.
+   * @param rawSearchedSongs Raw searched songs.
+   * @return The searched songs.
    */
-  private QQMusicSearchSongPagedResult extractSearchSongPagedResult(
-      String rawSearchSongPagedResult) {
+  private Result extractSearchedSongs(String rawSearchedSongs) {
     JsonNode jsonNode;
     try {
-      jsonNode = new ObjectMapper().readTree(rawSearchSongPagedResult);
+      jsonNode = new ObjectMapper().readTree(rawSearchedSongs);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    QQMusicSearchSongPagedResult pagedResult = new QQMusicSearchSongPagedResult();
+    PagedDataDTO<QQMusicSong> pagedResult = new PagedDataDTO<>();
     List<QQMusicSong> basicSongList = new ArrayList<>();
+    int resultCode = jsonNode.get("result").intValue();
+    if (resultCode != 100) {
+      String errMsg = jsonNode.get("errMsg").textValue();
+      throw new RuntimeException(errMsg);
+    }
     JsonNode dataNode = jsonNode.get("data");
     JsonNode listNode = dataNode.get("list");
-
-    pagedResult.setPageSize(dataNode.get("pageSize").asInt());
-    pagedResult.setPageNo(dataNode.get("pageNo").asInt());
-    pagedResult.setTotal(dataNode.get("total").asInt());
-
+    pagedResult.setCount(dataNode.get("total").intValue());
     listNode.forEach(
         songNode ->
             basicSongList.add(
@@ -552,8 +559,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase
                     setPayPlay(songNode.get("pay").get("pay_play").intValue());
                   }
                 }));
-
-    pagedResult.setSongs(basicSongList);
-    return pagedResult;
+    pagedResult.setList(basicSongList);
+    return Result.ok(pagedResult);
   }
 }

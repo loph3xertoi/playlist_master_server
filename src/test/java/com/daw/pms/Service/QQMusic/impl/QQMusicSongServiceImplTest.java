@@ -52,6 +52,6 @@ class QQMusicSongServiceImplTest {
 
   @Test
   void searchResourcesByKeywords() {
-    System.out.println(qqMusicSongService.searchResourcesByKeywords("洛天依", 1, 20, qqMusicCookie));
+    System.out.println(qqMusicSongService.searchSongsByKeyword("洛天依", 1, 20, qqMusicCookie));
   }
 }

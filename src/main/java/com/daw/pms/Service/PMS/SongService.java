@@ -2,7 +2,6 @@ package com.daw.pms.Service.PMS;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
-import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import java.util.List;
 
@@ -54,15 +53,15 @@ public interface SongService {
   Result getSongsLink(String ids, String level, Integer platform);
 
   /**
-   * Search resources of type {@code type} by {@code keywords}.
+   * Search resources of type {@code type} by {@code keyword}.
    *
-   * @param keywords The keywords to search.
+   * @param keyword The keyword to search.
    * @param offset The offset with the first searched resource.
    * @param limit The mounts of the searched resources.
    * @param type The type of the searched resources.
    * @param platform The platform id.
-   * @return Paged searched result.
+   * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
    */
-  BasicPagedSongs searchResourcesByKeywords(
-      String keywords, Integer offset, Integer limit, Integer type, Integer platform);
+  Result searchResourcesByKeyword(
+      String keyword, Integer offset, Integer limit, Integer type, Integer platform);
 }

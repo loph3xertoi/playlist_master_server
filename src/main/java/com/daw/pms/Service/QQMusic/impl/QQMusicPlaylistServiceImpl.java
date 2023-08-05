@@ -113,7 +113,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
                 },
                 Optional.of(cookie)));
     if (qqMusicDetailPlaylist == null) {
-      return Result.fail("This library isn't accessible.");
+      throw new RuntimeException("This library isn't accessible");
     }
     Integer songCount = qqMusicDetailPlaylist.getItemCount();
     if (songCount > 0) {
@@ -242,11 +242,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
       Integer dirId = jsonNode.get("data").get("dirid").intValue();
       return Result.ok(dirId);
     } else if (resultCode == 200) {
-      return Result.fail("Library already exists");
+      throw new RuntimeException("Library already exists");
     } else if (resultCode == 301) {
-      return Result.fail("QQ music proxy server needs to login");
+      throw new RuntimeException("QQ music proxy server needs to login");
     } else {
-      return Result.fail(rawCreatingPlaylistResult);
+      throw new RuntimeException(rawCreatingPlaylistResult);
     }
   }
 
@@ -283,11 +283,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     if (resultCode == 100) {
       return Result.ok();
     } else if (resultCode == 200) {
-      return Result.fail("Library delete failed: Invalid parameters");
+      throw new RuntimeException("Library delete failed: Invalid parameters");
     } else if (resultCode == 301) {
-      return Result.fail("QQ music proxy server needs to login");
+      throw new RuntimeException("QQ music proxy server needs to login");
     } else {
-      return Result.fail(rawDeletingPlaylistResult);
+      throw new RuntimeException(rawDeletingPlaylistResult);
     }
   }
 
@@ -326,11 +326,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     if (resultCode == 100) {
       return Result.ok();
     } else if (resultCode == 200) {
-      return Result.fail("Add songs failed: Invalid parameters");
+      throw new RuntimeException("Add songs failed: Invalid parameters");
     } else if (resultCode == 301) {
-      return Result.fail("QQ music proxy server needs to login");
+      throw new RuntimeException("QQ music proxy server needs to login");
     } else {
-      return Result.fail(rawAddingSongsToPlaylistResult);
+      throw new RuntimeException(rawAddingSongsToPlaylistResult);
     }
   }
 
@@ -373,11 +373,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     if (resultCode == 100) {
       return Result.ok();
     } else if (resultCode == 200) {
-      return Result.fail("Move songs failed: Invalid parameters");
+      throw new RuntimeException("Move songs failed: Invalid parameters");
     } else if (resultCode == 301) {
-      return Result.fail("QQ music proxy server needs to login");
+      throw new RuntimeException("QQ music proxy server needs to login");
     } else {
-      return Result.fail(rawMovingSongsToOtherPlaylistResult);
+      throw new RuntimeException(rawMovingSongsToOtherPlaylistResult);
     }
   }
 
@@ -416,11 +416,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     if (resultCode == 100) {
       return Result.ok();
     } else if (resultCode == 200) {
-      return Result.fail("Remove songs failed: Invalid parameters");
+      throw new RuntimeException("Remove songs failed: Invalid parameters");
     } else if (resultCode == 301) {
-      return Result.fail("QQ music proxy server needs to login");
+      throw new RuntimeException("QQ music proxy server needs to login");
     } else {
-      return Result.fail(rawRemovingPlaylistResult);
+      throw new RuntimeException(rawRemovingPlaylistResult);
     }
   }
 }

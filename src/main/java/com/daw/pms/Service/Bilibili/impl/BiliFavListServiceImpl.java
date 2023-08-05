@@ -65,7 +65,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractFavLists(String rawFavLists, Integer type) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -96,11 +95,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
       data.setCount(dataNode.get("count").intValue());
       data.setList(favLists);
       data.setHasMore(dataNode.get("has_more").booleanValue());
-      result = Result.ok(data);
+      return Result.ok(data);
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**
@@ -154,7 +152,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractDetailFavList(String rawDetailFavList, Integer type) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -227,11 +224,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
       } else {
         throw new RuntimeException("type must be 0 or 1");
       }
-      result = Result.ok(biliDetailFavList);
+      return Result.ok(biliDetailFavList);
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**
@@ -267,7 +263,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractCreatingFavListResult(String rawCreatingFavListResult) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -278,11 +273,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     int resultCode = jsonNode.get("code").intValue();
     if (resultCode == 0) {
       Long id = jsonNode.get("data").get("id").longValue();
-      result = Result.ok(id);
+      return Result.ok(id);
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**
@@ -305,7 +299,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractDeletingFavListResult(String rawDeletingFavListResult) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -315,11 +308,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     }
     int resultCode = jsonNode.get("code").intValue();
     if (resultCode == 0) {
-      result = Result.ok();
+      return Result.ok();
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**
@@ -352,7 +344,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractEditingFavListResult(String rawEditingFavListResult) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -362,11 +353,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     }
     int resultCode = jsonNode.get("code").intValue();
     if (resultCode == 0) {
-      result = Result.ok();
+      return Result.ok();
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**
@@ -406,7 +396,6 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   private Result extractMultipleAddResult(String rawMultipleAddResult) {
-    Result result;
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -416,11 +405,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     }
     int resultCode = jsonNode.get("code").intValue();
     if (resultCode == 0) {
-      result = Result.ok();
+      return Result.ok();
     } else {
-      result = Result.fail(jsonNode.get("message").textValue());
+      throw new RuntimeException(jsonNode.get("message").textValue());
     }
-    return result;
   }
 
   /**

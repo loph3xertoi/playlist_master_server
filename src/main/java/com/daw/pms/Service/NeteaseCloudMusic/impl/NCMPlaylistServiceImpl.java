@@ -253,7 +253,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
       Long id = jsonNode.get("id").longValue();
       return Result.ok(id);
     } else {
-      return Result.fail(rawCreatingPlaylistResult);
+      throw new RuntimeException(rawCreatingPlaylistResult);
     }
   }
 
@@ -291,9 +291,9 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     if (resultCode == 200) {
       return Result.ok();
     } else if (resultCode == 400) {
-      return Result.fail("No such library");
+      throw new RuntimeException("No such library");
     } else {
-      return Result.fail(rawDeletingPlaylistResult);
+      throw new RuntimeException(rawDeletingPlaylistResult);
     }
   }
 
@@ -330,21 +330,20 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-
     if (jsonNode.has("code") && jsonNode.get("code").intValue() == 404) {
-      return Result.fail("No such library");
+      throw new RuntimeException("No such library");
     }
     if (jsonNode.has("status") && jsonNode.get("status").intValue() == 200) {
       int resultCode = jsonNode.get("body").get("code").intValue();
       if (resultCode == 200) {
         return Result.ok();
       } else if (resultCode == 502) {
-        return Result.fail("The songs is already in the playlist");
+        throw new RuntimeException("The songs is already in the playlist");
       } else if (resultCode == 400) {
-        return Result.fail("Invalid parameters");
+        throw new RuntimeException("Invalid parameters");
       }
     }
-    return Result.fail(rawAddingSongsToPlaylistResult);
+    throw new RuntimeException(rawAddingSongsToPlaylistResult);
   }
 
   /**
@@ -366,10 +365,10 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
       if (removeResult.getSuccess()) {
         return Result.ok();
       } else {
-        return Result.fail(removeResult.getMessage());
+        throw new RuntimeException(removeResult.getMessage());
       }
     } else {
-      return Result.fail(addResult.getMessage());
+      throw new RuntimeException(addResult.getMessage());
     }
   }
 
@@ -406,18 +405,17 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-
     if (jsonNode.has("code") && jsonNode.get("code").intValue() == 404) {
-      return Result.fail("No such library");
+      throw new RuntimeException("No such library");
     }
     if (jsonNode.has("status") && jsonNode.get("status").intValue() == 200) {
       int resultCode = jsonNode.get("body").get("code").intValue();
       if (resultCode == 200) {
         return Result.ok();
       } else if (resultCode == 400) {
-        return Result.fail("Invalid parameters");
+        throw new RuntimeException("Invalid parameters");
       }
     }
-    return Result.fail(rawRemovingSongsFromPlaylistResult);
+    throw new RuntimeException(rawRemovingSongsFromPlaylistResult);
   }
 }

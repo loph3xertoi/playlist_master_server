@@ -2,7 +2,6 @@ package com.daw.pms.Service.QQMusic;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.QQMusic.QQMusicLyrics;
-import com.daw.pms.Entity.QQMusic.QQMusicSearchSongPagedResult;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import java.util.List;
 
@@ -97,9 +96,8 @@ public interface QQMusicSongService {
    * @param pageNo Page order.
    * @param pageSize Size one page.
    * @param cookie Your qq music cookie.
-   * @return A list of paged QQMusicSong wrapped by QQMusicSearchSongPagedResult.
+   * @return Searched result wrapped in Result DTO, the data is PagedDataDTO<QQMusicSong>.
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
-  QQMusicSearchSongPagedResult searchResourcesByKeywords(
-      String name, Integer pageNo, Integer pageSize, String cookie);
+  Result searchSongsByKeyword(String name, Integer pageNo, Integer pageSize, String cookie);
 }

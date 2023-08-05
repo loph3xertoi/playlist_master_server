@@ -2,7 +2,6 @@ package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMLyrics;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMSearchSongsPagedResult;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import java.util.List;
@@ -23,7 +22,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getDetailSong() {
-    Result detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
+    com.daw.pms.DTO.Result detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
     System.out.println(detailSong);
   }
 
@@ -41,14 +40,14 @@ class NCMSongServiceImplTest {
 
   @Test
   void getSongsLink() {
-    Result songsLink = ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
+    com.daw.pms.DTO.Result songsLink =
+        ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
     System.out.println(songsLink);
   }
 
   @Test
   void searchSongs() {
-    NCMSearchSongsPagedResult songs =
-        ncmSongService.searchResourcesByKeywords("洛天依", 0, 10, 1, ncmCookie);
+    Result songs = ncmSongService.searchResourcesByKeyword("洛天依", 0, 10, 1, ncmCookie);
     System.out.println(songs);
   }
 }

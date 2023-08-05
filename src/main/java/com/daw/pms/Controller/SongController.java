@@ -1,7 +1,6 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
@@ -143,23 +142,22 @@ public class SongController {
   }
 
   /**
-   * Search song by keywords.
+   * Search song by keyword.
    *
-   * @param keywords The song name to search.
+   * @param keyword The song name to search.
    * @param offset The page number.
    * @param limit The page size.
    * @param platform The platform id.
    * @return The search result with page.
    */
-  @GetMapping("/search/song/{keywords}")
+  @GetMapping("/search/song/{keyword}")
   public Result searchSong(
-      @PathVariable String keywords,
+      @PathVariable String keyword,
       @RequestParam Integer offset,
       @RequestParam Integer limit,
       @RequestParam Integer platform) {
-    BasicPagedSongs pagedSongs;
     try {
-      pagedSongs = songService.searchResourcesByKeywords(keywords, offset, limit, 1, platform);
+      return songService.searchResourcesByKeyword(keyword, offset, limit, 1, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -172,6 +170,5 @@ public class SongController {
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
-    return Result.ok(pagedSongs);
   }
 }

@@ -1,6 +1,7 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.Config.NCMAPI;
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.NeteaseCloudMusic.*;
@@ -31,7 +32,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    * @apiNote GET /song/detail?ids={@code ids}
    */
   @Override
-  public Result getDetailSong(String ids, String cookie) {
+  public com.daw.pms.DTO.Result getDetailSong(String ids, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailSong detailSong =
         extractDetailSong(
@@ -64,7 +65,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                   Optional.of(cookie))));
     }
     Map<String, String> links;
-    Result linksResult = getSongsLink(ids, "standard", cookie);
+    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {
@@ -72,7 +73,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     }
     detailSong.setSongLink(links.getOrDefault(detailSong.getId().toString(), ""));
     detailSong.setIsTakenDown(detailSong.getSongLink().isEmpty());
-    return Result.ok(detailSong);
+    return com.daw.pms.DTO.Result.ok(detailSong);
   }
 
   private String extractSingerAvatar(String rawDetailSinger) {
@@ -153,7 +154,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links;
-    Result linksResult = getSongsLink(ids, "standard", cookie);
+    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {
@@ -276,7 +277,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
    */
   @Override
-  public Result getSongsLink(String ids, String level, String cookie) {
+  public com.daw.pms.DTO.Result getSongsLink(String ids, String level, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     Map<String, String> links =
         extractSongsLinks(
@@ -289,7 +290,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                   }
                 },
                 Optional.of(cookie)));
-    return Result.ok(links);
+    return com.daw.pms.DTO.Result.ok(links);
   }
 
   private Map<String, String> extractSongsLinks(String rawSongsLinks) {
@@ -310,40 +311,47 @@ public class NCMSongServiceImpl implements NCMSongService {
   }
 
   /**
-   * Search and return paged songs according to the given keywords {@code name}.
+   * Search and return paged songs/resources according to the given keyword {@code name}.
    *
-   * @param keywords Your search keywords.
+   * @param keyword Your search keywords.
    * @param offset Offset from the first result.
    * @param limit Number of songs returned.
    * @param type Search type, 1 for song, 10 for album, 100 for singers, 1000 for playlists, 1002
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
    * @param cookie Your cookie for netease cloud music.
-   * @return A list of paged BiliSong wrapped by NCMSearchSongsPagedResult.
+   * @return Searched songs wrapped with Result DTO, the data is PagedDataDTO<NCMSong>.
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
   @Override
-  public NCMSearchSongsPagedResult searchResourcesByKeywords(
-      String keywords, Integer offset, Integer limit, Integer type, String cookie) {
+  public Result searchResourcesByKeyword(
+      String keyword, Integer offset, Integer limit, Integer type, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    NCMSearchSongsPagedResult pagedSongs =
+    Result result =
         extractSearchedSongs(
             httpTools.requestGetAPI(
                 baseUrl + NCMAPI.CLOUDSEARCH,
                 new HashMap<String, String>() {
                   {
-                    put("keywords", keywords);
+                    put("keywords", keyword);
                     put("offset", offset.toString());
                     put("limit", limit.toString());
                     put("type", type.toString());
                   }
                 },
                 Optional.of(cookie)));
-    List<NCMSong> songs = pagedSongs.getSongs();
+    if (!result.getSuccess()) {
+      return result;
+    }
+    PagedDataDTO<NCMSong> pagedDataDTO = (PagedDataDTO<NCMSong>) result.getData();
+    int count = pagedDataDTO.getCount();
+    Boolean hasMore = offset + limit < count;
+    pagedDataDTO.setHasMore(hasMore);
+    List<NCMSong> songs = pagedDataDTO.getList();
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links;
-    Result linksResult = getSongsLink(ids, "standard", cookie);
+    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {
@@ -353,13 +361,11 @@ public class NCMSongServiceImpl implements NCMSongService {
       song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
     }
-    pagedSongs.setPageNo(offset);
-    pagedSongs.setPageSize(limit);
-    return pagedSongs;
+    return result;
   }
 
-  private NCMSearchSongsPagedResult extractSearchedSongs(String rawSearchedSongs) {
-    NCMSearchSongsPagedResult pagedSongs = new NCMSearchSongsPagedResult();
+  private Result extractSearchedSongs(String rawSearchedSongs) {
+    PagedDataDTO<NCMSong> pagedSongs = new PagedDataDTO<>();
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -367,8 +373,12 @@ public class NCMSongServiceImpl implements NCMSongService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
+    int resultCode = jsonNode.get("code").intValue();
+    if (resultCode != 200) {
+      throw new RuntimeException(String.valueOf(resultCode));
+    }
     JsonNode resultNode = jsonNode.get("result");
-    pagedSongs.setTotal(resultNode.get("songCount").intValue());
+    pagedSongs.setCount(resultNode.get("songCount").intValue());
     JsonNode songsNode = resultNode.get("songs");
     List<NCMSong> songs = new ArrayList<>();
     for (JsonNode songNode : songsNode) {
@@ -389,7 +399,7 @@ public class NCMSongServiceImpl implements NCMSongService {
       song.setPayPlay(songNode.get("fee").intValue());
       songs.add(song);
     }
-    pagedSongs.setSongs(songs);
-    return pagedSongs;
+    pagedSongs.setList(songs);
+    return Result.ok(pagedSongs);
   }
 }

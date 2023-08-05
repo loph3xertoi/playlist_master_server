@@ -25,4 +25,11 @@ class BiliResourceServiceImplTest {
     Result result = biliResourceService.getResourceDashLink("BV19841187Tx", 893463032L, biliCookie);
     System.out.println(result);
   }
+
+  @Test
+  void searchResources() {
+    Result result =
+        biliResourceService.searchResources("video", "洛天依", "totalrank", 0, 0, 1, biliCookie);
+    System.out.println(result);
+  }
 }
