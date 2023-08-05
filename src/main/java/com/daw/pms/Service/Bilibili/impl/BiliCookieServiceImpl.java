@@ -1,7 +1,7 @@
 package com.daw.pms.Service.Bilibili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
-import com.daw.pms.Service.Bilibili.BilibiliCookieService;
+import com.daw.pms.Service.Bilibili.BiliCookieService;
 import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,10 +15,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BilibiliCookieServiceImpl implements BilibiliCookieService {
+public class BiliCookieServiceImpl implements BiliCookieService {
   private final HttpTools httpTools;
 
-  public BilibiliCookieServiceImpl(HttpTools httpTools) {
+  public BiliCookieServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
   }
 
@@ -26,6 +26,7 @@ public class BilibiliCookieServiceImpl implements BilibiliCookieService {
    * Get wbi key.
    *
    * @return Img key and sub key.
+   * @apiNote GET GET_WBI_KEY
    */
   @Cacheable(value = "bilibili-wbi-key", key = "#root.methodName", unless = "#result==null")
   @Override
@@ -34,7 +35,7 @@ public class BilibiliCookieServiceImpl implements BilibiliCookieService {
     return extractWbiKey(rawWbiKey);
   }
 
-  Map<String, String> extractWbiKey(String rawWbiKey) {
+  private Map<String, String> extractWbiKey(String rawWbiKey) {
     Map<String, String> map = new HashMap<>();
     JsonNode jsonNode;
     try {

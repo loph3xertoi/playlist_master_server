@@ -1,6 +1,7 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.Config.NCMAPI;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.NeteaseCloudMusic.*;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
@@ -26,11 +27,11 @@ public class NCMSongServiceImpl implements NCMSongService {
    *
    * @param ids The id of song, multiple songs separated by comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Detail song with {@code ids}.
+   * @return Detail song with {@code ids}, wrapped with Result DTO, the data is NCMDetailSong.
    * @apiNote GET /song/detail?ids={@code ids}
    */
   @Override
-  public NCMDetailSong getDetailSong(String ids, String cookie) {
+  public Result getDetailSong(String ids, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailSong detailSong =
         extractDetailSong(
@@ -62,10 +63,16 @@ public class NCMSongServiceImpl implements NCMSongService {
                   },
                   Optional.of(cookie))));
     }
-    Map<String, String> links = getSongsLink(ids, "standard", cookie);
+    Map<String, String> links;
+    Result linksResult = getSongsLink(ids, "standard", cookie);
+    if (linksResult.getSuccess()) {
+      links = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     detailSong.setSongLink(links.getOrDefault(detailSong.getId().toString(), ""));
     detailSong.setIsTakenDown(detailSong.getSongLink().isEmpty());
-    return detailSong;
+    return Result.ok(detailSong);
   }
 
   private String extractSingerAvatar(String rawDetailSinger) {
@@ -145,7 +152,13 @@ public class NCMSongServiceImpl implements NCMSongService {
 
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
-    Map<String, String> links = getSongsLink(ids, "standard", cookie);
+    Map<String, String> links;
+    Result linksResult = getSongsLink(ids, "standard", cookie);
+    if (linksResult.getSuccess()) {
+      links = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     for (NCMSong song : songs) {
       song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
@@ -259,22 +272,24 @@ public class NCMSongServiceImpl implements NCMSongService {
    *     jymaster.
    * @param cookie Your cookie for netease cloud music.
    * @return A map which the key is the song's id and the value is the url of songs with {@code ids}
-   *     and quality {@code level}.
+   *     and quality {@code level}, wrapped with Result DTO, the data is Map<String,String>.
    * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
    */
   @Override
-  public Map<String, String> getSongsLink(String ids, String level, String cookie) {
+  public Result getSongsLink(String ids, String level, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return extractSongsLinks(
-        httpTools.requestGetAPI(
-            baseUrl + NCMAPI.NEW_SONGS_LINKS,
-            new HashMap<String, String>() {
-              {
-                put("id", ids);
-                put("level", level);
-              }
-            },
-            Optional.of(cookie)));
+    Map<String, String> links =
+        extractSongsLinks(
+            httpTools.requestGetAPI(
+                baseUrl + NCMAPI.NEW_SONGS_LINKS,
+                new HashMap<String, String>() {
+                  {
+                    put("id", ids);
+                    put("level", level);
+                  }
+                },
+                Optional.of(cookie)));
+    return Result.ok(links);
   }
 
   private Map<String, String> extractSongsLinks(String rawSongsLinks) {
@@ -304,7 +319,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
    * @param cookie Your cookie for netease cloud music.
-   * @return A list of paged NCMSong wrapped by NCMSearchSongsPagedResult.
+   * @return A list of paged BiliSong wrapped by NCMSearchSongsPagedResult.
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
   @Override
@@ -327,7 +342,13 @@ public class NCMSongServiceImpl implements NCMSongService {
     List<NCMSong> songs = pagedSongs.getSongs();
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
-    Map<String, String> links = getSongsLink(ids, "standard", cookie);
+    Map<String, String> links;
+    Result linksResult = getSongsLink(ids, "standard", cookie);
+    if (linksResult.getSuccess()) {
+      links = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     for (NCMSong song : songs) {
       song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());

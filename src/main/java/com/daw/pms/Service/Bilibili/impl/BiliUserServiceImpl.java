@@ -1,9 +1,9 @@
 package com.daw.pms.Service.Bilibili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
-import com.daw.pms.Entity.Bilibili.BilibiliUser;
-import com.daw.pms.Service.Bilibili.BilibiliCookieService;
-import com.daw.pms.Service.Bilibili.BilibiliUserService;
+import com.daw.pms.Entity.Bilibili.BiliUser;
+import com.daw.pms.Service.Bilibili.BiliCookieService;
+import com.daw.pms.Service.Bilibili.BiliUserService;
 import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.WbiBiliBili;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,13 +13,13 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BilibiliUserServiceImpl implements BilibiliUserService {
+public class BiliUserServiceImpl implements BiliUserService {
 
-  private final BilibiliCookieService bilibiliCookieService;
+  private final BiliCookieService biliCookieService;
   private final HttpTools httpTools;
 
-  public BilibiliUserServiceImpl(BilibiliCookieService bilibiliCookieService, HttpTools httpTools) {
-    this.bilibiliCookieService = bilibiliCookieService;
+  public BiliUserServiceImpl(BiliCookieService biliCookieService, HttpTools httpTools) {
+    this.biliCookieService = biliCookieService;
     this.httpTools = httpTools;
   }
 
@@ -28,13 +28,14 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
    *
    * @param cookie Your cookie for bilibili.
    * @return Your user info in bilibili.
+   * @apiNote GET GET_LOGIN_INFO?mid={@code biliMid}
    */
   @Override
-  public BilibiliUser getUserInfo(String cookie) {
-    Map<String, String> wbiKey = bilibiliCookieService.getWbiKey();
+  public BiliUser getUserInfo(String cookie) {
+    Map<String, String> wbiKey = biliCookieService.getWbiKey();
     String rawLoginInfo =
         httpTools.requestGetAPI(BilibiliAPI.GET_LOGIN_INFO, null, Optional.of(cookie));
-    BilibiliUser user = extractLoginInfo(rawLoginInfo);
+    BiliUser user = extractLoginInfo(rawLoginInfo);
     Map<String, Object> params = new HashMap<>();
     params.put("mid", user.getMid());
     String signedUri =
@@ -50,7 +51,7 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     return user;
   }
 
-  private void assignIpInfo(BilibiliUser user, String rawIpInfo) {
+  private void assignIpInfo(BiliUser user, String rawIpInfo) {
     JsonNode jsonNode;
     try {
       jsonNode = new ObjectMapper().readTree(rawIpInfo);
@@ -69,7 +70,7 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     user.setCountryCode(dataNode.get("country_code").intValue());
   }
 
-  private void assignUserState(BilibiliUser user, String rawUserState) {
+  private void assignUserState(BiliUser user, String rawUserState) {
     JsonNode jsonNode;
     try {
       jsonNode = new ObjectMapper().readTree(rawUserState);
@@ -82,7 +83,7 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     user.setDynamicCount(dataNode.get("dynamic_count").intValue());
   }
 
-  private void assignUserSpace(BilibiliUser user, String rawUserSpace) {
+  private void assignUserSpace(BiliUser user, String rawUserSpace) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -124,8 +125,8 @@ public class BilibiliUserServiceImpl implements BilibiliUserService {
     }
   }
 
-  private BilibiliUser extractLoginInfo(String rawLoginInfo) {
-    BilibiliUser user = new BilibiliUser();
+  private BiliUser extractLoginInfo(String rawLoginInfo) {
+    BiliUser user = new BiliUser();
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {

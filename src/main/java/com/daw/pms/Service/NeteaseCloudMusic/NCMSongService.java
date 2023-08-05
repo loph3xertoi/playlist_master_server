@@ -1,11 +1,10 @@
 package com.daw.pms.Service.NeteaseCloudMusic;
 
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailSong;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMLyrics;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSearchSongsPagedResult;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service for handle songs of netease cloud music.
@@ -20,10 +19,10 @@ public interface NCMSongService {
    *
    * @param ids The id of song, multiple songs separated by comma.
    * @param cookie Your cookie for netease cloud music.
-   * @return Detail song with {@code ids}.
+   * @return Detail song with {@code ids}, wrapped with Result DTO, the data is NCMDetailSong.
    * @apiNote GET /song/detail?ids={@code ids}
    */
-  NCMDetailSong getDetailSong(String ids, String cookie);
+  Result getDetailSong(String ids, String cookie);
 
   /**
    * Get the similar songs of song {@code id}.
@@ -53,10 +52,10 @@ public interface NCMSongService {
    *     jymaster.
    * @param cookie Your cookie for netease cloud music.
    * @return A map which the key is the song's id and the value is the url of songs with {@code ids}
-   *     and quality {@code level}.
+   *     and quality {@code level}, wrapped with Result DTO, the data is Map<String,String>.
    * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
    */
-  Map<String, String> getSongsLink(String ids, String level, String cookie);
+  Result getSongsLink(String ids, String level, String cookie);
 
   /**
    * Search and return paged songs/resources according to the given keywords {@code name}.
@@ -68,7 +67,7 @@ public interface NCMSongService {
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
    * @param cookie Your cookie for netease cloud music.
-   * @return A list of paged NCMSong wrapped by NCMSearchSongsPagedResult.
+   * @return A list of paged BiliSong wrapped by NCMSearchSongsPagedResult.
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
   NCMSearchSongsPagedResult searchResourcesByKeywords(

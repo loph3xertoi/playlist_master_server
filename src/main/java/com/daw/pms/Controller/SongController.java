@@ -36,14 +36,14 @@ public class SongController {
    *
    * @param songId The song id.
    * @param platform The platform id.
-   * @return The detail song.
+   * @return The detail song, wrapped with Result DTO, the data is subclass of BasicSong.
    * @apiNote GET /song/{@code songId}?platform={@code platform}
    */
   @GetMapping("/song/{songId}")
   public Result getDetailSong(@PathVariable String songId, @RequestParam Integer platform) {
-    BasicSong detailSong;
+    Result result;
     try {
-      detailSong = songService.getDetailSong(songId, platform);
+      result = songService.getDetailSong(songId, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -56,7 +56,7 @@ public class SongController {
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
-    return Result.ok(detailSong);
+    return Result.ok(result);
   }
 
   /**
@@ -121,7 +121,12 @@ public class SongController {
   public Result getSongsLink(@PathVariable String SongIds, @RequestParam Integer platform) {
     Map<String, String> songsLink;
     try {
-      songsLink = songService.getSongsLink(SongIds, "standard", platform);
+      Result linksResult = songService.getSongsLink(SongIds, "standard", platform);
+      if (linksResult.getSuccess()) {
+        songsLink = (Map<String, String>) linksResult.getData();
+      } else {
+        throw new RuntimeException(linksResult.getMessage());
+      }
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0

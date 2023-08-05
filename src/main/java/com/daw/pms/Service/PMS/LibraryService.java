@@ -1,8 +1,6 @@
 package com.daw.pms.Service.PMS;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicLibrary;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,25 +15,47 @@ public interface LibraryService {
    * Get all libraries for specific platform.
    *
    * @param id Your user id in pms.
+   * @param pn The page number, only used in bilibili.
+   * @param ps The page size, only used in bilibili.
+   * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
+   * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
+   *     collected fav lists, only used in bilibili.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
    *     represents netease cloud music, 3 represents bilibili.
-   * @return All libraries for specific platform.
+   * @return All libraries for specific platform, wrapped in Result DTO.
    */
-  List<BasicLibrary> getLibraries(Long id, Integer platform);
+  Result getLibraries(
+      Long id, Integer pn, Integer ps, String biliPlatform, Integer type, Integer platform);
 
   /**
    * Get detail library with {@code libraryId} in {@code platform}.
    *
    * @param libraryId The library id.
+   * @param pn The page number, only used in bilibili.
+   * @param ps The page size, only used in bilibili.
+   * @param keyword The keyword to search, only used in bilibili.
+   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
+   *     by view time, pubtime: by published time, default is mtime.
+   * @param range The range of searching, 0: current fav list, 1: all fav lists, default is 0.
+   * @param type 0 for created fav list, 1 for collected fav list.
    * @param platform Which platform the library belongs to.
-   * @return Detail library.
+   * @return Detail library wrapped by Result DTO.
    */
-  BasicLibrary getDetailLibrary(String libraryId, Integer platform);
+  Result getDetailLibrary(
+      String libraryId,
+      Integer pn,
+      Integer ps,
+      String keyword,
+      String order,
+      Integer range,
+      Integer type,
+      Integer platform);
 
   /**
    * Create new library.
    *
-   * @param library A map that contains the name of library.
+   * @param library A map that contains the name of library, {"name"(required): name, "intro":intro,
+   *     "privacy": privacy, "cover":cover}
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
@@ -53,12 +73,14 @@ public interface LibraryService {
   /**
    * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
    *
-   * @param libraryId Library's id.
+   * @param libraryId Target library id.
+   * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
    * @param songsId Songs' id, multiple songs id separated with comma.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
-  Result addSongsToLibrary(String libraryId, String songsId, Integer platform);
+  Result addSongsToLibrary(
+      String libraryId, String biliSourceFavListId, String songsId, Integer platform);
 
   /**
    * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with

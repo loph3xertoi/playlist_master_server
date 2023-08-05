@@ -1,10 +1,10 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,28 +16,28 @@ class SongServiceTest {
   @Test
   void getDetailSong() {
     try {
-      BasicSong pmsDetailSong = songService.getDetailSong("0", 0);
+      Result pmsDetailSong = songService.getDetailSong("0", 0);
       System.out.println("pmsDetailSong: \n" + pmsDetailSong);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicSong qqmusicDetailSong = songService.getDetailSong("0043hnU117oa5s", 1);
+      Result qqmusicDetailSong = songService.getDetailSong("0043hnU117oa5s", 1);
       System.out.println("qqmusicDetailSong: \n" + qqmusicDetailSong);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicSong ncmDetailSong = songService.getDetailSong("185920", 2);
+      Result ncmDetailSong = songService.getDetailSong("185920", 2);
       System.out.println("ncmDetailSong: \n" + ncmDetailSong);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicSong bilibiliDetailSong = songService.getDetailSong("1", 3);
+      Result bilibiliDetailSong = songService.getDetailSong("1", 3);
       System.out.println("bilibiliDetailSong: \n" + bilibiliDetailSong);
     } catch (Exception e) {
       e.printStackTrace();
@@ -78,14 +78,14 @@ class SongServiceTest {
   @Test
   void getSongsLink() {
     try {
-      Map<String, String> pmsSongsLink = songService.getSongsLink("0,1", "standard", 0);
+      Result pmsSongsLink = songService.getSongsLink("0,1", "standard", 0);
       System.out.println("pmsSongsLink: \n" + pmsSongsLink);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, String> qqmusicSongsLink =
+      Result qqmusicSongsLink =
           songService.getSongsLink(
               "0029TIOX3jpfrT,002GNiJS1BwnQJ,0043hnU117oa5s,002yL3HS0nCeSD", "standard", 1);
       System.out.println("qqmusicSongsLink: \n" + qqmusicSongsLink);
@@ -94,15 +94,14 @@ class SongServiceTest {
     }
 
     try {
-      Map<String, String> ncmSongsLink =
-          songService.getSongsLink("186125,185912,16835303", "higher", 2);
+      Result ncmSongsLink = songService.getSongsLink("186125,185912,16835303", "higher", 2);
       System.out.println("ncmSongsLink: \n" + ncmSongsLink);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Map<String, String> bilibiliSongsLink = songService.getSongsLink("0,1", "standard", 3);
+      Result bilibiliSongsLink = songService.getSongsLink("0,1", "standard", 3);
       System.out.println("bilibiliSongsLink: \n" + bilibiliSongsLink);
     } catch (Exception e) {
       e.printStackTrace();

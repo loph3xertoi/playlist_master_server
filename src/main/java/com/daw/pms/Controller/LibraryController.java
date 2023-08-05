@@ -1,9 +1,7 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Service.PMS.LibraryService;
-import java.util.List;
 import java.util.Map;
 import org.springframework.cache.annotation.*;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +16,6 @@ import org.springframework.web.client.ResourceAccessException;
  */
 @RestController
 @CacheConfig(cacheNames = "library-cache")
-@Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class LibraryController {
   private final LibraryService libraryService;
 
@@ -30,16 +27,28 @@ public class LibraryController {
    * Get all libraries with {@code platform}.
    *
    * @param id Your user id in pms.
+   * @param pn The page number, only used in bilibili.
+   * @param ps The page size, only used in bilibili.
+   * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
+   * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
+   *     collected fav lists, only used in bilibili.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     * represents netease cloud music, 3 represents bilibili.
+   *     represents netease cloud music, 3 represents bilibili.
    * @return All libraries for specific platform.
    * @apiNote GET /libraries?id={@code id}&platform={@code platform}
    */
   @GetMapping("/libraries")
-  public Result getLibraries(@RequestParam Long id, @RequestParam Integer platform) {
-    List<BasicLibrary> libraries;
+  @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
+  public Result getLibraries(
+      @RequestParam Long id,
+      @RequestParam(required = false) Integer pn,
+      @RequestParam(required = false) Integer ps,
+      @RequestParam(required = false) String biliPlatform,
+      @RequestParam(required = false) Integer type,
+      @RequestParam Integer platform) {
+    Result result;
     try {
-      libraries = libraryService.getLibraries(id, platform);
+      result = libraryService.getLibraries(id, pn, ps, biliPlatform, type, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -52,22 +61,40 @@ public class LibraryController {
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
-    return Result.ok(libraries, (long) libraries.size());
+    return result;
   }
 
   /**
    * Get detail library with {@code library}.
    *
    * @param library The library id.
+   * @param pn The page number of library, required in bilibili.
+   * @param ps The page size of library, required in bilibili.
+   * @param keyword The searching keyword of resources in fav list, only used in bilibili.
+   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
+   *     by view time, pubtime: by published time, only used in bilibili.
+   * @param range The range of searching, 0: current fav list, 1: all fav lists, only used in
+   *     bilibili.
+   * @param type 0 for created fav list, 1 for collected fav list, required in bilibili.
    * @param platform Which platform the user belongs to.
    * @return Detail library.
    * @apiNote GET /library/{@code library}?platform={@code platform}
    */
   @GetMapping("/library/{library}")
-  public Result getDetailLibrary(@PathVariable String library, @RequestParam Integer platform) {
-    BasicLibrary detailLibrary;
+  @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
+  public Result getDetailLibrary(
+      @PathVariable String library,
+      @RequestParam(required = false) Integer pn,
+      @RequestParam(required = false) Integer ps,
+      @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String order,
+      @RequestParam(required = false) Integer range,
+      @RequestParam(required = false) Integer type,
+      @RequestParam Integer platform) {
+    Result result;
     try {
-      detailLibrary = libraryService.getDetailLibrary(library, platform);
+      result =
+          libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -80,10 +107,7 @@ public class LibraryController {
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
-    if (detailLibrary == null && platform == 1) {
-      return Result.fail("This library cannot access");
-    }
-    return Result.ok(detailLibrary);
+    return result;
   }
 
   /**
@@ -92,10 +116,10 @@ public class LibraryController {
    * @param library A map that contains the name of library.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote POST /library?platform={@code platform} {"name": "{@code name}"}
+   * @apiNote POST /library?platform={@code platform} {"name"(required): "{@code name}",
+   *     "intro":intro, "privacy":privacy, "cover":cover}
    */
   @PostMapping("/library")
-  @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
   public Result createLibrary(
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
     try {
@@ -123,7 +147,6 @@ public class LibraryController {
    * @apiNote DELETE /library/{@code libraryId}?platform={@code platform}
    */
   @DeleteMapping("/library/{libraryId}")
-  @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam Integer platform) {
     try {
       return libraryService.deleteLibrary(libraryId, platform);
@@ -152,17 +175,16 @@ public class LibraryController {
    *     {"libraryId":"libraryId","songsId":"songsId","tid":"tid"}
    */
   @PostMapping("/addSongsToLibrary")
-  @Caching(
-      evict = {
-        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('tid')+','+#platform+')'"),
-        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
-      })
   public Result addSongsToLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String libraryId = requestBody.get("libraryId");
+    String biliSourceFavListId = requestBody.get("biliSourceFavListId");
+    if (platform == 3 && biliSourceFavListId == null) {
+      return Result.fail("biliSourceFavListId is null");
+    }
     String songsId = requestBody.get("songsId");
     try {
-      return libraryService.addSongsToLibrary(libraryId, songsId, platform);
+      return libraryService.addSongsToLibrary(libraryId, biliSourceFavListId, songsId, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -188,12 +210,6 @@ public class LibraryController {
    *     {"songsId":"songsId","fromLibrary":"fromLibrary","toLibrary":"toLibrary","fromTid":"fromTid","toTid":"toTid"}
    */
   @PutMapping("/moveSongsToOtherLibrary")
-  @Caching(
-      evict = {
-        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('fromTid')+','+#platform+')'"),
-        @CacheEvict(key = "'getDetailLibrary('+#requestBody.get('toTid')+','+#platform+')'"),
-        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
-      })
   public Result moveSongsToOtherLibrary(
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String songsId = requestBody.get("songsId");
@@ -227,16 +243,11 @@ public class LibraryController {
    *     songsId}&platform={@code platform}&tid={@code tid}
    */
   @DeleteMapping("/removeSongsFromLibrary")
-  @Caching(
-      evict = {
-        @CacheEvict(key = "'getDetailLibrary('+#tid+','+#platform+')'"),
-        @CacheEvict(key = "'getLibraries(0,'+#platform+')'")
-      })
   public Result removeSongsFromLibrary(
       @RequestParam String libraryId,
       @RequestParam String songsId,
-      @RequestParam Integer platform,
-      @RequestParam String tid) {
+      @RequestParam String tid,
+      @RequestParam Integer platform) {
     try {
       return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
     } catch (ResourceAccessException e) {

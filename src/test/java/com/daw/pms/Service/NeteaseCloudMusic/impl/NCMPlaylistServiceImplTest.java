@@ -1,8 +1,6 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailPlaylist;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import java.util.List;
@@ -15,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class NCMPlaylistServiceImplTest {
   @Value("${ncm.id}")
   private Long ncmId;
@@ -31,13 +29,13 @@ class NCMPlaylistServiceImplTest {
 
   @Test
   void getPlaylists() {
-    List<NCMPlaylist> playlists = ncmPlaylistService.getPlaylists(ncmId, 0, 10, ncmCookie);
+    Result playlists = ncmPlaylistService.getPlaylists(ncmId, 0, 10, ncmCookie);
     System.out.println(playlists);
   }
 
   @Test
   void getDetailPlaylist() {
-    NCMDetailPlaylist detailPlaylist = ncmPlaylistService.getDetailPlaylist(8574846185L, ncmCookie);
+    Result detailPlaylist = ncmPlaylistService.getDetailPlaylist(8574846185L, ncmCookie);
     System.out.println(detailPlaylist);
   }
 

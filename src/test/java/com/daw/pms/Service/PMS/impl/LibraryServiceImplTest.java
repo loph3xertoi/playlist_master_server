@@ -1,10 +1,8 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicLibrary;
 import com.daw.pms.Service.PMS.LibraryService;
 import java.util.HashMap;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,29 +18,36 @@ class LibraryServiceImplTest {
   @Test
   void getLibraries() {
     try {
-      List<BasicLibrary> pmsLibraries = libraryService.getLibraries(pmsId, 0);
+      Result pmsLibraries = libraryService.getLibraries(pmsId, null, null, null, null, 0);
       System.out.println("pmsLibraries: \n" + pmsLibraries);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicLibrary> qqmusicLibraries = libraryService.getLibraries(pmsId, 1);
+      Result qqmusicLibraries = libraryService.getLibraries(pmsId, null, null, null, null, 1);
       System.out.println("qqmusicLibraries: \n" + qqmusicLibraries);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicLibrary> ncmLibraries = libraryService.getLibraries(pmsId, 2);
+      Result ncmLibraries = libraryService.getLibraries(pmsId, null, null, null, null, 2);
       System.out.println("ncmLibraries: \n" + ncmLibraries);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicLibrary> bilibiliLibraries = libraryService.getLibraries(pmsId, 3);
-      System.out.println("bilibiliLibraries: \n" + bilibiliLibraries);
+      Result allCreatedFavLists = libraryService.getLibraries(pmsId, 1, 20, "web", 0, 3);
+      System.out.println("allCreatedFavLists: \n" + allCreatedFavLists);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
+      Result allCollectedFavLists = libraryService.getLibraries(pmsId, 1, 20, "web", 0, 3);
+      System.out.println("allCollectedFavLists: \n" + allCollectedFavLists);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -51,28 +56,32 @@ class LibraryServiceImplTest {
   @Test
   void getDetailLibrary() {
     try {
-      BasicLibrary pmsLibrary = libraryService.getDetailLibrary("001", 0);
+      Result pmsLibrary =
+          libraryService.getDetailLibrary("001", null, null, null, null, null, null, 0);
       System.out.println("pmsLibrary: \n" + pmsLibrary);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicLibrary qqmusicLibrary = libraryService.getDetailLibrary("8729577481", 1);
+      Result qqmusicLibrary =
+          libraryService.getDetailLibrary("8729577481", null, null, null, null, null, null, 1);
       System.out.println("qqmusicLibrary: \n" + qqmusicLibrary);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicLibrary ncmLibrary = libraryService.getDetailLibrary("8574846185", 2);
+      Result ncmLibrary =
+          libraryService.getDetailLibrary("8574846185", null, null, null, null, null, null, 2);
       System.out.println("ncmLibrary: \n" + ncmLibrary);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      BasicLibrary bilibiliLibrary = libraryService.getDetailLibrary("001", 3);
+      Result bilibiliLibrary =
+          libraryService.getDetailLibrary("001", 1, 20, "keyword", "mtime", 0, 0, 3);
       System.out.println("bilibiliLibrary: \n" + bilibiliLibrary);
     } catch (Exception e) {
       e.printStackTrace();
@@ -146,28 +155,28 @@ class LibraryServiceImplTest {
   @Test
   void addSongsToLibrary() {
     try {
-      Result pmsAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 0);
+      Result pmsAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 0);
       System.out.println("pmsAddingSongsResult: \n" + pmsAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result qqmusicAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 1);
+      Result qqmusicAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 1);
       System.out.println("qqmusicAddingSongsResult: \n" + qqmusicAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result ncmAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 2);
+      Result ncmAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 2);
       System.out.println("ncmAddingSongsResult: \n" + ncmAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result bilibiliAddingSongsResult = libraryService.addSongsToLibrary("1", "1,2", 3);
+      Result bilibiliAddingSongsResult = libraryService.addSongsToLibrary("1", "2", "1,2", 3);
       System.out.println("bilibiliAddingSongsResult: \n" + bilibiliAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();

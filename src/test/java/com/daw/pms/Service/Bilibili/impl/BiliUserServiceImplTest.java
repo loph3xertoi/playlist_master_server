@@ -1,22 +1,22 @@
 package com.daw.pms.Service.Bilibili.impl;
 
-import com.daw.pms.Entity.Bilibili.BilibiliUser;
-import com.daw.pms.Service.Bilibili.BilibiliUserService;
+import com.daw.pms.Entity.Bilibili.BiliUser;
+import com.daw.pms.Service.Bilibili.BiliUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BilibiliUserServiceImplTest {
+class BiliUserServiceImplTest {
   @Value("${bilibili.cookie}")
-  private String bilibiliCookie;
+  private String biliCookie;
 
-  @Autowired public BilibiliUserService bilibiliUserService;
+  @Autowired public BiliUserService biliUserService;
 
   @Test
   void getUserInfo() {
-    BilibiliUser user = bilibiliUserService.getUserInfo(bilibiliCookie);
+    BiliUser user = biliUserService.getUserInfo(biliCookie);
     System.out.println(user);
   }
 }

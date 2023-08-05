@@ -1,10 +1,10 @@
 package com.daw.pms.Service.PMS;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service for songs in pms.
@@ -19,9 +19,9 @@ public interface SongService {
    *
    * @param ids The song mid.
    * @param platform The platform this song belongs to.
-   * @return Detail song.
+   * @return Detail song, wrapped with Result DTO, the data is subclass of BasicSong.
    */
-  BasicSong getDetailSong(String ids, Integer platform);
+  Result getDetailSong(String ids, Integer platform);
 
   /**
    * Return a list of similar song with {@code songId}.
@@ -44,13 +44,14 @@ public interface SongService {
   /**
    * Get the songs' links.
    *
-   * @param ids The song's id, multiple songs id separated with comma.
+   * @param ids The song's id, multiple songs id separated with comma, in bilibili, ids == bvid:cid.
    * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
    *     jymaster.
    * @param platform The platform id.
-   * @return The urls of your songs with ids {@code ids}.
+   * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
+   *     Map<String,String>.
    */
-  Map<String, String> getSongsLink(String ids, String level, Integer platform);
+  Result getSongsLink(String ids, String level, Integer platform);
 
   /**
    * Search resources of type {@code type} by {@code keywords}.

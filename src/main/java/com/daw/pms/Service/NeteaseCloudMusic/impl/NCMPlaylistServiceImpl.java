@@ -1,6 +1,7 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
 import com.daw.pms.Config.NCMAPI;
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.NeteaseCloudMusic.*;
@@ -32,30 +33,38 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    * @param offset Offset from the first song.
    * @param limit The number of songs returned by this query.
    * @param cookie Your cookie for netease cloud music.
-   * @return All playlists created by {@code uid}.
+   * @return All playlists created by {@code uid}, wrapped with Result DTO, the data is
+   *     PagedDataDTO<BiliFavList>.
    * @apiNote GET /user/playlist?uid={@code uid}&offset={@code offset}&limit={@code limit}
    */
   @Override
-  public List<NCMPlaylist> getPlaylists(Long uid, Integer offset, Integer limit, String cookie) {
+  public Result getPlaylists(Long uid, Integer offset, Integer limit, String cookie) {
+    PagedDataDTO<NCMPlaylist> data = new PagedDataDTO<>();
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
-    return extractNCMPlaylists(
-        httpTools.requestGetAPI(
-            baseUrl + NCMAPI.USER_PLAYLIST,
-            new HashMap<String, String>() {
-              {
-                put("uid", uid.toString());
-                put("offset", offset.toString());
-                put("limit", limit.toString());
-              }
-            },
-            Optional.of(cookie)));
+    List<NCMPlaylist> playlists =
+        extractNCMPlaylists(
+            httpTools.requestGetAPI(
+                baseUrl + NCMAPI.USER_PLAYLIST,
+                new HashMap<String, String>() {
+                  {
+                    put("uid", uid.toString());
+                    put("offset", offset.toString());
+                    put("limit", limit.toString());
+                  }
+                },
+                Optional.of(cookie)));
+    // TODO: the count and hasMore need to be repaired.
+    data.setCount(playlists.size());
+    data.setHasMore(false);
+    data.setList(playlists);
+    return Result.ok(data);
   }
 
   /**
    * Resolve playlists from raw json playlists string.
    *
    * @param rawPlaylists Raw playlists string.
-   * @return A list of NCMPlaylist.
+   * @return A list of BiliFavList.
    */
   private List<NCMPlaylist> extractNCMPlaylists(String rawPlaylists) {
     List<NCMPlaylist> playlists = new ArrayList<>();
@@ -83,11 +92,11 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    *
    * @param id The playlist's global id.
    * @param cookie Your cookie for netease cloud music.
-   * @return Detail playlist.
+   * @return Detail playlist wrapped with Result DTO, the data is NCMDetailPlaylist.
    * @apiNote GET /playlist/detail?id={@code id}
    */
   @Override
-  public NCMDetailPlaylist getDetailPlaylist(Long id, String cookie) {
+  public Result getDetailPlaylist(Long id, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailPlaylist playlist =
         extractDetailNCMPlaylist(
@@ -101,7 +110,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
                 Optional.of(cookie)));
     List<NCMSong> songs = getAllSongsFromPlaylist(id, Optional.empty(), Optional.empty(), cookie);
     playlist.setSongs(songs);
-    return playlist;
+    return Result.ok(playlist);
   }
 
   /**
@@ -131,7 +140,13 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
                 Optional.of(cookie)));
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
-    Map<String, String> links = ncmSongService.getSongsLink(ids, "standard", cookie);
+    Map<String, String> links;
+    Result linksResult = ncmSongService.getSongsLink(ids, "standard", cookie);
+    if (linksResult.getSuccess()) {
+      links = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     for (NCMSong song : songs) {
       song.setSongLink(links.getOrDefault(song.getId().toString(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
@@ -264,7 +279,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
             Optional.of(cookie)));
   }
 
-  Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
+  private Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -307,7 +322,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
             Optional.of(cookie)));
   }
 
-  Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
+  private Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -383,7 +398,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
             Optional.of(cookie)));
   }
 
-  Result extractRemovingSongsFromPlaylistResult(String rawRemovingSongsFromPlaylistResult) {
+  private Result extractRemovingSongsFromPlaylistResult(String rawRemovingSongsFromPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {

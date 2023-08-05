@@ -1,6 +1,7 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailPlaylist;
@@ -37,20 +38,28 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param qid Your qq number.
    * @param cookie Your cookie for qq music.
-   * @return All playlists created by {@code qid}.
+   * @return All playlists created by {@code qid}, wrapped by Result DTO, the data is
+   *     PagedDataDTO<QQMusicPlaylist>
    * @apiNote GET /user/playlist?id={@code qid}
    */
   @Override
-  public List<QQMusicPlaylist> getPlaylists(String qid, String cookie) {
-    return extractQQMusicPlaylists(
-        requestGetAPI(
-            QQMusicAPI.GET_PLAYLIST,
-            new HashMap<String, String>() {
-              {
-                put("id", qid);
-              }
-            },
-            Optional.of(cookie)));
+  public Result getPlaylists(String qid, String cookie) {
+    PagedDataDTO<QQMusicPlaylist> data = new PagedDataDTO<>();
+    List<QQMusicPlaylist> playlists =
+        extractQQMusicPlaylists(
+            requestGetAPI(
+                QQMusicAPI.GET_PLAYLIST,
+                new HashMap<String, String>() {
+                  {
+                    put("id", qid);
+                  }
+                },
+                Optional.of(cookie)));
+    // TODO: the count and hasMore need to be repaired.
+    data.setCount(playlists.size());
+    data.setHasMore(false);
+    data.setList(playlists);
+    return Result.ok(data);
   }
 
   /**
@@ -88,11 +97,11 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    *
    * @param tid The playlist's global tid.
    * @param cookie Your qq music cookie.
-   * @return Detail playlist.
+   * @return Detail playlist wrapped by Result DTO, the data is QQMusicDetailPlaylist.
    * @apiNote GET /playlist?id={@code tid}
    */
   @Override
-  public QQMusicDetailPlaylist getDetailPlaylist(String tid, String cookie) {
+  public Result getDetailPlaylist(String tid, String cookie) {
     QQMusicDetailPlaylist qqMusicDetailPlaylist =
         extractDetailPlaylist(
             requestGetAPI(
@@ -103,17 +112,21 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
                   }
                 },
                 Optional.of(cookie)));
-
     if (qqMusicDetailPlaylist == null) {
-      return null;
+      return Result.fail("This library isn't accessible.");
     }
     Integer songCount = qqMusicDetailPlaylist.getItemCount();
     if (songCount > 0) {
       List<String> songMids = new ArrayList<>(qqMusicDetailPlaylist.getItemCount());
       qqMusicDetailPlaylist.getSongs().forEach(song -> songMids.add(song.getSongMid()));
       Collections.shuffle(songMids);
-      Map<String, String> songsLink =
-          qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
+      Map<String, String> songsLink;
+      Result linksResult = qqMusicSongService.getSongsLink(String.join(",", songMids), cookie);
+      if (linksResult.getSuccess()) {
+        songsLink = (Map<String, String>) linksResult.getData();
+      } else {
+        throw new RuntimeException(linksResult.getMessage());
+      }
       qqMusicDetailPlaylist
           .getSongs()
           .forEach(
@@ -122,7 +135,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
                 song.setIsTakenDown(song.getSongLink().isEmpty());
               });
     }
-    return qqMusicDetailPlaylist;
+    return Result.ok(qqMusicDetailPlaylist);
   }
 
   /**
@@ -216,7 +229,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Result extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
+  private Result extractCreatingPlaylistResult(String rawCreatingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -258,7 +271,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
+  private Result extractDeletingPlaylistResult(String rawDeletingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -301,7 +314,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
+  private Result extractAddingSongsToPlaylistResult(String rawAddingSongsToPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -348,7 +361,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Result extractMovingSongsToOtherPlaylist(String rawMovingSongsToOtherPlaylistResult) {
+  private Result extractMovingSongsToOtherPlaylist(String rawMovingSongsToOtherPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -391,7 +404,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
             Optional.of(cookie)));
   }
 
-  Result extractRemovingPlaylistResult(String rawRemovingPlaylistResult) {
+  private Result extractRemovingPlaylistResult(String rawRemovingPlaylistResult) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {

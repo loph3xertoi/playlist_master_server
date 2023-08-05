@@ -1,8 +1,10 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicPagedSongs;
 import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Service.Bilibili.BiliResourceService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import com.daw.pms.Service.PMS.SongService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
@@ -19,12 +21,20 @@ public class SongServiceImpl implements SongService, Serializable {
   @Value("${ncm.cookie}")
   private String ncmCookie;
 
+  @Value("${bilibili.cookie}")
+  private String biliCookie;
+
   private final QQMusicSongService qqMusicSongService;
   private final NCMSongService ncmSongService;
+  private final BiliResourceService biliResourceService;
 
-  public SongServiceImpl(QQMusicSongService qqMusicSongService, NCMSongService ncmSongService) {
+  public SongServiceImpl(
+      QQMusicSongService qqMusicSongService,
+      NCMSongService ncmSongService,
+      BiliResourceService biliResourceService) {
     this.qqMusicSongService = qqMusicSongService;
     this.ncmSongService = ncmSongService;
+    this.biliResourceService = biliResourceService;
   }
 
   /**
@@ -32,23 +42,23 @@ public class SongServiceImpl implements SongService, Serializable {
    *
    * @param ids The song mid.
    * @param platform The platform this song belongs to.
-   * @return Detail song.
+   * @return Detail song, wrapped with Result DTO, the data is subclass of BasicSong.
    */
   @Override
-  public BasicSong getDetailSong(String ids, Integer platform) {
-    BasicSong detailSong;
+  public Result getDetailSong(String ids, Integer platform) {
+    Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      detailSong = qqMusicSongService.getDetailSong(ids, qqMusicCookie);
+      result = qqMusicSongService.getDetailSong(ids, qqMusicCookie);
     } else if (platform == 2) {
-      detailSong = ncmSongService.getDetailSong(ids, ncmCookie);
+      result = ncmSongService.getDetailSong(ids, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result = biliResourceService.getDetailResource(ids, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-    return detailSong;
+    return result;
   }
 
   /**
@@ -103,27 +113,32 @@ public class SongServiceImpl implements SongService, Serializable {
   /**
    * Get the songs' links.
    *
-   * @param ids The song's id, multiple songs id separated with comma.
+   * @param ids The song's id, multiple songs id separated with comma, in bilibili, ids == bvid:cid.
    * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
    *     jymaster.
    * @param platform The platform id.
-   * @return The urls of your songs with ids {@code ids}.
+   * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
+   *     Map<String,String>.
    */
   @Override
-  public Map<String, String> getSongsLink(String ids, String level, Integer platform) {
-    Map<String, String> songsLink;
+  public Result getSongsLink(String ids, String level, Integer platform) {
+    Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      songsLink = qqMusicSongService.getSongsLink(ids, qqMusicCookie);
+      result = qqMusicSongService.getSongsLink(ids, qqMusicCookie);
     } else if (platform == 2) {
-      songsLink = ncmSongService.getSongsLink(ids, level, ncmCookie);
+      result = ncmSongService.getSongsLink(ids, level, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliResourceService.getResourceDashLink(
+              ids.split(":")[0],
+              ids.split(":")[1] != null ? Long.valueOf(ids.split(":")[1]) : null,
+              ncmCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-    return songsLink;
+    return result;
   }
 
   /**

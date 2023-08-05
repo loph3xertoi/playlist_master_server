@@ -1,6 +1,7 @@
 package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.*;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
@@ -69,11 +70,12 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    *
    * @param songMid The mid of this song.
    * @param cookie Your qq music cookie.
-   * @return Detail song with {@code songMid}, songLink and isTakenDown needs to be completed.
+   * @return Detail song with {@code songMid}, wrapped with Result DTO, the data is
+   *     QQMusicDetailSong.
    * @apiNote GET /song?songmid={@code songMid}
    */
   @Override
-  public QQMusicDetailSong getDetailSong(String songMid, String cookie) {
+  public Result getDetailSong(String songMid, String cookie) {
     QQMusicLyrics qqMusicLyrics = getLyrics(songMid, cookie);
     QQMusicDetailSong qqMusicSong =
         extractDetailSong(
@@ -90,7 +92,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase
         getSongLink(qqMusicSong.getSongMid(), "128", qqMusicSong.getMediaMid(), cookie);
     qqMusicSong.setSongLink(songLink);
     qqMusicSong.setIsTakenDown(songLink.isEmpty());
-    return qqMusicSong;
+    return Result.ok(qqMusicSong);
   }
 
   /**
@@ -188,7 +190,13 @@ public class QQMusicSongServiceImpl extends QQMusicBase
       midsList.add(song.getSongMid());
     }
     String mids = String.join(",", midsList);
-    Map<String, String> songsLink = getSongsLink(mids, cookie);
+    Map<String, String> songsLink;
+    Result linksResult = getSongsLink(mids, cookie);
+    if (linksResult.getSuccess()) {
+      songsLink = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     for (QQMusicSong song : similarSongs) {
       song.setSongLink(songsLink.getOrDefault(song.getSongMid(), ""));
       song.setIsTakenDown(song.getSongLink().isEmpty());
@@ -378,20 +386,23 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    *
    * @param songMids The songMid, separated with comma.
    * @param cookie Your qq music cookie.
-   * @return The urls of your songs with mid {@code songMids}.
+   * @return The urls of your songs with mid {@code songMids}, wrapped with Result DTO, the data is
+   *     Map<String, String>.
    * @apiNote GET /song/urls?id={@code songMids}
    */
   @Override
-  public Map<String, String> getSongsLink(String songMids, String cookie) {
-    return extractSongLinks(
-        requestGetAPI(
-            QQMusicAPI.GET_SONGS_LINK,
-            new HashMap<String, String>() {
-              {
-                put("id", songMids);
-              }
-            },
-            Optional.of(cookie)));
+  public Result getSongsLink(String songMids, String cookie) {
+    Map<String, String> links =
+        extractSongLinks(
+            requestGetAPI(
+                QQMusicAPI.GET_SONGS_LINK,
+                new HashMap<String, String>() {
+                  {
+                    put("id", songMids);
+                  }
+                },
+                Optional.of(cookie)));
+    return Result.ok(links);
   }
 
   /**
@@ -453,7 +464,13 @@ public class QQMusicSongServiceImpl extends QQMusicBase
     List<String> songMids = new ArrayList<>(searchedResult.getPageSize());
     searchedResult.getSongs().forEach(song -> songMids.add(song.getSongMid()));
     Collections.shuffle(songMids);
-    Map<String, String> songsLink = getSongsLink(String.join(",", songMids), cookie);
+    Map<String, String> songsLink;
+    Result linksResult = getSongsLink(String.join(",", songMids), cookie);
+    if (linksResult.getSuccess()) {
+      songsLink = (Map<String, String>) linksResult.getData();
+    } else {
+      throw new RuntimeException(linksResult.getMessage());
+    }
     searchedResult
         .getSongs()
         .forEach(

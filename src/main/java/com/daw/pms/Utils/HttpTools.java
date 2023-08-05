@@ -43,11 +43,11 @@ public class HttpTools {
   }
 
   /**
-   * Send http request to {@code api} with parameters {@code params} and {@code cookie}.
+   * Send http get request to {@code api} with parameters {@code params} and {@code cookie}.
    *
    * @param url Remote url you want to call.
    * @param params Request parameters.
-   * @param cookie Your qq music cookie.
+   * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
    */
   public <K, V> String requestGetAPI(String url, Map<K, V> params, Optional<String> cookie) {
@@ -73,10 +73,33 @@ public class HttpTools {
   }
 
   /**
+   * Send http post request to {@code api} with parameters {@code params} and {@code cookie}.
+   *
+   * @param url Remote url you want to call.
+   * @param params Request body.
+   * @param cookie Your cookie for corresponding platform.
+   * @return Result in string form.
+   */
+  public <K, V> String requestPostAPI(String url, Map<K, V> params, Optional<String> cookie) {
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+    URI uri = builder.build(true).toUri();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    headers.set(
+        "User-Agent",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
+    cookie.ifPresent(s -> headers.set("Cookie", s));
+    HttpEntity<?> requestEntity = new HttpEntity<>(params, headers);
+    ResponseEntity<String> response =
+        restTemplate.exchange(uri, HttpMethod.POST, requestEntity, String.class);
+    return response.getBody();
+  }
+
+  /**
    * Send http request to {@code api} with parameters {@code params} and {@code cookie}.
    *
    * @param url Remote url you want to call.
-   * @param cookie Your qq music cookie.
+   * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
    */
   public String requestGetAPIByFinalUrl(String url, Optional<String> cookie) {

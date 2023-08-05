@@ -1,15 +1,11 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.Basic.BasicLibrary;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
-import com.daw.pms.Entity.QQMusic.QQMusicPlaylist;
+import com.daw.pms.Service.Bilibili.BiliFavListService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,71 +24,103 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   @Value("${ncm.cookie}")
   private String ncmCookie;
 
+  @Value("${bilibili.id}")
+  private Long biliId;
+
+  @Value("${bilibili.cookie}")
+  private String biliCookie;
+
   private final QQMusicPlaylistService qqMusicPlaylistService;
   private final NCMPlaylistService ncmPlaylistService;
+  private final BiliFavListService biliFavListService;
 
   public LibraryServiceImpl(
-      QQMusicPlaylistService qqMusicPlaylistService, NCMPlaylistService ncmPlaylistService) {
+      QQMusicPlaylistService qqMusicPlaylistService,
+      NCMPlaylistService ncmPlaylistService,
+      BiliFavListService biliFavListService) {
     this.qqMusicPlaylistService = qqMusicPlaylistService;
     this.ncmPlaylistService = ncmPlaylistService;
+    this.biliFavListService = biliFavListService;
   }
 
   /**
    * Get all libraries for specific platform.
    *
    * @param id Your user id in pms.
+   * @param pn The page number, only used in bilibili.
+   * @param ps The page size, only used in bilibili.
+   * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
+   * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
+   *     collected fav lists, only used in bilibili.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
    *     represents netease cloud music, 3 represents bilibili.
-   * @return All libraries for specific platform.
+   * @return All libraries for specific platform, wrapped in Result DTO.
    */
   @Override
-  public List<BasicLibrary> getLibraries(Long id, Integer platform) {
-    List<BasicLibrary> libraries = new ArrayList<>();
+  public Result getLibraries(
+      Long id, Integer pn, Integer ps, String biliPlatform, Integer type, Integer platform) {
+    // TODO: find user id by pms id in specific platform.
+    Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      List<QQMusicPlaylist> playlists =
-          qqMusicPlaylistService.getPlaylists(qqMusicId.toString(), qqMusicCookie);
-      libraries.addAll(playlists);
+      result = qqMusicPlaylistService.getPlaylists(qqMusicId.toString(), qqMusicCookie);
     } else if (platform == 2) {
-      List<NCMPlaylist> playlists = ncmPlaylistService.getPlaylists(ncmId, 0, 1000, ncmCookie);
-      libraries.addAll(playlists);
+      result = ncmPlaylistService.getPlaylists(ncmId, 0, 1000, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result = biliFavListService.getFavLists(pn, ps, biliId, biliPlatform, type, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-    return libraries;
+    return result;
   }
 
   /**
    * Get detail library with {@code libraryId} in {@code platform}.
    *
    * @param libraryId The library id.
+   * @param pn The page number, only used in bilibili.
+   * @param ps The page size, only used in bilibili.
+   * @param keyword The keyword to search, only used in bilibili.
+   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
+   *     by view time, pubtime: by published time, default is mtime.
+   * @param range The range of searching, 0: current fav list, 1: all fav lists, default is 0.
+   * @param type 0 for created fav list, 1 for collected fav list.
    * @param platform Which platform the library belongs to.
-   * @return Detail library.
+   * @return Detail library wrapped by Result DTO.
    */
   @Override
-  public BasicLibrary getDetailLibrary(String libraryId, Integer platform) {
-    BasicLibrary detailLibrary;
+  public Result getDetailLibrary(
+      String libraryId,
+      Integer pn,
+      Integer ps,
+      String keyword,
+      String order,
+      Integer range,
+      Integer type,
+      Integer platform) {
+    Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      detailLibrary = qqMusicPlaylistService.getDetailPlaylist(libraryId, qqMusicCookie);
+      result = qqMusicPlaylistService.getDetailPlaylist(libraryId, qqMusicCookie);
     } else if (platform == 2) {
-      detailLibrary = ncmPlaylistService.getDetailPlaylist(Long.valueOf(libraryId), ncmCookie);
+      result = ncmPlaylistService.getDetailPlaylist(Long.valueOf(libraryId), ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliFavListService.getDetailFavList(
+              Long.valueOf(libraryId), pn, ps, keyword, order, range, type, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-    return detailLibrary;
+    return result;
   }
 
   /**
    * Create new library.
    *
-   * @param library A map that contains the name of library.
+   * @param library A map that contains the name of library, {"name"(required): name, "intro":intro,
+   *     "privacy": privacy, "cover":cover}
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
@@ -106,7 +134,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 2) {
       result = ncmPlaylistService.createPlaylist(library.get("name"), ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result = biliFavListService.createFavList(library, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
@@ -130,7 +158,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 2) {
       result = ncmPlaylistService.deletePlaylist(libraryId, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result = biliFavListService.deleteFavList(libraryId, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
@@ -140,13 +168,15 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   /**
    * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
    *
-   * @param libraryId Library's id.
+   * @param libraryId Target library id.
+   * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
    * @param songsId Songs' id, multiple songs id separated with comma.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
   @Override
-  public Result addSongsToLibrary(String libraryId, String songsId, Integer platform) {
+  public Result addSongsToLibrary(
+      String libraryId, String biliSourceFavListId, String songsId, Integer platform) {
     Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
@@ -157,7 +187,14 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 2) {
       result = ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliFavListService.multipleAddResources(
+              Long.valueOf(biliSourceFavListId),
+              Long.valueOf(libraryId),
+              biliId,
+              songsId,
+              "web",
+              biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
@@ -189,11 +226,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
           ncmPlaylistService.moveSongsToOtherPlaylist(
               songsId, Long.valueOf(fromLibrary), Long.valueOf(toLibrary), ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliFavListService.multipleMoveResources(
+              Long.valueOf(fromLibrary),
+              Long.valueOf(toLibrary),
+              biliId,
+              songsId,
+              "web",
+              biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-
     return result;
   }
 
@@ -217,11 +260,12 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       result =
           ncmPlaylistService.removeSongsFromPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
     } else if (platform == 3) {
-      throw new RuntimeException("Not yet implement bilibili platform.");
+      result =
+          biliFavListService.multipleDeleteResources(
+              songsId, Long.valueOf(libraryId), "web", biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }
-
     return result;
   }
 }

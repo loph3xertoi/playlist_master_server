@@ -1,12 +1,11 @@
 package com.daw.pms.Service.NeteaseCloudMusic.impl;
 
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailSong;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMLyrics;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSearchSongsPagedResult;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -24,7 +23,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getDetailSong() {
-    NCMDetailSong detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
+    Result detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
     System.out.println(detailSong);
   }
 
@@ -42,8 +41,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getSongsLink() {
-    Map<String, String> songsLink =
-        ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
+    Result songsLink = ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
     System.out.println(songsLink);
   }
 

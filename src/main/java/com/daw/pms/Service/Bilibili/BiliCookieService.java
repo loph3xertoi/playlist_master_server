@@ -9,11 +9,12 @@ import java.util.Map;
  * @version 1.0
  * @since 7/30/23
  */
-public interface BilibiliCookieService {
+public interface BiliCookieService {
   /**
    * Get wbi key.
    *
    * @return Img key and sub key.
+   * @apiNote GET GET_WBI_KEY
    */
   Map<String, String> getWbiKey();
 }

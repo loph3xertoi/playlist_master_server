@@ -1,7 +1,7 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.Entity.Basic.BasicUser;
-import com.daw.pms.Service.Bilibili.BilibiliUserService;
+import com.daw.pms.Service.Bilibili.BiliUserService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
@@ -44,19 +44,19 @@ public class UserServiceImpl implements UserService, Serializable {
   private String ncmCookie;
 
   @Value("${bilibili.cookie}")
-  private String bilibiliCookie;
+  private String biliCookie;
 
   private final QQMusicUserService qqMusicUserService;
   private final NCMUserService ncmUserService;
-  private final BilibiliUserService bilibiliUserService;
+  private final BiliUserService biliUserService;
 
   public UserServiceImpl(
       QQMusicUserService qqMusicUserService,
       NCMUserService ncmUserService,
-      BilibiliUserService bilibiliUserService) {
+      BiliUserService biliUserService) {
     this.qqMusicUserService = qqMusicUserService;
     this.ncmUserService = ncmUserService;
-    this.bilibiliUserService = bilibiliUserService;
+    this.biliUserService = biliUserService;
   }
 
   /**
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService, Serializable {
     } else if (platform == 2) {
       return ncmUserService.getUserInfo(ncmId, ncmCookie);
     } else if (platform == 3) {
-      return bilibiliUserService.getUserInfo(bilibiliCookie);
+      return biliUserService.getUserInfo(biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }

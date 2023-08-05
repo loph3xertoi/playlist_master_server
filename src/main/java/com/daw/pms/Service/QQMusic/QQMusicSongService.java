@@ -1,11 +1,10 @@
 package com.daw.pms.Service.QQMusic;
 
-import com.daw.pms.Entity.QQMusic.QQMusicDetailSong;
+import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.QQMusic.QQMusicLyrics;
 import com.daw.pms.Entity.QQMusic.QQMusicSearchSongPagedResult;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service for handle songs of qq music.
@@ -28,12 +27,13 @@ public interface QQMusicSongService {
   /**
    * Get detail song with mid {@code songMid}.
    *
-   * @param songMid The of this song.
+   * @param songMid The mid of this song.
    * @param cookie Your qq music cookie.
-   * @return Detail song with {@code songMid}, songLink and isTakenDown needs to be completed.
+   * @return Detail song with {@code songMid}, wrapped with Result DTO, the data is
+   *     QQMusicDetailSong.
    * @apiNote GET /song?songmid={@code songMid}
    */
-  QQMusicDetailSong getDetailSong(String songMid, String cookie);
+  Result getDetailSong(String songMid, String cookie);
 
   /**
    * Get the similar songs according to {@code songId}.
@@ -84,10 +84,11 @@ public interface QQMusicSongService {
    *
    * @param songMids The songMid, separated with comma.
    * @param cookie Your qq music cookie.
-   * @return The urls of your songs with mid {@code songMids}.
+   * @return The urls of your songs with mid {@code songMids}, wrapped with Result DTO, the data is
+   *     Map<String, String>.
    * @apiNote GET /song/urls?id={@code songMids}
    */
-  Map<String, String> getSongsLink(String songMids, String cookie);
+  Result getSongsLink(String songMids, String cookie);
 
   /**
    * Search and return paged songs according to the given keyword {@code name}.

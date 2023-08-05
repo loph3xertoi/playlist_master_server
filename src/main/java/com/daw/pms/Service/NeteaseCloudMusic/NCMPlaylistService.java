@@ -1,8 +1,6 @@
 package com.daw.pms.Service.NeteaseCloudMusic;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailPlaylist;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMPlaylist;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import java.util.List;
 import java.util.Optional;
@@ -22,20 +20,21 @@ public interface NCMPlaylistService {
    * @param offset Offset from the first song.
    * @param limit The number of songs returned by this query.
    * @param cookie Your cookie for netease cloud music.
-   * @return All playlists created by {@code uid}.
+   * @return All playlists created by {@code uid}, wrapped with Result DTO, the data is
+   *     PagedDataDTO<BiliFavList>.
    * @apiNote GET /user/playlist?uid={@code uid}&offset={@code offset}&limit={@code limit}
    */
-  List<NCMPlaylist> getPlaylists(Long uid, Integer offset, Integer limit, String cookie);
+  Result getPlaylists(Long uid, Integer offset, Integer limit, String cookie);
 
   /**
    * Get detail playlist with {@code id}.
    *
    * @param id The playlist's global id.
    * @param cookie Your cookie for netease cloud music.
-   * @return Detail playlist.
+   * @return Detail playlist wrapped with Result DTO, the data is NCMDetailPlaylist.
    * @apiNote GET /playlist/detail?id={@code id}
    */
-  NCMDetailPlaylist getDetailPlaylist(Long id, String cookie);
+  Result getDetailPlaylist(Long id, String cookie);
 
   /**
    * Get all songs from playlist with {@code id}.

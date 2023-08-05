@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class BilibiliUser extends BasicUser {
+public class BiliUser extends BasicUser {
   /** User id in bilibili. */
   private Long mid;
 

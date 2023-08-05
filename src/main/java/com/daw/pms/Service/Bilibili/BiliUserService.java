@@ -1,6 +1,6 @@
 package com.daw.pms.Service.Bilibili;
 
-import com.daw.pms.Entity.Bilibili.BilibiliUser;
+import com.daw.pms.Entity.Bilibili.BiliUser;
 
 /**
  * Service for handle user info in bilibili platform.
@@ -9,12 +9,13 @@ import com.daw.pms.Entity.Bilibili.BilibiliUser;
  * @version 1.0
  * @since 7/30/23
  */
-public interface BilibiliUserService {
+public interface BiliUserService {
   /**
    * Return the user info for bilibili.
    *
    * @param cookie Your cookie for bilibili.
    * @return Your user info in bilibili.
+   * @apiNote GET GET_LOGIN_INFO?mid={@code biliMid}
    */
-  BilibiliUser getUserInfo(String cookie);
+  BiliUser getUserInfo(String cookie);
 }
