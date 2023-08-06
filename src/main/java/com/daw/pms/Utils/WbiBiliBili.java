@@ -1,6 +1,5 @@
 package com.daw.pms.Utils;
 
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,8 +42,7 @@ public class WbiBiliBili {
     // Sort and join the params.
     map.entrySet().stream()
         .sorted(Map.Entry.comparingByKey())
-        .forEach(
-            entry -> param.add(entry.getKey() + "=" + URLUtil.encode(entry.getValue().toString())));
+        .forEach(entry -> param.add(entry.getKey() + "=" + entry.getValue().toString()));
     String s = param + mixinKey;
     String wbiSign = SecureUtil.md5(s);
     return param + "&w_rid=" + wbiSign;
