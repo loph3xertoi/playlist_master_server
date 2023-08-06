@@ -27,4 +27,6 @@ public class BilibiliAPI {
   public static final String GET_RESOURCE_DASH_LINKS = "https://api.bilibili.com/x/player/playurl";
   public static final String SEARCH_RESOURCES =
       "https://api.bilibili.com/x/web-interface/search/type";
+  public static final String FAVORITE_RESOURCE_TO_FAV_LISTS =
+      "https://api.bilibili.com/medialist/gateway/coll/resource/deal";
 }

@@ -70,7 +70,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 3) {
       result = biliFavListService.getFavLists(pn, ps, biliId, biliPlatform, type, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -111,7 +111,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
           biliFavListService.getDetailFavList(
               Long.valueOf(libraryId), pn, ps, keyword, order, range, type, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -136,7 +136,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 3) {
       result = biliFavListService.createFavList(library, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -160,7 +160,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 3) {
       result = biliFavListService.deleteFavList(libraryId, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -171,12 +171,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    * @param libraryId Target library id.
    * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
    * @param songsId Songs' id, multiple songs id separated with comma.
+   * @param isFavoriteSearchedResource Whether favorite searched resource.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
   @Override
   public Result addSongsToLibrary(
-      String libraryId, String biliSourceFavListId, String songsId, Integer platform) {
+      String libraryId,
+      String biliSourceFavListId,
+      String songsId,
+      String isFavoriteSearchedResource,
+      Integer platform) {
     Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
@@ -187,19 +192,18 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 2) {
       result = ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
     } else if (platform == 3) {
-      if (biliSourceFavListId == null) {
-        return Result.fail("biliSourceFavListId is null");
+      if ("true".equals(isFavoriteSearchedResource)) {
+        result =
+            biliFavListService.favoriteResourceToFavLists(
+                Long.valueOf(songsId), 2, libraryId, biliCookie);
+      } else {
+        result =
+            biliFavListService.multipleAddResources(
+                biliSourceFavListId, libraryId, biliId, songsId, "web", biliCookie);
       }
-      result =
-          biliFavListService.multipleAddResources(
-              Long.valueOf(biliSourceFavListId),
-              Long.valueOf(libraryId),
-              biliId,
-              songsId,
-              "web",
-              biliCookie);
+
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -238,7 +242,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
               "web",
               biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -267,7 +271,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
           biliFavListService.multipleDeleteResources(
               songsId, Long.valueOf(libraryId), "web", biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }

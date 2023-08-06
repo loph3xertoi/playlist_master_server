@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService, Serializable {
     } else if (platform == 3) {
       return biliUserService.getUserInfo(biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
   }
 }

@@ -172,7 +172,10 @@ public class LibraryController {
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    * @apiNote POST /addSongsToLibrary?platform={@code platform}
-   *     {"libraryId":"libraryId","songsId":"songsId","tid":"tid"}
+   *     {"libraryId":"libraryId","songsId":"songsId","tid":"tid"}, in bilibili, still need
+   *     biliSourceFavListId and isFavoriteSearchedResource field, biliSourceFavListId for add
+   *     resources that already in fav list to other fav lists, isFavoriteSearchedResource for add
+   *     searched resource to fav list.
    */
   @PostMapping("/addSongsToLibrary")
   public Result addSongsToLibrary(
@@ -180,8 +183,10 @@ public class LibraryController {
     String libraryId = requestBody.get("libraryId");
     String biliSourceFavListId = requestBody.get("biliSourceFavListId");
     String songsId = requestBody.get("songsId");
+    String isFavoriteSearchedResource = requestBody.get("isFavoriteSearchedResource");
     try {
-      return libraryService.addSongsToLibrary(libraryId, biliSourceFavListId, songsId, platform);
+      return libraryService.addSongsToLibrary(
+          libraryId, biliSourceFavListId, songsId, isFavoriteSearchedResource, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0

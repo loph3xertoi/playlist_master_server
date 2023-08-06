@@ -44,7 +44,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     Map<String, Object> params = new HashMap<>();
     String url;
     if (pn == null || ps == null || type == null) {
-      throw new RuntimeException("Invalid parameters.");
+      throw new RuntimeException("Invalid parameters");
     }
     if (platform == null) {
       platform = "web";
@@ -131,7 +131,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     Map<String, Object> params = new HashMap<>();
     String url;
     if (pn == null || ps == null || type == null) {
-      throw new RuntimeException("Invalid parameters.");
+      throw new RuntimeException("Invalid parameters");
     }
     if (type == 0) {
       url = BilibiliAPI.GET_DETAIL_CREATED_FAV_LIST;
@@ -164,7 +164,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     if (code == 0) {
       JsonNode dataNode = jsonNode.get("data");
       if (dataNode.isNull()) {
-        throw new RuntimeException("Invalid library.");
+        throw new RuntimeException("Invalid library");
       }
       JsonNode infoNode = dataNode.get("info");
       JsonNode mediasNode = dataNode.get("medias");
@@ -259,7 +259,8 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     }
     requestBody.add("csrf", csrf);
     String rawCreatingFavListResult =
-        httpTools.requestPostAPI(BilibiliAPI.CREATE_FAV_LIST, requestBody, Optional.of(cookie));
+        httpTools.requestPostAPI(
+            BilibiliAPI.CREATE_FAV_LIST, requestBody, Optional.empty(), Optional.of(cookie));
     return extractCreatingFavListResult(rawCreatingFavListResult);
   }
 
@@ -295,7 +296,8 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     requestBody.add("media_ids", ids);
     requestBody.add("csrf", csrf);
     String rawDeletingFavListResult =
-        httpTools.requestPostAPI(BilibiliAPI.DELETE_FAV_LIST, requestBody, Optional.of(cookie));
+        httpTools.requestPostAPI(
+            BilibiliAPI.DELETE_FAV_LIST, requestBody, Optional.empty(), Optional.of(cookie));
     return extractDeletingFavListResult(rawDeletingFavListResult);
   }
 
@@ -340,7 +342,8 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     requestBody.add("cover", cover);
     requestBody.add("csrf", csrf);
     String rawEditingFavListResult =
-        httpTools.requestPostAPI(BilibiliAPI.EDIT_FAV_LIST, requestBody, Optional.of(cookie));
+        httpTools.requestPostAPI(
+            BilibiliAPI.EDIT_FAV_LIST, requestBody, Optional.empty(), Optional.of(cookie));
     return extractEditingFavListResult(rawEditingFavListResult);
   }
 
@@ -377,12 +380,15 @@ public class BiliFavListServiceImpl implements BiliFavListService {
    */
   @Override
   public Result multipleAddResources(
-      Long srcMediaId,
-      Long dstMediaId,
+      String srcMediaId,
+      String dstMediaId,
       Long mid,
       String resourcesIds,
       String platform,
       String cookie) {
+    if (srcMediaId == null) {
+      return Result.fail("Invalid parameters");
+    }
     MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
     String csrf = getCsrf(cookie);
     requestBody.add("src_media_id", srcMediaId);
@@ -392,7 +398,8 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     requestBody.add("platform", platform);
     requestBody.add("csrf", csrf);
     String rawMultipleAddResult =
-        httpTools.requestPostAPI(BilibiliAPI.MULTI_ADD_RESOURCES, requestBody, Optional.of(cookie));
+        httpTools.requestPostAPI(
+            BilibiliAPI.MULTI_ADD_RESOURCES, requestBody, Optional.empty(), Optional.of(cookie));
     return extractMultipleAddResult(rawMultipleAddResult);
   }
 
@@ -445,7 +452,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     requestBody.add("csrf", csrf);
     String rawMultipleMoveResult =
         httpTools.requestPostAPI(
-            BilibiliAPI.MULTI_MOVE_RESOURCES, requestBody, Optional.of(cookie));
+            BilibiliAPI.MULTI_MOVE_RESOURCES, requestBody, Optional.empty(), Optional.of(cookie));
     return extractMultipleAddResult(rawMultipleMoveResult);
   }
 
@@ -472,8 +479,35 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     requestBody.add("csrf", csrf);
     String rawMultipleDeleteResult =
         httpTools.requestPostAPI(
-            BilibiliAPI.MULTI_DELETE_RESOURCES, requestBody, Optional.of(cookie));
+            BilibiliAPI.MULTI_DELETE_RESOURCES, requestBody, Optional.empty(), Optional.of(cookie));
     return extractMultipleAddResult(rawMultipleDeleteResult);
+  }
+
+  /**
+   * Add resource to fav lists.
+   *
+   * @param rid The avId of resource.
+   * @param type The type of resource, must be 2.
+   * @param targetFavListsIds The id of target fav lists, multiple fav lists' id separated by comma.
+   * @param cookie Your cookie for bilibili.
+   * @return Result of adding resource to fav lists.
+   */
+  @Override
+  public Result favoriteResourceToFavLists(
+      Long rid, Integer type, String targetFavListsIds, String cookie) {
+    MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
+    String csrf = getCsrf(cookie);
+    requestBody.add("rid", rid);
+    requestBody.add("type", type);
+    requestBody.add("add_media_ids", targetFavListsIds);
+    requestBody.add("csrf", csrf);
+    String rawFavoritedResult =
+        httpTools.requestPostAPI(
+            BilibiliAPI.FAVORITE_RESOURCE_TO_FAV_LISTS,
+            requestBody,
+            Optional.of("https://www.bilibili.com"),
+            Optional.of(cookie));
+    return extractMultipleAddResult(rawFavoritedResult);
   }
 
   /**

@@ -108,8 +108,8 @@ public interface BiliFavListService {
    *     platform},"csrf":csrf}
    */
   Result multipleAddResources(
-      Long srcMediaId,
-      Long dstMediaId,
+      String srcMediaId,
+      String dstMediaId,
       Long mid,
       String resourcesIds,
       String platform,
@@ -151,6 +151,18 @@ public interface BiliFavListService {
    *     mediaId},"platform":{@code platform},"csrf":csrf}
    */
   Result multipleDeleteResources(String resourcesIds, Long mediaId, String platform, String cookie);
+
+  /**
+   * Add resource to fav lists.
+   *
+   * @param rid The avid of resource.
+   * @param type The type of resource, must be 2.
+   * @param targetFavListsIds The id of target fav lists, multiple fav lists' id separated by comma.
+   * @param cookie Your cookie for bilibili.
+   * @return Result of adding resource to fav lists.
+   */
+  Result favoriteResourceToFavLists(
+      Long rid, Integer type, String targetFavListsIds, String cookie);
 
   /**
    * Get csrf according to bilibili cookie.

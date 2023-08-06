@@ -55,7 +55,7 @@ public class SongServiceImpl implements SongService, Serializable {
     } else if (platform == 3) {
       result = biliResourceService.getDetailResource(ids, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -80,7 +80,7 @@ public class SongServiceImpl implements SongService, Serializable {
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return similarSongs;
   }
@@ -104,7 +104,7 @@ public class SongServiceImpl implements SongService, Serializable {
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return lyrics;
   }
@@ -135,7 +135,7 @@ public class SongServiceImpl implements SongService, Serializable {
               ids.split(":")[1] != null ? Long.valueOf(ids.split(":")[1]) : null,
               ncmCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }
@@ -165,7 +165,7 @@ public class SongServiceImpl implements SongService, Serializable {
           biliResourceService.searchResources(
               "video", keyword, "totalrank", 0, 0, pageNo, biliCookie);
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return result;
   }

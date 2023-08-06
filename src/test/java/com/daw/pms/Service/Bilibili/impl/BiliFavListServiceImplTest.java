@@ -74,7 +74,7 @@ class BiliFavListServiceImplTest {
   void multipleAddResources() {
     Result result =
         biliFavListService.multipleAddResources(
-            172408678L, 2407308978L, biliId, "910235969:2,381421301:2", "web", biliCookie);
+            "172408678", "2407308978", biliId, "910235969:2,381421301:2", "web", biliCookie);
     System.out.println(result);
   }
 
@@ -92,5 +92,18 @@ class BiliFavListServiceImplTest {
         biliFavListService.multipleDeleteResources(
             "910235969:2,381421301:2", 2478777678L, "web", biliCookie);
     System.out.println(result);
+  }
+
+  @Test
+  void favoriteResourceToFavLists() {
+    Result result =
+        biliFavListService.favoriteResourceToFavLists(231844300L, 2, "2422499978", biliCookie);
+    System.out.println(result);
+  }
+
+  @Test
+  void getCsrf() {
+    String csrf = biliFavListService.getCsrf(biliCookie);
+    System.out.println(csrf);
   }
 }

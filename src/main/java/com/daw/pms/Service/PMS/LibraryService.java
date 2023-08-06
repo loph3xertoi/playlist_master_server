@@ -76,11 +76,16 @@ public interface LibraryService {
    * @param libraryId Target library id.
    * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
    * @param songsId Songs' id, multiple songs id separated with comma.
+   * @param isFavoriteSearchedResource Whether favorite searched resource.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
    */
   Result addSongsToLibrary(
-      String libraryId, String biliSourceFavListId, String songsId, Integer platform);
+      String libraryId,
+      String biliSourceFavListId,
+      String songsId,
+      String isFavoriteSearchedResource,
+      Integer platform);
 
   /**
    * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with

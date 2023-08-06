@@ -43,7 +43,7 @@ public class MVServiceImpl implements MVService, Serializable {
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return mvInfo;
   }
@@ -66,7 +66,7 @@ public class MVServiceImpl implements MVService, Serializable {
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return mvLinks;
   }
@@ -96,7 +96,7 @@ public class MVServiceImpl implements MVService, Serializable {
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
-      throw new RuntimeException("Invalid platform.");
+      throw new RuntimeException("Invalid platform");
     }
     return relatedVideos;
   }

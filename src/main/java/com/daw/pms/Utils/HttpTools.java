@@ -77,10 +77,12 @@ public class HttpTools {
    *
    * @param url Remote url you want to call.
    * @param params Request body.
+   * @param referer The referer in header.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
    */
-  public <K, V> String requestPostAPI(String url, Map<K, V> params, Optional<String> cookie) {
+  public <K, V> String requestPostAPI(
+      String url, Map<K, V> params, Optional<String> referer, Optional<String> cookie) {
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
     URI uri = builder.build(true).toUri();
     HttpHeaders headers = new HttpHeaders();
@@ -88,6 +90,7 @@ public class HttpTools {
     headers.set(
         "User-Agent",
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
+    referer.ifPresent(s -> headers.set("Referer", s));
     cookie.ifPresent(s -> headers.set("Cookie", s));
     HttpEntity<?> requestEntity = new HttpEntity<>(params, headers);
     ResponseEntity<String> response =
