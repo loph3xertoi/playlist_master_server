@@ -145,19 +145,19 @@ public class SongController {
    * Search song by keyword.
    *
    * @param keyword The song name to search.
-   * @param offset The page number.
-   * @param limit The page size.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
    * @param platform The platform id.
    * @return The search result with page.
    */
   @GetMapping("/search/song/{keyword}")
   public Result searchSong(
       @PathVariable String keyword,
-      @RequestParam Integer offset,
-      @RequestParam Integer limit,
+      @RequestParam Integer pageNo,
+      @RequestParam Integer pageSize,
       @RequestParam Integer platform) {
     try {
-      return songService.searchResourcesByKeyword(keyword, offset, limit, 1, platform);
+      return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0

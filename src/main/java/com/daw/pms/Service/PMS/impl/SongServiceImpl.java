@@ -144,26 +144,26 @@ public class SongServiceImpl implements SongService, Serializable {
    * Search resources of type {@code type} by {@code keyword}.
    *
    * @param keyword The keyword to search.
-   * @param offset The offset with the first searched resource.
-   * @param limit The mounts of the searched resources.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
    * @param type The type of the searched resources.
    * @param platform The platform id.
    * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
    */
   @Override
   public Result searchResourcesByKeyword(
-      String keyword, Integer offset, Integer limit, Integer type, Integer platform) {
+      String keyword, Integer pageNo, Integer pageSize, Integer type, Integer platform) {
     Result result;
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      result = qqMusicSongService.searchSongsByKeyword(keyword, offset, limit, qqMusicCookie);
+      result = qqMusicSongService.searchSongsByKeyword(keyword, pageNo, pageSize, qqMusicCookie);
     } else if (platform == 2) {
-      result = ncmSongService.searchResourcesByKeyword(keyword, offset, limit, type, ncmCookie);
+      result = ncmSongService.searchResourcesByKeyword(keyword, pageNo, pageSize, type, ncmCookie);
     } else if (platform == 3) {
       result =
           biliResourceService.searchResources(
-              "video", keyword, "totalrank", 0, 0, offset, biliCookie);
+              "video", keyword, "totalrank", 0, 0, pageNo, biliCookie);
     } else {
       throw new RuntimeException("Invalid platform.");
     }

@@ -144,6 +144,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     }
     params.put("pn", pn);
     params.put("ps", ps);
+    params.put("platform", "web");
     if (type == 0 && keyword != null) params.put("keyword", keyword);
     if (type == 0 && order != null) params.put("order", order);
     if (type == 0 && range != null) params.put("type", range);

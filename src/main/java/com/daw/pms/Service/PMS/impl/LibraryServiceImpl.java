@@ -187,6 +187,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 2) {
       result = ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
     } else if (platform == 3) {
+      if (biliSourceFavListId == null) {
+        return Result.fail("biliSourceFavListId is null");
+      }
       result =
           biliFavListService.multipleAddResources(
               Long.valueOf(biliSourceFavListId),

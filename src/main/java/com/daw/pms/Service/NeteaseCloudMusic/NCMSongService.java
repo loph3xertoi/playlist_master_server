@@ -60,8 +60,8 @@ public interface NCMSongService {
    * Search and return paged songs/resources according to the given keyword {@code name}.
    *
    * @param keyword Your search keywords.
-   * @param offset Offset from the first result.
-   * @param limit Number of songs returned.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
    * @param type Search type, 1 for song, 10 for album, 100 for singers, 1000 for playlists, 1002
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
@@ -70,5 +70,5 @@ public interface NCMSongService {
    * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
    */
   Result searchResourcesByKeyword(
-      String keyword, Integer offset, Integer limit, Integer type, String cookie);
+      String keyword, Integer pageNo, Integer pageSize, Integer type, String cookie);
 }

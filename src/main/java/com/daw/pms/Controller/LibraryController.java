@@ -179,9 +179,6 @@ public class LibraryController {
       @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
     String libraryId = requestBody.get("libraryId");
     String biliSourceFavListId = requestBody.get("biliSourceFavListId");
-    if (platform == 3 && biliSourceFavListId == null) {
-      return Result.fail("biliSourceFavListId is null");
-    }
     String songsId = requestBody.get("songsId");
     try {
       return libraryService.addSongsToLibrary(libraryId, biliSourceFavListId, songsId, platform);

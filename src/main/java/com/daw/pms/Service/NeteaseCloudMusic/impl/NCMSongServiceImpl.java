@@ -314,8 +314,8 @@ public class NCMSongServiceImpl implements NCMSongService {
    * Search and return paged songs/resources according to the given keyword {@code name}.
    *
    * @param keyword Your search keywords.
-   * @param offset Offset from the first result.
-   * @param limit Number of songs returned.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
    * @param type Search type, 1 for song, 10 for album, 100 for singers, 1000 for playlists, 1002
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
@@ -325,8 +325,10 @@ public class NCMSongServiceImpl implements NCMSongService {
    */
   @Override
   public Result searchResourcesByKeyword(
-      String keyword, Integer offset, Integer limit, Integer type, String cookie) {
+      String keyword, Integer pageNo, Integer pageSize, Integer type, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
+    String offset = String.valueOf((pageNo - 1) * pageSize);
+    String limit = String.valueOf(pageSize);
     Result result =
         extractSearchedSongs(
             httpTools.requestGetAPI(
@@ -334,8 +336,8 @@ public class NCMSongServiceImpl implements NCMSongService {
                 new HashMap<String, String>() {
                   {
                     put("keywords", keyword);
-                    put("offset", offset.toString());
-                    put("limit", limit.toString());
+                    put("offset", offset);
+                    put("limit", limit);
                     put("type", type.toString());
                   }
                 },
@@ -345,7 +347,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     }
     PagedDataDTO<NCMSong> pagedDataDTO = (PagedDataDTO<NCMSong>) result.getData();
     int count = pagedDataDTO.getCount();
-    Boolean hasMore = offset + limit < count;
+    Boolean hasMore = pageNo * pageSize < count;
     pagedDataDTO.setHasMore(hasMore);
     List<NCMSong> songs = pagedDataDTO.getList();
     String ids =

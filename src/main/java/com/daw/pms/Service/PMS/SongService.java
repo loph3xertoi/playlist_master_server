@@ -56,12 +56,12 @@ public interface SongService {
    * Search resources of type {@code type} by {@code keyword}.
    *
    * @param keyword The keyword to search.
-   * @param offset The offset with the first searched resource.
-   * @param limit The mounts of the searched resources.
+   * @param pageNo The page number.
+   * @param pageSize The page size.
    * @param type The type of the searched resources.
    * @param platform The platform id.
    * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
    */
   Result searchResourcesByKeyword(
-      String keyword, Integer offset, Integer limit, Integer type, Integer platform);
+      String keyword, Integer pageNo, Integer pageSize, Integer type, Integer platform);
 }
