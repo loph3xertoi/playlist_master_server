@@ -74,7 +74,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     JsonNode dataNode = jsonNode.get("data");
     // The ugcSeasonNode exists only in episodes resource.
     JsonNode ugcSeasonNode = dataNode.get("ugc_season");
-    boolean isSeasonResource = !ugcSeasonNode.isNull();
+    boolean isSeasonResource = ugcSeasonNode != null;
     JsonNode pagesNode = dataNode.get("pages");
     JsonNode upperNode = dataNode.get("owner");
     JsonNode stateNode = dataNode.get("stat");

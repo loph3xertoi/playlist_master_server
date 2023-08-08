@@ -50,7 +50,7 @@ public class UserController {
       String errorMsg = "Fail to connect to " + remoteServer;
       return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage());
+      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
     }
   }
 }

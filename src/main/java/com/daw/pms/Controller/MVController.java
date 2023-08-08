@@ -52,7 +52,7 @@ public class MVController {
       String errorMsg = "Fail to connect to " + remoteServer;
       return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage());
+      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
     }
     return Result.ok(video);
   }
@@ -101,7 +101,7 @@ public class MVController {
       String errorMsg = "Fail to connect to " + remoteServer;
       return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage());
+      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
     }
     return Result.ok(relatedVideos, (long) relatedVideos.size());
   }
