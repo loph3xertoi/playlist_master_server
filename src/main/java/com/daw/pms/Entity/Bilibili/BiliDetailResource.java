@@ -20,6 +20,9 @@ public class BiliDetailResource implements Serializable {
   /** The bvid of this resource. */
   private String bvid;
 
+  /** The aid of this resource, for favorite resources. */
+  private Long aid;
+
   /** The cid of this resource. */
   private Long cid;
 
@@ -87,6 +90,9 @@ public class BiliDetailResource implements Serializable {
 
   /** The subpages of this resource. */
   private List<BiliSubpageOfResource> subpages;
+
+  /** The episodes of this resource. */
+  private List<BiliDetailResource> episodes;
 
   /**
    * The links of this video, the key is "video" for video without sound and "audio" for audio only,
