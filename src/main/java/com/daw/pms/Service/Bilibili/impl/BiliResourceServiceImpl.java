@@ -72,16 +72,51 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       throw new RuntimeException(jsonNode.get("message").textValue());
     }
     JsonNode dataNode = jsonNode.get("data");
+    // The ugcSeasonNode exists only in episodes resource.
+    JsonNode ugcSeasonNode = dataNode.get("ugc_season");
+    boolean isSeasonResource = !ugcSeasonNode.isNull();
+    JsonNode pagesNode = dataNode.get("pages");
     JsonNode upperNode = dataNode.get("owner");
     JsonNode stateNode = dataNode.get("stat");
-    JsonNode pagesNode = dataNode.get("pages");
     BiliDetailResource data = new BiliDetailResource();
     data.setId(dataNode.get("aid").longValue());
     data.setBvid(dataNode.get("bvid").textValue());
     data.setCid(dataNode.get("cid").longValue());
-    data.setTitle(dataNode.get("title").textValue());
-    data.setCover(dataNode.get("pic").textValue());
-    data.setPage(dataNode.get("videos").intValue());
+    List<BiliSubpageOfResource> pages = new ArrayList<>();
+    if (isSeasonResource) {
+      data.setTitle(ugcSeasonNode.get("title").textValue());
+      data.setCover(ugcSeasonNode.get("cover").textValue());
+      data.setPage(ugcSeasonNode.get("ep_count").intValue());
+      JsonNode episodesNode = ugcSeasonNode.get("sections").get(0).get("episodes");
+      for (int i = 0; i < episodesNode.size(); i++) {
+        JsonNode episodeNode = episodesNode.get(i);
+        JsonNode pageNode = episodeNode.get("page");
+        BiliSubpageOfResource subpage = new BiliSubpageOfResource();
+        subpage.setCid(pageNode.get("cid").longValue());
+        subpage.setPage(i + 1);
+        subpage.setPartName(pageNode.get("part").textValue());
+        subpage.setDuration(pageNode.get("duration").intValue());
+        subpage.setWidth(pageNode.get("dimension").get("width").intValue());
+        subpage.setHeight(pageNode.get("dimension").get("height").intValue());
+        pages.add(subpage);
+      }
+      data.setSubpages(pages);
+    } else {
+      data.setTitle(dataNode.get("title").textValue());
+      data.setCover(dataNode.get("pic").textValue());
+      data.setPage(dataNode.get("videos").intValue());
+      for (JsonNode pageNode : pagesNode) {
+        BiliSubpageOfResource subpage = new BiliSubpageOfResource();
+        subpage.setCid(pageNode.get("cid").longValue());
+        subpage.setPage(pageNode.get("page").intValue());
+        subpage.setPartName(pageNode.get("part").textValue());
+        subpage.setDuration(pageNode.get("duration").intValue());
+        subpage.setWidth(pageNode.get("dimension").get("width").intValue());
+        subpage.setHeight(pageNode.get("dimension").get("height").intValue());
+        pages.add(subpage);
+      }
+      data.setSubpages(pages);
+    }
     data.setDuration(dataNode.get("duration").intValue());
     data.setUpperName(upperNode.get("name").textValue());
     data.setUpperMid(upperNode.get("mid").longValue());
@@ -99,19 +134,6 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     data.setDynamicLabels(dataNode.get("dynamic").textValue());
     // TODO: fix this type.
     data.setType(2);
-    List<BiliSubpageOfResource> pages = new ArrayList<>();
-    for (JsonNode pageNode : pagesNode) {
-      BiliSubpageOfResource subpage = new BiliSubpageOfResource();
-      subpage.setCid(pageNode.get("cid").longValue());
-      subpage.setPage(pageNode.get("page").intValue());
-      subpage.setPartName(pageNode.get("part").textValue());
-      subpage.setDuration(pageNode.get("duration").intValue());
-      subpage.setWidth(pageNode.get("dimension").get("width").intValue());
-      subpage.setHeight(pageNode.get("dimension").get("height").intValue());
-      //      subpage.setFirstFrame(pageNode.get("first_frame").textValue());
-      pages.add(subpage);
-    }
-    data.setSubpages(pages);
     return Result.ok(data);
   }
 
