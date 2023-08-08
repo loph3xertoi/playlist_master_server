@@ -30,6 +30,6 @@ public class BiliSubpageOfResource implements Serializable {
   /** The height of this part of resource. */
   private Integer height;
 
-  /** The first frame of this part of resource. */
-  private String firstFrame;
+  //  /** The first frame of this part of resource. */
+  //  private String firstFrame;
 }

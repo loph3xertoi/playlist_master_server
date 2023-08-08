@@ -97,6 +97,8 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     data.setPublishedTime(dataNode.get("pubdate").longValue());
     data.setCreatedTime(dataNode.get("ctime").longValue());
     data.setDynamicLabels(dataNode.get("dynamic").textValue());
+    // TODO: fix this type.
+    data.setType(2);
     List<BiliSubpageOfResource> pages = new ArrayList<>();
     for (JsonNode pageNode : pagesNode) {
       BiliSubpageOfResource subpage = new BiliSubpageOfResource();
@@ -106,7 +108,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       subpage.setDuration(pageNode.get("duration").intValue());
       subpage.setWidth(pageNode.get("dimension").get("width").intValue());
       subpage.setHeight(pageNode.get("dimension").get("height").intValue());
-      subpage.setFirstFrame(pageNode.get("first_frame").textValue());
+      //      subpage.setFirstFrame(pageNode.get("first_frame").textValue());
       pages.add(subpage);
     }
     data.setSubpages(pages);

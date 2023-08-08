@@ -40,9 +40,8 @@ public class SongController {
    */
   @GetMapping("/song/{songId}")
   public Result getDetailSong(@PathVariable String songId, @RequestParam Integer platform) {
-    Result result;
     try {
-      result = songService.getDetailSong(songId, platform);
+      return songService.getDetailSong(songId, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -55,7 +54,6 @@ public class SongController {
     } catch (Exception e) {
       return Result.fail(e.getMessage());
     }
-    return Result.ok(result);
   }
 
   /**
