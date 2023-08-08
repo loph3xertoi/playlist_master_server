@@ -84,6 +84,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     data.setCid(dataNode.get("cid").longValue());
     List<BiliSubpageOfResource> pages = new ArrayList<>();
     if (isSeasonResource) {
+      data.setIsSeasonResource(true);
       data.setTitle(ugcSeasonNode.get("title").textValue());
       data.setCover(ugcSeasonNode.get("cover").textValue());
       data.setPage(ugcSeasonNode.get("ep_count").intValue());
@@ -102,6 +103,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       }
       data.setSubpages(pages);
     } else {
+      data.setIsSeasonResource(false);
       data.setTitle(dataNode.get("title").textValue());
       data.setCover(dataNode.get("pic").textValue());
       data.setPage(dataNode.get("videos").intValue());

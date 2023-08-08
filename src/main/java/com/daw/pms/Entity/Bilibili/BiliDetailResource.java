@@ -37,6 +37,9 @@ public class BiliDetailResource implements Serializable {
   /** The page of this resource, has multiple resources if greater than 1. */
   private Integer page;
 
+  /** Whether this resource has episodes. */
+  private Boolean isSeasonResource;
+
   /** The duration of this resource. */
   private Integer duration;
 
