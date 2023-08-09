@@ -1,9 +1,10 @@
 package com.daw.pms.Entity.Bilibili;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * The basic resource of bilibili, such as video, music, videos and official resources.
@@ -13,53 +14,23 @@ import lombok.Data;
  * @since 8/1/23
  */
 @Data
-public class BiliDetailResource implements Serializable {
-  /** The id of this resource. */
-  private Long id;
-
-  /** The bvid of this resource. */
-  private String bvid;
-
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class BiliDetailResource extends BiliResource {
   /** The aid of this resource, for favorite resources. */
   private Long aid;
 
   /** The cid of this resource. */
   private Long cid;
 
-  /**
-   * The type of this resource, 2 for video, 12 for music, 21 for videos, 24 for official resources.
-   */
-  private Integer type;
-
-  /** The title of this resource. */
-  private String title;
-
-  /** The cover of this resource. */
-  private String cover;
-
-  /** The page of this resource, has multiple resources if greater than 1. */
-  private Integer page;
-
   /** Whether this resource has episodes. */
   private Boolean isSeasonResource;
-
-  /** The duration of this resource. */
-  private Integer duration;
-
-  /** The upper's name of this resource. */
-  private String upperName;
 
   /** The upper's mid of this resource. */
   private Long upperMid;
 
   /** The upper's head picture of this resource. */
   private String upperHeadPic;
-
-  /** Play count of this resource. */
-  private Long playCount;
-
-  /** Danmaku count of this resource. */
-  private Long danmakuCount;
 
   /** The collected count of this resource. */
   private Long collectedCount;
