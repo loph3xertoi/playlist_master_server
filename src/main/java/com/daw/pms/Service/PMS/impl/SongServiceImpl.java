@@ -117,7 +117,7 @@ public class SongServiceImpl implements SongService, Serializable {
    *     jymaster.
    * @param platform The platform id.
    * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
-   *     Map<String,String>.
+   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform).
    */
   @Override
   public Result getSongsLink(String ids, String level, Integer platform) {
@@ -133,7 +133,7 @@ public class SongServiceImpl implements SongService, Serializable {
           biliResourceService.getResourceDashLink(
               ids.split(":")[0],
               ids.split(":")[1] != null ? Long.valueOf(ids.split(":")[1]) : null,
-              ncmCookie);
+              biliCookie);
     } else {
       throw new RuntimeException("Invalid platform");
     }

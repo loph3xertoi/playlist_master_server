@@ -48,7 +48,7 @@ public interface SongService {
    *     jymaster.
    * @param platform The platform id.
    * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
-   *     Map<String,String>.
+   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform).
    */
   Result getSongsLink(String ids, String level, Integer platform);
 

@@ -1,0 +1,110 @@
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mpeg:dash:schema:mpd:2011"
+     xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+     type="static" mediaPresentationDuration="PT0H3M58.00S"
+     minBufferTime="PT1.5S"
+     profiles="urn:mpeg:dash:profile:isoff-live:2011,urn:com:dashif:dash264">
+  <Period id="1" start="PT0S">
+    <AdaptationSet group="1" mimeType="audio/mp4" minBandwidth="319111" maxBandwidth="319111"
+                   segmentAlignment="true" startWithSAP="0">
+      <SegmentBase indexRange="934-1541">
+        <Initialization range="0-933"/>
+      </SegmentBase>
+      <Representation id="30280" bandwidth="319111" width="0" height="0">
+        <BaseURL>
+          https://upos-sz-mirror08c.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30280.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=
+          &uipk=5&nbs=1&deadline=1691767863&gen=playurlv2&os=08cbv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&
+          mid=319771778&platform=html5&upsig=6e46f19a8d6709615d12b4dfc2179ed9&
+          uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=39894&orderid=0,1&buvid=&build=0&
+          mobi_app=&logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="2" mimeType="audio/mp4" minBandwidth="129759" maxBandwidth="129759"
+                   segmentAlignment="true" startWithSAP="0">
+      <SegmentBase indexRange="934-1541">
+        <Initialization range="0-933"/>
+      </SegmentBase>
+      <Representation id="30232" bandwidth="129759" width="0" height="0">
+        <BaseURL>
+          https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30232.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=
+          &uipk=5&nbs=1&deadline=1691767863&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&
+          mid=319771778&platform=html5&upsig=74e40046f5f7d96da7bdde9fd989c5d2&
+          uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=16222&orderid=0,1&buvid=&build=0&
+          mobi_app=&logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="3" mimeType="audio/mp4" minBandwidth="65759" maxBandwidth="65759"
+                   segmentAlignment="true" startWithSAP="0">
+      <SegmentBase indexRange="942-1549">
+        <Initialization range="0-941"/>
+      </SegmentBase>
+      <Representation id="30216" bandwidth="65759" width="0" height="0">
+        <BaseURL>
+          https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30216.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=
+          &uipk=5&nbs=1&deadline=1691767863&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&
+          mid=319771778&platform=html5&upsig=adcfbbdb6bc0866a6583e09047a5c07b&
+          uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=8221&orderid=0,1&buvid=&build=0&
+          mobi_app=&logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <!--    <AdaptationSet group="4" mimeType="video/mp4" minBandwidth="2718771" maxBandwidth="2718771"-->
+    <!--                   segmentAlignment="true" startWithSAP="1">-->
+
+    <!--      <Representation id="80" sar="1:1" bandwidth="2718771" width="1920" height="1080" frameRate="30"-->
+    <!--                      codecs="avc1.640032">-->
+    <!--        <BaseURL>-->
+    <!--          https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30080.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1691767861&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&mid=319771778&platform=html5&upsig=b1f288a29cf1011e6a3d9bca5438fe61&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=341243&orderid=0,1&buvid=&build=0&mobi_app=&logo=80000000-->
+    <!--        </BaseURL>-->
+    <!--      </Representation>-->
+    <!--    </AdaptationSet>-->
+    <!--    <AdaptationSet group="5" mimeType="video/mp4" minBandwidth="1814623" maxBandwidth="1814623"-->
+    <!--                   segmentAlignment="true" startWithSAP="1">-->
+    <!--      <SegmentBase indexRange="994-1589">-->
+    <!--        <Initialization range="0-993"/>-->
+    <!--      </SegmentBase>-->
+    <!--      <Representation id="64" sar="1:1" bandwidth="1814623" width="1280" height="720" frameRate="30"-->
+    <!--                      codecs="avc1.640028">-->
+    <!--        <BaseURL>-->
+    <!--          https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30064.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1691767861&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&mid=319771778&platform=html5&upsig=47f253bf120c184610a4a2c0f2c33d6c&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=227760&orderid=0,1&buvid=&build=0&mobi_app=&logo=80000000-->
+    <!--        </BaseURL>-->
+    <!--      </Representation>-->
+    <!--    </AdaptationSet>-->
+    <!--    <AdaptationSet group="6" mimeType="video/mp4" minBandwidth="818368" maxBandwidth="818368"-->
+    <!--                   segmentAlignment="true" startWithSAP="1">-->
+    <!--      <SegmentBase indexRange="998-1593">-->
+    <!--        <Initialization range="0-997"/>-->
+    <!--      </SegmentBase>-->
+    <!--      <Representation id="32" sar="640:639" bandwidth="818368" width="852" height="480" frameRate="30"-->
+    <!--                      codecs="avc1.64001F">-->
+    <!--        <BaseURL>-->
+    <!--          https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30032.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1691767861&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&mid=319771778&platform=html5&upsig=60ed1f66a508602be5c731d9e2ff155b&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=102716&orderid=0,1&buvid=&build=0&mobi_app=&logo=80000000-->
+    <!--        </BaseURL>-->
+    <!--      </Representation>-->
+    <!--    </AdaptationSet>-->
+    <!--    <AdaptationSet group="7" mimeType="video/mp4" minBandwidth="366593" maxBandwidth="366593"-->
+    <!--                   segmentAlignment="true" startWithSAP="1">-->
+    <!--      <SegmentBase indexRange="1002-1597">-->
+    <!--        <Initialization range="0-1001"/>-->
+    <!--      </SegmentBase>-->
+    <!--      <Representation id="16" sar="1:1" bandwidth="366593" width="640" height="360" frameRate="30"-->
+    <!--                      codecs="avc1.64001E">-->
+    <!--        <BaseURL>-->
+    <!--          https://upos-sz-mirror08c.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30016.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1691767861&gen=playurlv2&os=08cbv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&mid=319771778&platform=html5&upsig=4aeab6dfe7271b6e623c3c97fef9dfbe&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=46012&orderid=0,1&buvid=&build=0&mobi_app=&logo=80000000-->
+    <!--        </BaseURL>-->
+    <!--      </Representation>-->
+    <!--    </AdaptationSet>-->
+    <AdaptationSet group="4" mimeType="video/mp4" par="1920:1080" minBandwidth="366593" maxBandwidth="2718771"
+                   minWidth="640" maxWidth="1920" minHeight="360" maxHeight="1080" segmentAlignment="true"
+                   startWithSAP="1">
+      <Representation id="80" sar="1:1" bandwidth="2718771" width="1920" height="1080" frameRate="30"
+                      codecs="avc1.640032">
+        <SegmentTemplate timescale="1000" duration="2000"
+                         media="https://upos-sz-mirrorali.bilivideo.com/upgcxcode/32/30/893463032/893463032-1-30080.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1691767861&gen=playurlv2&os=alibv&oi=1879688016&trid=288bab1d8e8c4459a246302da104b4acT&mid=319771778&platform=html5&upsig=b1f288a29cf1011e6a3d9bca5438fe61&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=341243&orderid=0,1&buvid=&build=0&mobi_app=&logo=80000000"
+                         initialization="video/250kbit/init.mp4" startNumber="1"/>
+      </Representation>
+
+    </AdaptationSet>
+  </Period>
+</MPD>

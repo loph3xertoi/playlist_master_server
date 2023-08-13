@@ -1,7 +1,7 @@
 package com.daw.pms.Entity.Bilibili;
 
+import com.daw.pms.DTO.BiliLinksDTO;
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -65,12 +65,6 @@ public class BiliDetailResource extends BiliResource {
   /** The episodes of this resource. */
   private List<BiliDetailResource> episodes;
 
-  /**
-   * The links of this video, the key is "video" for video without sound and "audio" for audio only,
-   * The value is a map that the key is resource code and the value is the real link of
-   * corresponding audio or video, specific code see {@link <a
-   * href="https://socialsisteryi.github.io/bilibili-API-collect/docs/bangumi/videostream_url.html#qn%E8%A7%86%E9%A2%91%E6%B8%85%E6%99%B0%E5%BA%A6%E6%A0%87%E8%AF%86>Video
-   * code</a>}
-   */
-  private Map<String, Map<String, String>> links;
+  /** The links of this resource. */
+  private BiliLinksDTO links;
 }

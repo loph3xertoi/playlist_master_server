@@ -12,6 +12,9 @@ import lombok.Data;
  */
 @Data
 public class BiliSubpageOfResource implements Serializable {
+  /** The bvid of this resource, same as the parent resource's bvid. */
+  private String bvid;
+
   /** The cid of this resource. */
   private Long cid;
 
@@ -29,7 +32,4 @@ public class BiliSubpageOfResource implements Serializable {
 
   /** The height of this part of resource. */
   private Integer height;
-
-  //  /** The first frame of this part of resource. */
-  //  private String firstFrame;
 }

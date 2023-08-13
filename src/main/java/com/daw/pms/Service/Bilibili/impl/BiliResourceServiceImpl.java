@@ -1,6 +1,7 @@
 package com.daw.pms.Service.Bilibili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
+import com.daw.pms.DTO.BiliLinksDTO;
 import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Bilibili.BiliDetailResource;
@@ -13,17 +14,38 @@ import com.daw.pms.Utils.WbiBiliBili;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.*;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BiliResourceServiceImpl implements BiliResourceService {
+  @Value("${pms.host}")
+  private String pmsHost;
+
+  @Value("${pms.port}")
+  private int pmsPort;
+
   private final HttpTools httpTools;
+
   private final BiliCookieService biliCookieService;
 
-  public BiliResourceServiceImpl(HttpTools httpTools, BiliCookieService biliCookieService) {
+  private final RedisTemplate<String, String> redisTemplate;
+
+  public BiliResourceServiceImpl(
+      HttpTools httpTools,
+      BiliCookieService biliCookieService,
+      RedisTemplate<String, String> redisTemplate) {
     this.httpTools = httpTools;
     this.biliCookieService = biliCookieService;
+    this.redisTemplate = redisTemplate;
   }
 
   /**
@@ -51,7 +73,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       BiliDetailResource resource = (BiliDetailResource) result.getData();
       Result linksResult = getResourceDashLink(bvid, resource.getCid(), cookie);
       if (linksResult.getSuccess()) {
-        resource.setLinks((Map<String, Map<String, String>>) linksResult.getData());
+        resource.setLinks((BiliLinksDTO) linksResult.getData());
       } else {
         throw new RuntimeException(linksResult.getMessage());
       }
@@ -100,7 +122,6 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       JsonNode episodesNode = ugcSeasonNode.get("sections").get(0).get("episodes");
       ArrayList<BiliDetailResource> episodes = new ArrayList<>(data.getPage());
       for (JsonNode episodeNode : episodesNode) {
-        JsonNode pageNode = episodeNode.get("page");
         JsonNode arcNode = episodeNode.get("arc");
         JsonNode statNode = arcNode.get("stat");
         BiliDetailResource episode = new BiliDetailResource();
@@ -128,16 +149,6 @@ public class BiliResourceServiceImpl implements BiliResourceService {
         episode.setPublishedTime(arcNode.get("pubdate").longValue());
         episode.setCreatedTime(arcNode.get("ctime").longValue());
         episode.setDynamicLabels(arcNode.get("dynamic").textValue());
-        BiliSubpageOfResource subpage = new BiliSubpageOfResource();
-        subpage.setCid(pageNode.get("cid").longValue());
-        subpage.setPage(1);
-        subpage.setPartName(pageNode.get("part").textValue());
-        subpage.setDuration(pageNode.get("duration").intValue());
-        subpage.setWidth(pageNode.get("dimension").get("width").intValue());
-        subpage.setHeight(pageNode.get("dimension").get("height").intValue());
-        List<BiliSubpageOfResource> subpages = new ArrayList<>(1);
-        subpages.add(subpage);
-        episode.setSubpages(subpages);
         episodes.add(episode);
       }
       data.setEpisodes(episodes);
@@ -157,6 +168,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       data.setLikedCount(stateNode.get("like").longValue());
       for (JsonNode pageNode : pagesNode) {
         BiliSubpageOfResource subpage = new BiliSubpageOfResource();
+        subpage.setBvid(dataNode.get("bvid").textValue());
         subpage.setCid(pageNode.get("cid").longValue());
         subpage.setPage(pageNode.get("page").intValue());
         subpage.setPartName(pageNode.get("part").textValue());
@@ -185,12 +197,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
    * @param bvid The resource's bvid.
    * @param cid The resource's cid.
    * @param cookie Your cookie for bilibili.
-   * @return The links of this video, wrapped with Result DTO, the data is Map<String, Map<String,
-   *     String>>, the key is "video" for video without sound and "audio" for audio only, The value
-   *     is a map that the key is resource code and the value is the real link of corresponding
-   *     audio or video, specific code see {@link <a
-   *     href="https://socialsisteryi.github.io/bilibili-API-collect/docs/bangumi/videostream_url.html#qn%E8%A7%86%E9%A2%91%E6%B8%85%E6%99%B0%E5%BA%A6%E6%A0%87%E8%AF%86>Video
-   *     code</a>}
+   * @return The links of this resource, wrapped with Result DTO, the data is BiliLinksDTO.
    * @apiNote GET GET_RESOURCE_DASH_LINKS?bvid={@code bvid}&cid={@code
    *     cid}&fnval=16&fourk=1&platform=html&high_quality=1&wts=wts&w_rid=w_rid
    */
@@ -207,15 +214,15 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     // Enable 4k video.
     params.put("fourk", 1);
     // Set platform to html.
-    params.put("platform", "html");
+    params.put("platform", "html5");
     // Set the high quality, necessary for links with dash format.
     params.put("high_quality", 1);
     String rawResourceDashLinks =
         httpTools.requestGetAPI(BilibiliAPI.GET_RESOURCE_DASH_LINKS, params, Optional.of(cookie));
-    return extractDashLinks(rawResourceDashLinks);
+    return extractDashLinks(rawResourceDashLinks, bvid, cid);
   }
 
-  private Result extractDashLinks(String rawResourceDashLinks) {
+  private Result extractDashLinks(String rawResourceDashLinks, String bvid, Long cid) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -229,7 +236,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       JsonNode dashNode = dataNode.get("dash");
       JsonNode videosNode = dashNode.get("video");
       JsonNode audiosNode = dashNode.get("audio");
-      Map<String, Map<String, String>> data = new HashMap<>();
+      BiliLinksDTO biliLinksDTO = new BiliLinksDTO();
       Map<String, String> videoLinks = new HashMap<>();
       Map<String, String> audioLinks = new HashMap<>();
       videosNode.forEach(
@@ -238,12 +245,151 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       audiosNode.forEach(
           audioNode ->
               audioLinks.put(audioNode.get("id").asText(), audioNode.get("baseUrl").textValue()));
-      data.put("video", videoLinks);
-      data.put("audio", audioLinks);
-      return Result.ok(data);
+      biliLinksDTO.setVideo(videoLinks);
+      biliLinksDTO.setAudio(audioLinks);
+      String mpdName;
+      try {
+        mpdName = bvid + "_" + cid + ".mpd";
+        generateMpd(jsonNode, mpdName);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      String mpdLink = "/mpd/" + mpdName;
+      biliLinksDTO.setMpd(mpdLink);
+      return Result.ok(biliLinksDTO);
     } else {
       throw new RuntimeException(jsonNode.get("message").textValue());
     }
+  }
+
+  /** Generate Mpd file according to dash json. */
+  private void generateMpd(JsonNode jsonNode, String mpdName) {
+    CompletableFuture.runAsync(
+        () -> {
+          try {
+            JsonNode dataNode = jsonNode.get("data");
+            JsonNode dashNode = dataNode.get("dash");
+            JsonNode videosNode = dashNode.get("video");
+            JsonNode audiosNode = dashNode.get("audio");
+            long durationSeconds = dashNode.get("duration").longValue();
+            long durationMillis = durationSeconds * 1000;
+            String duration = Duration.ofMillis(durationMillis).toString();
+            double minBufferTimeSeconds = dashNode.get("minBufferTime").doubleValue();
+            int minBufferTimeMillis = (int) minBufferTimeSeconds * 1000;
+            String minBufferTime = Duration.ofMillis(minBufferTimeMillis).toString();
+            XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+            //            xmlOutputFactory.setProperty("escapeCharacters", false);
+            StringWriter stringWriter = new StringWriter();
+
+            XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
+            // Start the document
+            xmlStreamWriter.writeStartDocument();
+            xmlStreamWriter.writeStartElement("MPD");
+            xmlStreamWriter.writeAttribute("xmlns", "urn:mpeg:dash:schema:mpd:2011");
+            xmlStreamWriter.writeAttribute("type", "static");
+            xmlStreamWriter.writeAttribute("mediaPresentationDuration", duration);
+            xmlStreamWriter.writeAttribute("minBufferTime", minBufferTime);
+            xmlStreamWriter.writeAttribute(
+                "profiles", "urn:mpeg:dash:profile:isoff-live:2011,urn:com:dashif:dash264");
+
+            xmlStreamWriter.writeStartElement("Period");
+            xmlStreamWriter.writeAttribute("id", "1");
+            xmlStreamWriter.writeAttribute("start", "PT0S");
+
+            // Write video adaptation set.
+            for (int i = 0; i < videosNode.size(); i++) {
+              JsonNode videoNode = videosNode.get(i);
+              String minBandwidth = videoNode.get("bandwidth").asText();
+              String startWithSap = videoNode.get("startWithSap").asText();
+              String initializationRange =
+                  videoNode.get("SegmentBase").get("Initialization").textValue();
+              String indexRange = videoNode.get("SegmentBase").get("indexRange").textValue();
+              String id = videoNode.get("id").asText();
+              String sar = videoNode.get("sar").textValue();
+              String bandwidth = videoNode.get("bandwidth").asText();
+              String width = videoNode.get("width").asText();
+              String height = videoNode.get("height").asText();
+              String baseUrl = videoNode.get("baseUrl").textValue();
+              String codecs = videoNode.get("codecs").textValue();
+              xmlStreamWriter.writeStartElement("AdaptationSet");
+              xmlStreamWriter.writeAttribute("group", String.valueOf(i + 1));
+              xmlStreamWriter.writeAttribute("mimeType", "video/mp4");
+              xmlStreamWriter.writeAttribute("minBandwidth", minBandwidth);
+              xmlStreamWriter.writeAttribute("maxBandwidth", minBandwidth);
+              xmlStreamWriter.writeAttribute("segmentAlignment", "true");
+              xmlStreamWriter.writeAttribute("startWithSAP", startWithSap);
+              xmlStreamWriter.writeStartElement("SegmentBase");
+              xmlStreamWriter.writeAttribute("indexRange", indexRange);
+              xmlStreamWriter.writeStartElement("Initialization");
+              xmlStreamWriter.writeAttribute("range", initializationRange);
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeStartElement("Representation");
+              xmlStreamWriter.writeAttribute("id", id);
+              xmlStreamWriter.writeAttribute("sar", sar);
+              xmlStreamWriter.writeAttribute("bandwidth", bandwidth);
+              xmlStreamWriter.writeAttribute("width", width);
+              xmlStreamWriter.writeAttribute("height", height);
+              xmlStreamWriter.writeAttribute("frameRate", "30");
+              xmlStreamWriter.writeAttribute("codecs", codecs);
+              xmlStreamWriter.writeStartElement("BaseURL");
+              xmlStreamWriter.writeCharacters(baseUrl);
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+            }
+
+            // Write audio adaptation set.
+            for (int i = 0; i < audiosNode.size(); i++) {
+              JsonNode audioNode = audiosNode.get(i);
+              String minBandwidth = audioNode.get("bandwidth").asText();
+              String startWithSap = audioNode.get("startWithSap").asText();
+              String initializationRange =
+                  audioNode.get("SegmentBase").get("Initialization").textValue();
+              String indexRange = audioNode.get("SegmentBase").get("indexRange").textValue();
+              String id = audioNode.get("id").asText();
+              String bandwidth = audioNode.get("bandwidth").asText();
+              String baseUrl = audioNode.get("baseUrl").textValue();
+              String codecs = audioNode.get("codecs").textValue();
+              xmlStreamWriter.writeStartElement("AdaptationSet");
+              xmlStreamWriter.writeAttribute("group", String.valueOf(i + 1 + videosNode.size()));
+              xmlStreamWriter.writeAttribute("mimeType", "audio/mp4");
+              xmlStreamWriter.writeAttribute("minBandwidth", minBandwidth);
+              xmlStreamWriter.writeAttribute("maxBandwidth", minBandwidth);
+              xmlStreamWriter.writeAttribute("segmentAlignment", "true");
+              xmlStreamWriter.writeAttribute("startWithSAP", startWithSap);
+              xmlStreamWriter.writeStartElement("SegmentBase");
+              xmlStreamWriter.writeAttribute("indexRange", indexRange);
+              xmlStreamWriter.writeStartElement("Initialization");
+              xmlStreamWriter.writeAttribute("range", initializationRange);
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeStartElement("Representation");
+              xmlStreamWriter.writeAttribute("id", id);
+              xmlStreamWriter.writeAttribute("bandwidth", bandwidth);
+              xmlStreamWriter.writeAttribute("codecs", codecs);
+              xmlStreamWriter.writeAttribute("width", "0");
+              xmlStreamWriter.writeAttribute("height", "0");
+              xmlStreamWriter.writeStartElement("BaseURL");
+              xmlStreamWriter.writeCharacters(baseUrl);
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+              xmlStreamWriter.writeEndElement();
+            }
+
+            // End the document
+            xmlStreamWriter.writeEndElement();
+            xmlStreamWriter.writeEndElement();
+            xmlStreamWriter.writeEndDocument();
+            xmlStreamWriter.flush();
+            xmlStreamWriter.close();
+
+            redisTemplate.opsForValue().set(mpdName, stringWriter.toString());
+            redisTemplate.expire(mpdName, 2, TimeUnit.HOURS);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
   /**

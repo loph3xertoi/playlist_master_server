@@ -65,6 +65,9 @@ public class HttpTools {
     URI uri = builder.build(true).toUri();
     HttpHeaders headers = new HttpHeaders();
     headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+    headers.set(
+        "User-Agent",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
     cookie.ifPresent(s -> headers.set("Cookie", s));
     HttpEntity<?> entity = new HttpEntity<>(headers);
     ResponseEntity<String> response =

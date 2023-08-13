@@ -4,7 +4,6 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
-import java.util.Map;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -111,19 +110,13 @@ public class SongController {
    *
    * @param SongIds The song's id, multiple songs separated with comma.
    * @param platform The platform id.
-   * @return The urls of your songs with {@code SongIds}.
+   * @return The urls of your songs with {@code SongIds}, wrapped in Result DTO.
    * @apiNote GET /songsLink/{@code SongIds}?platform={@code platform}
    */
   @GetMapping("/songsLink/{SongIds}")
   public Result getSongsLink(@PathVariable String SongIds, @RequestParam Integer platform) {
-    Map<String, String> songsLink;
     try {
-      Result linksResult = songService.getSongsLink(SongIds, "standard", platform);
-      if (linksResult.getSuccess()) {
-        songsLink = (Map<String, String>) linksResult.getData();
-      } else {
-        throw new RuntimeException(linksResult.getMessage());
-      }
+      return songService.getSongsLink(SongIds, "standard", platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -136,7 +129,6 @@ public class SongController {
     } catch (Exception e) {
       return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
     }
-    return Result.ok(songsLink);
   }
 
   /**

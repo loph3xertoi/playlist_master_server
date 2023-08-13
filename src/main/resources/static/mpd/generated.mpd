@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" type="static" mediaPresentationDuration="PT15M29S" minBufferTime="PT1S"
+     profiles="urn:mpeg:dash:profile:isoff-live:2011,urn:com:dashif:dash264">
+  <Period id="1" start="PT0S">
+    <AdaptationSet group="1" mimeType="video/mp4" minBandwidth="2141153" maxBandwidth="2141153" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="997-3248">
+        <Initialization range="0-996"></Initialization>
+      </SegmentBase>
+      <Representation id="80" sar="1:1" bandwidth="2141153" width="1920" height="1080" frameRate="30"
+                      codecs="avc1.640032">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30080.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=36b1777f84227ad5550cb500f08117fa&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=267682&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="2" mimeType="video/mp4" minBandwidth="1690546" maxBandwidth="1690546" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1061-3312">
+        <Initialization range="0-1060"></Initialization>
+      </SegmentBase>
+      <Representation id="80" sar="1:1" bandwidth="1690546" width="1920" height="1080" frameRate="30"
+                      codecs="hev1.1.6.L150.90">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459-1-30077.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=98b72e76f2d09d4b7f6e4f3f91059ebb&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=211348&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="3" mimeType="video/mp4" minBandwidth="1316690" maxBandwidth="1316690" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="995-3246">
+        <Initialization range="0-994"></Initialization>
+      </SegmentBase>
+      <Representation id="64" sar="1:1" bandwidth="1316690" width="1280" height="720" frameRate="30"
+                      codecs="avc1.640028">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30064.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=b976bc7f531c351c1da9586ddd79f418&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=164609&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="4" mimeType="video/mp4" minBandwidth="711599" maxBandwidth="711599" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1061-3312">
+        <Initialization range="0-1060"></Initialization>
+      </SegmentBase>
+      <Representation id="64" sar="1:1" bandwidth="711599" width="1280" height="720" frameRate="30"
+                      codecs="hev1.1.6.L120.90">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459-1-30066.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=fc70908f2ef980dcce9a54c50b4fb572&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=88962&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="5" mimeType="video/mp4" minBandwidth="650449" maxBandwidth="650449" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1000-3251">
+        <Initialization range="0-999"></Initialization>
+      </SegmentBase>
+      <Representation id="32" sar="640:639" bandwidth="650449" width="852" height="480" frameRate="30"
+                      codecs="avc1.64001F">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30032.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=c0102d99a460172a841c3a1bdf2fdca1&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=81317&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="6" mimeType="video/mp4" minBandwidth="426527" maxBandwidth="426527" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1065-3316">
+        <Initialization range="0-1064"></Initialization>
+      </SegmentBase>
+      <Representation id="32" sar="640:639" bandwidth="426527" width="852" height="480" frameRate="30"
+                      codecs="hev1.1.6.L120.90">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459-1-30033.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=f0a72533cc4f330ad66822983369bd9b&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=53323&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="7" mimeType="video/mp4" minBandwidth="271640" maxBandwidth="271640" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1059-3310">
+        <Initialization range="0-1058"></Initialization>
+      </SegmentBase>
+      <Representation id="16" sar="1:1" bandwidth="271640" width="640" height="360" frameRate="30"
+                      codecs="hev1.1.6.L120.90">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459-1-30011.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=6ffc3139d527ac23d4a28e8784b92bef&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=33959&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="8" mimeType="video/mp4" minBandwidth="343025" maxBandwidth="343025" segmentAlignment="true"
+                   startWithSAP="1">
+      <SegmentBase indexRange="1004-3255">
+        <Initialization range="0-1003"></Initialization>
+      </SegmentBase>
+      <Representation id="16" sar="1:1" bandwidth="343025" width="640" height="360" frameRate="30" codecs="avc1.64001E">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30016.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=d8ed53756bc4f332e3802b9f7ebb3820&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=42884&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="9" mimeType="audio/mp4" minBandwidth="48919" maxBandwidth="48919" segmentAlignment="true"
+                   startWithSAP="0">
+      <SegmentBase indexRange="944-3207">
+        <Initialization range="0-943"></Initialization>
+      </SegmentBase>
+      <Representation id="30216" bandwidth="48919" width="0" height="0">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30216.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=f52de5563df9a8eafd5d769ce4577f0b&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=6116&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="10" mimeType="audio/mp4" minBandwidth="115657" maxBandwidth="115657" segmentAlignment="true"
+                   startWithSAP="0">
+      <SegmentBase indexRange="934-3197">
+        <Initialization range="0-933"></Initialization>
+      </SegmentBase>
+      <Representation id="30232" bandwidth="115657" width="0" height="0">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30232.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=95bf6a47ddc78fa735b8cae980451e61&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=14459&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet group="11" mimeType="audio/mp4" minBandwidth="202188" maxBandwidth="202188" segmentAlignment="true"
+                   startWithSAP="0">
+      <SegmentBase indexRange="934-3197">
+        <Initialization range="0-933"></Initialization>
+      </SegmentBase>
+      <Representation id="30280" bandwidth="202188" width="0" height="0">
+        <BaseURL>
+          https://cn-sdjn-cm-02-06.bilivideo.com/upgcxcode/59/64/1198636459/1198636459_nb3-1-30280.m4s?e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&amp;uipk=5&amp;nbs=1&amp;deadline=1691916345&amp;gen=playurlv2&amp;os=bcache&amp;oi=1879688016&amp;trid=0000afa7b6d3a44448dd8c59fee104eddf4fT&amp;mid=319771778&amp;platform=html5&amp;upsig=c4e290f48fac766b323209d077b04560&amp;uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&amp;cdnid=6616&amp;bvc=vod&amp;nettype=0&amp;bw=25278&amp;orderid=0,1&amp;buvid=&amp;build=0&amp;mobi_app=&amp;logo=80000000
+        </BaseURL>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>
