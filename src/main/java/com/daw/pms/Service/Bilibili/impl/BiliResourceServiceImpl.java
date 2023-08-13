@@ -140,11 +140,11 @@ public class BiliResourceServiceImpl implements BiliResourceService {
         episode.setUpperHeadPic("");
         episode.setPlayCount(statNode.get("view").longValue());
         episode.setDanmakuCount(statNode.get("danmaku").longValue());
-        episode.setCollectedCount(stateNode.get("fav").longValue());
-        episode.setCommentCount(stateNode.get("reply").longValue());
-        episode.setCoinsCount(stateNode.get("coin").longValue());
-        episode.setSharedCount(stateNode.get("share").longValue());
-        episode.setLikedCount(stateNode.get("like").longValue());
+        episode.setCollectedCount(statNode.get("fav").longValue());
+        episode.setCommentCount(statNode.get("reply").longValue());
+        episode.setCoinsCount(statNode.get("coin").longValue());
+        episode.setSharedCount(statNode.get("share").longValue());
+        episode.setLikedCount(statNode.get("like").longValue());
         episode.setIntro(arcNode.get("desc").textValue());
         episode.setPublishedTime(arcNode.get("pubdate").longValue());
         episode.setCreatedTime(arcNode.get("ctime").longValue());
