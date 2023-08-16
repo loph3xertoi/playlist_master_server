@@ -55,6 +55,11 @@ public class RedisConfig extends CachingConfigurerSupport {
   }
 
   @Bean
+  public RedisCacheConfiguration bilibiliResourceDashLinksCacheConfiguration() {
+    return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(2));
+  }
+
+  @Bean
   @Override
   public CacheManager cacheManager() {
     Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
@@ -63,6 +68,8 @@ public class RedisConfig extends CachingConfigurerSupport {
     cacheConfigurations.put("song-cache", defaultCacheConfiguration());
     cacheConfigurations.put("user-cache", defaultCacheConfiguration());
     cacheConfigurations.put("bilibili-wbi-key", bilibiliWbiKeyCacheConfiguration());
+    cacheConfigurations.put(
+        "bilibili-resource-dashLinks", bilibiliResourceDashLinksCacheConfiguration());
     return RedisCacheManager.builder(redisConnectionFactory())
         .withInitialCacheConfigurations(cacheConfigurations)
         .build();

@@ -5,6 +5,7 @@ import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
 import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,6 +115,7 @@ public class SongController {
    * @apiNote GET /songsLink/{@code SongIds}?platform={@code platform}
    */
   @GetMapping("/songsLink/{SongIds}")
+  @CacheEvict
   public Result getSongsLink(@PathVariable String SongIds, @RequestParam Integer platform) {
     try {
       return songService.getSongsLink(SongIds, "standard", platform);

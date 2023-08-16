@@ -201,6 +201,10 @@ public class BiliResourceServiceImpl implements BiliResourceService {
    * @apiNote GET GET_RESOURCE_DASH_LINKS?bvid={@code bvid}&cid={@code
    *     cid}&fnval=16&fourk=1&platform=html&high_quality=1&wts=wts&w_rid=w_rid
    */
+  //  @Cacheable(
+  //      value = "bilibili-resource-dashLinks",
+  //      key = "#root.methodName",
+  //      unless = "#result==null")
   @Override
   public Result getResourceDashLink(String bvid, Long cid, String cookie) {
     Map<String, Object> params = new HashMap<>();
@@ -250,7 +254,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       String mpdName;
       try {
         mpdName = bvid + "_" + cid + ".mpd";
-        generateMpd(jsonNode, mpdName);
+        generateAndCacheMpd(jsonNode, mpdName);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -263,7 +267,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
   }
 
   /** Generate Mpd file according to dash json. */
-  private void generateMpd(JsonNode jsonNode, String mpdName) {
+  private void generateAndCacheMpd(JsonNode jsonNode, String mpdName) {
     CompletableFuture.runAsync(
         () -> {
           try {
@@ -386,6 +390,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
 
             redisTemplate.opsForValue().set(mpdName, stringWriter.toString());
             redisTemplate.expire(mpdName, 2, TimeUnit.HOURS);
+
           } catch (Exception e) {
             throw new RuntimeException(e);
           }

@@ -98,7 +98,7 @@ public class EvictCacheAspect {
           redisCache.evictIfPresent(key);
         }
       }
-      if (secondParam == null) {
+      if (secondParam != null) {
         String pattern2 = "library-cache::getDetailLibrary(" + secondParam + ",*" + platform + ")";
         try (Cursor<byte[]> cursor =
             redisConnection.scan(ScanOptions.scanOptions().match(pattern2).count(1000).build())) {
