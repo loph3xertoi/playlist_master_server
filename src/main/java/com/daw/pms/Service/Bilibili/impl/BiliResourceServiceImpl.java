@@ -388,8 +388,8 @@ public class BiliResourceServiceImpl implements BiliResourceService {
             xmlStreamWriter.flush();
             xmlStreamWriter.close();
 
-            redisTemplate.opsForValue().set(mpdName, stringWriter.toString());
-            redisTemplate.expire(mpdName, 2, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set("bili-mpd::" + mpdName, stringWriter.toString());
+            redisTemplate.expire("bili-mpd::" + mpdName, 2, TimeUnit.HOURS);
 
           } catch (Exception e) {
             throw new RuntimeException(e);

@@ -27,7 +27,7 @@ public class MpdController {
 
   @GetMapping(value = "/{fileName:.+\\.mpd}")
   public ResponseEntity<byte[]> getMpdFile(@PathVariable String fileName) {
-    String mpdXml = redisTemplate.opsForValue().get(fileName);
+    String mpdXml = redisTemplate.opsForValue().get("bili-mpd::" + fileName);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.parseMediaType("application/dash+xml"));
     headers.setAccessControlAllowOrigin("*");
