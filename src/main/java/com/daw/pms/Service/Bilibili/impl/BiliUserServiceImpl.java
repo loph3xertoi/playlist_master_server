@@ -62,7 +62,7 @@ public class BiliUserServiceImpl implements BiliUserService {
     user.setIp(dataNode.get("addr").textValue());
     user.setCountry(dataNode.get("country").textValue());
     user.setProvince(dataNode.get("province").textValue());
-    user.setCity(dataNode.get("city").textValue());
+    //    user.setCity(dataNode.get("city").textValue());
     String isp = dataNode.get("isp").textValue();
     user.setIsp("移动".equals(isp) ? 0 : "电信".equals(isp) ? 1 : 2);
     user.setLatitude(dataNode.get("latitude").doubleValue());

@@ -59,7 +59,13 @@ public class QQMusicUserServiceImpl extends QQMusicBase
       throw new RuntimeException(e);
     }
     QQMusicUser qqMusicUser = new QQMusicUser();
-    JsonNode creatorNode = jsonNode.get("data").get("creator");
+    JsonNode creatorNode;
+    try {
+      creatorNode = jsonNode.get("data").get("creator");
+    } catch (Exception e) {
+      throw new RuntimeException(
+          jsonNode.get("errMsg").textValue() + "：" + jsonNode.get("info").textValue());
+    }
 
     qqMusicUser.setName(creatorNode.get("nick").textValue());
     qqMusicUser.setHeadPic(creatorNode.get("headpic").textValue());

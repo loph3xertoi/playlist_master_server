@@ -124,8 +124,8 @@ public class BiliUser extends BasicUser {
   /** Your province. */
   private String province;
 
-  /** Your city. */
-  private String city;
+  //  /** Your city. */
+  //  private String city;
 
   /** Your ISP, 0 represents china mobile, 1 represents china telecom. */
   private Integer isp;
