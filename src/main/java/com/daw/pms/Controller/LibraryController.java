@@ -37,8 +37,8 @@ public class LibraryController {
    * @return All libraries for specific platform.
    * @apiNote GET /libraries?id={@code id}&platform={@code platform}
    */
-  @GetMapping("/libraries")
   @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
+  @GetMapping("/libraries")
   public Result getLibraries(
       @RequestParam Long id,
       @RequestParam(required = false) Integer pn,
@@ -49,52 +49,6 @@ public class LibraryController {
     Result result;
     try {
       result = libraryService.getLibraries(id, pn, ps, biliPlatform, type, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
-    }
-    return result;
-  }
-
-  /**
-   * Get detail library with {@code library}.
-   *
-   * @param library The library id.
-   * @param pn The page number of library, required in bilibili.
-   * @param ps The page size of library, required in bilibili.
-   * @param keyword The searching keyword of resources in fav list, only used in bilibili.
-   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
-   *     by view time, pubtime: by published time, only used in bilibili.
-   * @param range The range of searching, 0: current fav list, 1: all fav lists, only used in
-   *     bilibili.
-   * @param type 0 for created fav list, 1 for collected fav list, required in bilibili.
-   * @param platform Which platform the user belongs to.
-   * @return Detail library.
-   * @apiNote GET /library/{@code library}?platform={@code platform}
-   */
-  @GetMapping("/library/{library}")
-  @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
-  public Result getDetailLibrary(
-      @PathVariable String library,
-      @RequestParam(required = false) Integer pn,
-      @RequestParam(required = false) Integer ps,
-      @RequestParam(required = false) String keyword,
-      @RequestParam(required = false) String order,
-      @RequestParam(required = false) Integer range,
-      @RequestParam(required = false) Integer type,
-      @RequestParam Integer platform) {
-    Result result;
-    try {
-      result =
-          libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -136,6 +90,52 @@ public class LibraryController {
     } catch (Exception e) {
       return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
     }
+  }
+
+  /**
+   * Get detail library with {@code library}.
+   *
+   * @param library The library id.
+   * @param pn The page number of library, required in bilibili.
+   * @param ps The page size of library, required in bilibili.
+   * @param keyword The searching keyword of resources in fav list, only used in bilibili.
+   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
+   *     by view time, pubtime: by published time, only used in bilibili.
+   * @param range The range of searching, 0: current fav list, 1: all fav lists, only used in
+   *     bilibili.
+   * @param type 0 for created fav list, 1 for collected fav list, required in bilibili.
+   * @param platform Which platform the user belongs to.
+   * @return Detail library.
+   * @apiNote GET /library/{@code library}?platform={@code platform}
+   */
+  @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
+  @GetMapping("/library/{library}")
+  public Result getDetailLibrary(
+      @PathVariable String library,
+      @RequestParam(required = false) Integer pn,
+      @RequestParam(required = false) Integer ps,
+      @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String order,
+      @RequestParam(required = false) Integer range,
+      @RequestParam(required = false) Integer type,
+      @RequestParam Integer platform) {
+    Result result;
+    try {
+      result =
+          libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+    }
+    return result;
   }
 
   /**
