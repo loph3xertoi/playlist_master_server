@@ -30,13 +30,6 @@ public class MpdController {
     String mpdXml = redisTemplate.opsForValue().get("bili-mpd::" + fileName);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.parseMediaType("application/dash+xml"));
-    headers.setAccessControlAllowOrigin("*");
-    headers.setAccessControlAllowHeaders(
-        new ArrayList<String>() {
-          {
-            add("*");
-          }
-        });
     assert mpdXml != null;
     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(mpdXml.getBytes());
   }
