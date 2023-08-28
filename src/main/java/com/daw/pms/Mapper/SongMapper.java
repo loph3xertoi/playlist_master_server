@@ -27,7 +27,7 @@ public interface SongMapper {
   })
   PMSSong getSong(Long id);
 
-  @Select("select * from tb_pms_song where id in (#{ids})")
+  @Select("select * from tb_pms_song where id in (#{list})")
   @Results({
     @Result(property = "payPlay", column = "pay_play"),
     @Result(property = "isTakenDown", column = "is_taken_down")

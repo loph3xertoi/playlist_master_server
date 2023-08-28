@@ -1,6 +1,7 @@
 package com.daw.pms.Entity.Provider;
 
 import com.daw.pms.Entity.PMS.PMSDetailLibrary;
+import java.util.List;
 import org.apache.ibatis.jdbc.SQL;
 
 public class PlaylistSqlProvider {
@@ -45,6 +46,37 @@ public class PlaylistSqlProvider {
     }
     sql.WHERE("t1.id = #{id}");
     return sql.toString();
+  }
+
+  public String deletePlaylists(List<Long> ids) {
+    String sql =
+        new SQL() {
+          {
+            DELETE_FROM("tb_pms_playlist");
+            if (ids != null) {
+              WHERE(getSqlConditionCollection(ids));
+            }
+          }
+        }.toString();
+    System.out.println(sql);
+    return sql;
+  }
+
+  private String getSqlConditionCollection(List<Long> ids) {
+    StringBuilder strConditions = new StringBuilder();
+    if (ids != null && ids.size() > 0) {
+      int count = ids.size();
+      for (int i = 0; i < count; i++) {
+        String condition = ids.get(i).toString();
+        strConditions.append(condition);
+        if (i < count - 1) {
+          strConditions.append(",");
+        }
+      }
+      return "id" + " in (" + strConditions + ")";
+    } else {
+      return "1=2";
+    }
   }
 
   public String createPlaylist(PMSDetailLibrary library) {

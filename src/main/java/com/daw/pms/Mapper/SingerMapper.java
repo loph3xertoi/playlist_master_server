@@ -10,7 +10,7 @@ public interface SingerMapper {
   @Select("select * from tb_pms_singer where id = #{id}")
   PMSSinger getSinger(Long id);
 
-  @Select("select * from tb_pms_singer where id in (#{ids})")
+  @Select("select * from tb_pms_singer where id in (#{list})")
   List<PMSSinger> getSingers(List<Long> ids);
 
   @InsertProvider(type = SingerSqlProvider.class, method = "addSinger")

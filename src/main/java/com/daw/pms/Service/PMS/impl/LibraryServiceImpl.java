@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -318,7 +319,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   public Result deleteLibrary(String libraryId, Integer platform) {
     Result result;
     if (platform == 0) {
-      Long playlistId = playlistMapper.deletePlaylist(Long.valueOf(libraryId));
+      List<Long> ids =
+          Arrays.stream(libraryId.split(",")).map(Long::parseLong).collect(Collectors.toList());
+      Long playlistId = playlistMapper.deletePlaylists(ids);
       result = Result.ok(playlistId);
     } else if (platform == 1) {
       result = qqMusicPlaylistService.deletePlaylist(libraryId, qqMusicCookie);

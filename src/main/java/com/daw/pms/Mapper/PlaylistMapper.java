@@ -46,6 +46,10 @@ public interface PlaylistMapper {
   @Options(useGeneratedKeys = true, keyProperty = "id")
   Long deletePlaylist(Long id);
 
+  @DeleteProvider(type = PlaylistSqlProvider.class, method = "deletePlaylists")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  Long deletePlaylists(@Param("ids") List<Long> ids);
+
   @UpdateProvider(type = PlaylistSqlProvider.class, method = "updatePlaylist")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   Long updatePlaylist(PMSDetailLibrary library);
