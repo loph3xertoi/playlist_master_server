@@ -21,7 +21,7 @@ public interface NCMSongService {
    * @return Detail song with {@code ids}, wrapped with Result DTO, the data is NCMDetailSong.
    * @apiNote GET /song/detail?ids={@code ids}
    */
-  com.daw.pms.DTO.Result getDetailSong(String ids, String cookie);
+  Result getDetailSong(String ids, String cookie);
 
   /**
    * Get the similar songs of song {@code id}.
@@ -54,7 +54,7 @@ public interface NCMSongService {
    *     and quality {@code level}, wrapped with Result DTO, the data is Map<String,String>.
    * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
    */
-  com.daw.pms.DTO.Result getSongsLink(String ids, String level, String cookie);
+  Result getSongsLink(String ids, String level, String cookie);
 
   /**
    * Search and return paged songs/resources according to the given keyword {@code name}.

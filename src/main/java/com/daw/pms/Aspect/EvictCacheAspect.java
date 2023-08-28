@@ -1,6 +1,7 @@
 package com.daw.pms.Aspect;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.UpdateLibraryDTO;
 import java.util.Map;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -35,7 +36,8 @@ public class EvictCacheAspect {
   @Pointcut(
       "execution(* com.daw.pms.Controller.LibraryController.addSongsToLibrary(..))"
           + "|| execution(* com.daw.pms.Controller.LibraryController.moveSongsToOtherLibrary(..))"
-          + "|| execution(* com.daw.pms.Controller.LibraryController.removeSongsFromLibrary(..))")
+          + "|| execution(* com.daw.pms.Controller.LibraryController.removeSongsFromLibrary(..))"
+          + "|| execution(* com.daw.pms.Controller.LibraryController.updateLibrary(..))")
   public void controllerUpdateLibrarySongsMethods() {}
 
   @AfterReturning(pointcut = "controllerUpdateMethods()", returning = "resultObj")
@@ -51,7 +53,10 @@ public class EvictCacheAspect {
       try (Cursor<byte[]> cursor =
           redisConnection.scan(
               ScanOptions.scanOptions()
-                  .match("library-cache::getLibraries(0,*" + platform + ")")
+                  .match(
+                      "library-cache::getLibraries(1,*"
+                          + platform
+                          + ")") // TODO: change to real user id from session.
                   .count(1000)
                   .build())) {
         while (cursor.hasNext()) {
@@ -85,8 +90,12 @@ public class EvictCacheAspect {
       } else if ("moveSongsToOtherLibrary".equals(methodName)) {
         firstParam = ((Map<String, String>) args[0]).get("fromTid");
         secondParam = ((Map<String, String>) args[0]).get("toTid");
-      } else {
+      } else if ("removeSongsFromLibrary".equals(methodName)) {
         firstParam = (String) args[2];
+      } else if ("updateLibrary".equals(methodName)) {
+        firstParam = ((UpdateLibraryDTO) args[0]).getId().toString();
+      } else {
+        throw new RuntimeException("Invalid method name");
       }
       String pattern = "library-cache::getDetailLibrary(" + firstParam + ",*" + platform + ")";
       try (Cursor<byte[]> cursor =

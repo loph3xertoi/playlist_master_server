@@ -1,6 +1,10 @@
 package com.daw.pms.Service.PMS;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.UpdateLibraryDTO;
+import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Entity.Bilibili.BiliResource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,8 +19,8 @@ public interface LibraryService {
    * Get all libraries for specific platform.
    *
    * @param id Your user id in pms.
-   * @param pn The page number, only used in bilibili.
-   * @param ps The page size, only used in bilibili.
+   * @param pn The page number, only used in bilibili and pms, start from 1.
+   * @param ps The page size, only used in bilibili and pms.
    * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
    * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
    *     collected fav lists, only used in bilibili.
@@ -62,6 +66,16 @@ public interface LibraryService {
   Result createLibrary(Map<String, String> library, Integer platform);
 
   /**
+   * Update library.
+   *
+   * @param library UpdateLibraryDTO that contains the name of library, {"name"(required):name,
+   *     "intro":intro, "cover":cover} (PMSDetailLibrary)
+   * @param platform Which platform this library belongs to.
+   * @return The response of request wrapped by Result DTO.
+   */
+  Result updateLibrary(UpdateLibraryDTO library, Integer platform);
+
+  /**
    * Delete the library.
    *
    * @param libraryId The id of library, multiple libraries separated with comma.
@@ -71,11 +85,15 @@ public interface LibraryService {
   Result deleteLibrary(String libraryId, Integer platform);
 
   /**
-   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
+   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}. /** Add
+   * songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
    *
    * @param libraryId Target library id.
    * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
-   * @param songsId Songs' id, multiple songs id separated with comma.
+   * @param songsIds Songs' id, multiple songs id separated with comma.
+   * @param songs The songs list to be added to library in pms.
+   * @param resources The bilibili resources list to be added to library in pms.
+   * @param isAddToPMSLibrary Whether adding songs to pms library.
    * @param isFavoriteSearchedResource Whether favorite searched resource.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
@@ -83,8 +101,11 @@ public interface LibraryService {
   Result addSongsToLibrary(
       String libraryId,
       String biliSourceFavListId,
-      String songsId,
-      String isFavoriteSearchedResource,
+      String songsIds,
+      List<BasicSong> songs,
+      List<BiliResource> resources,
+      Boolean isAddToPMSLibrary,
+      Boolean isFavoriteSearchedResource,
       Integer platform);
 
   /**

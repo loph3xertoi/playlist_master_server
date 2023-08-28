@@ -155,28 +155,32 @@ class LibraryServiceImplTest {
   @Test
   void addSongsToLibrary() {
     try {
-      Result pmsAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 0);
+      Result pmsAddingSongsResult =
+          libraryService.addSongsToLibrary("1", null, "1,2", null, null, false, false, 0);
       System.out.println("pmsAddingSongsResult: \n" + pmsAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result qqmusicAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 1);
+      Result qqmusicAddingSongsResult =
+          libraryService.addSongsToLibrary("1", null, "1,2", null, null, false, false, 1);
       System.out.println("qqmusicAddingSongsResult: \n" + qqmusicAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result ncmAddingSongsResult = libraryService.addSongsToLibrary("1", null, "1,2", 2);
+      Result ncmAddingSongsResult =
+          libraryService.addSongsToLibrary("1", null, "1,2", null, null, false, false, 2);
       System.out.println("ncmAddingSongsResult: \n" + ncmAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      Result bilibiliAddingSongsResult = libraryService.addSongsToLibrary("1", "2", "1,2", 3);
+      Result bilibiliAddingSongsResult =
+          libraryService.addSongsToLibrary("1", "2", "1,2", null, null, false, false, 3);
       System.out.println("bilibiliAddingSongsResult: \n" + bilibiliAddingSongsResult);
     } catch (Exception e) {
       e.printStackTrace();

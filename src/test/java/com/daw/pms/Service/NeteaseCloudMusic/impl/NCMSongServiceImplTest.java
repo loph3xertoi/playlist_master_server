@@ -22,7 +22,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getDetailSong() {
-    com.daw.pms.DTO.Result detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
+    Result detailSong = ncmSongService.getDetailSong("16835303", ncmCookie);
     System.out.println(detailSong);
   }
 
@@ -40,8 +40,7 @@ class NCMSongServiceImplTest {
 
   @Test
   void getSongsLink() {
-    com.daw.pms.DTO.Result songsLink =
-        ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
+    Result songsLink = ncmSongService.getSongsLink("1478965386", "standard", ncmCookie);
     System.out.println(songsLink);
   }
 

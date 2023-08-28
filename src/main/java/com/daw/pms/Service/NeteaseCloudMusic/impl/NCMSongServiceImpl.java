@@ -32,7 +32,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    * @apiNote GET /song/detail?ids={@code ids}
    */
   @Override
-  public com.daw.pms.DTO.Result getDetailSong(String ids, String cookie) {
+  public Result getDetailSong(String ids, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailSong detailSong =
         extractDetailSong(
@@ -65,7 +65,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                   Optional.of(cookie))));
     }
     Map<String, String> links;
-    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
+    Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {
@@ -73,7 +73,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     }
     detailSong.setSongLink(links.getOrDefault(detailSong.getId().toString(), ""));
     detailSong.setIsTakenDown(detailSong.getSongLink().isEmpty());
-    return com.daw.pms.DTO.Result.ok(detailSong);
+    return Result.ok(detailSong);
   }
 
   private String extractSingerAvatar(String rawDetailSinger) {
@@ -154,7 +154,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links;
-    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
+    Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {
@@ -277,7 +277,7 @@ public class NCMSongServiceImpl implements NCMSongService {
    * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
    */
   @Override
-  public com.daw.pms.DTO.Result getSongsLink(String ids, String level, String cookie) {
+  public Result getSongsLink(String ids, String level, String cookie) {
     String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     Map<String, String> links =
         extractSongsLinks(
@@ -290,7 +290,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                   }
                 },
                 Optional.of(cookie)));
-    return com.daw.pms.DTO.Result.ok(links);
+    return Result.ok(links);
   }
 
   private Map<String, String> extractSongsLinks(String rawSongsLinks) {
@@ -353,7 +353,7 @@ public class NCMSongServiceImpl implements NCMSongService {
     String ids =
         songs.stream().map(song -> song.getId().toString()).collect(Collectors.joining(","));
     Map<String, String> links;
-    com.daw.pms.DTO.Result linksResult = getSongsLink(ids, "standard", cookie);
+    Result linksResult = getSongsLink(ids, "standard", cookie);
     if (linksResult.getSuccess()) {
       links = (Map<String, String>) linksResult.getData();
     } else {

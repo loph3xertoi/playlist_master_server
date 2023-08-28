@@ -1,7 +1,11 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.UpdateLibraryDTO;
+import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Entity.Bilibili.BiliResource;
 import com.daw.pms.Service.PMS.LibraryService;
+import java.util.List;
 import java.util.Map;
 import org.springframework.cache.annotation.*;
 import org.springframework.web.bind.annotation.*;
@@ -78,6 +82,34 @@ public class LibraryController {
       @RequestBody Map<String, String> library, @RequestParam Integer platform) {
     try {
       return libraryService.createLibrary(library, platform);
+    } catch (ResourceAccessException e) {
+      String remoteServer =
+          platform == 0
+              ? "pms"
+              : platform == 1
+                  ? "proxy qqmusic server"
+                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
+      String errorMsg = "Fail to connect to " + remoteServer;
+      return Result.fail(errorMsg);
+    } catch (Exception e) {
+      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+    }
+  }
+
+  /**
+   * Update library in {@code platform}.
+   *
+   * @param library A map contains fields to update.
+   * @param platform Which platform the library belongs to.
+   * @return The response of request wrapped by Result DTO.
+   * @apiNote PUT /library?platform={@code platform} {"name"(required):name, "intro":intro,
+   *     "cover":cover} (PMSDetailLibrary)
+   */
+  @PutMapping("/library")
+  public Result updateLibrary(
+      @ModelAttribute UpdateLibraryDTO library, @RequestParam Integer platform) {
+    try {
+      return libraryService.updateLibrary(library, platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0
@@ -175,18 +207,30 @@ public class LibraryController {
    *     {"libraryId":"libraryId","songsId":"songsId","tid":"tid"}, in bilibili, still need
    *     biliSourceFavListId and isFavoriteSearchedResource field, biliSourceFavListId for add
    *     resources that already in fav list to other fav lists, isFavoriteSearchedResource for add
-   *     searched resource to fav list.
+   *     searched resource to fav list; If add songs to pms library, still need songs field and
+   *     isAddToPMSLibrary set to true; If add bilibili resources, still need resources field and
+   *     isAddToPMSLibrary set to true.
    */
   @PostMapping("/addSongsToLibrary")
   public Result addSongsToLibrary(
-      @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
-    String libraryId = requestBody.get("libraryId");
-    String biliSourceFavListId = requestBody.get("biliSourceFavListId");
-    String songsId = requestBody.get("songsId");
-    String isFavoriteSearchedResource = requestBody.get("isFavoriteSearchedResource");
+      @RequestBody Map<String, Object> requestBody, @RequestParam Integer platform) {
+    String libraryId = (String) requestBody.get("libraryId");
+    String biliSourceFavListId = (String) requestBody.get("biliSourceFavListId");
+    String songsIds = (String) requestBody.get("songsIds");
+    List<BasicSong> songs = (List<BasicSong>) requestBody.get("songs");
+    List<BiliResource> resources = (List<BiliResource>) requestBody.get("resources");
+    Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
+    Boolean isFavoriteSearchedResource = (Boolean) requestBody.get("isFavoriteSearchedResource");
     try {
       return libraryService.addSongsToLibrary(
-          libraryId, biliSourceFavListId, songsId, isFavoriteSearchedResource, platform);
+          libraryId,
+          biliSourceFavListId,
+          songsIds,
+          songs,
+          resources,
+          isAddToPMSLibrary,
+          isFavoriteSearchedResource,
+          platform);
     } catch (ResourceAccessException e) {
       String remoteServer =
           platform == 0

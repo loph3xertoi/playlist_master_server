@@ -1,14 +1,35 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.PagedDataDTO;
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.UpdateLibraryDTO;
+import com.daw.pms.Entity.Basic.BasicSinger;
+import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Entity.Bilibili.BiliResource;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
+import com.daw.pms.Entity.PMS.PMSDetailLibrary;
+import com.daw.pms.Entity.PMS.PMSLibrary;
+import com.daw.pms.Entity.PMS.PMSSinger;
+import com.daw.pms.Entity.PMS.PMSSong;
+import com.daw.pms.Entity.QQMusic.QQMusicSong;
+import com.daw.pms.Mapper.PlaylistMapper;
+import com.daw.pms.Mapper.RelationMapper;
+import com.daw.pms.Mapper.SingerMapper;
+import com.daw.pms.Mapper.SongMapper;
 import com.daw.pms.Service.Bilibili.BiliFavListService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
+import com.daw.pms.Utils.QiniuOSS;
+import com.qiniu.common.QiniuException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class LibraryServiceImpl implements LibraryService, Serializable {
@@ -30,25 +51,40 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   @Value("${bilibili.cookie}")
   private String biliCookie;
 
+  private final QiniuOSS qiniuOSS;
   private final QQMusicPlaylistService qqMusicPlaylistService;
   private final NCMPlaylistService ncmPlaylistService;
   private final BiliFavListService biliFavListService;
+  private final PlaylistMapper playlistMapper;
+  private final RelationMapper relationMapper;
+  private final SongMapper songMapper;
+  private final SingerMapper singerMapper;
 
   public LibraryServiceImpl(
+      QiniuOSS qiniuOSS,
       QQMusicPlaylistService qqMusicPlaylistService,
       NCMPlaylistService ncmPlaylistService,
-      BiliFavListService biliFavListService) {
+      BiliFavListService biliFavListService,
+      PlaylistMapper playlistMapper,
+      RelationMapper relationMapper,
+      SongMapper songMapper,
+      SingerMapper singerMapper) {
+    this.qiniuOSS = qiniuOSS;
     this.qqMusicPlaylistService = qqMusicPlaylistService;
     this.ncmPlaylistService = ncmPlaylistService;
     this.biliFavListService = biliFavListService;
+    this.playlistMapper = playlistMapper;
+    this.relationMapper = relationMapper;
+    this.songMapper = songMapper;
+    this.singerMapper = singerMapper;
   }
 
   /**
    * Get all libraries for specific platform.
    *
    * @param id Your user id in pms.
-   * @param pn The page number, only used in bilibili.
-   * @param ps The page size, only used in bilibili.
+   * @param pn The page number, only used in bilibili and pms, start from 1.
+   * @param ps The page size, only used in bilibili and pms.
    * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
    * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
    *     collected fav lists, only used in bilibili.
@@ -62,10 +98,31 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     // TODO: find user id by pms id in specific platform.
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      PagedDataDTO<PMSLibrary> pagedDataDTO = new PagedDataDTO<>();
+      Integer playlistCount = playlistMapper.getCountOfUserPlaylists(id);
+      pagedDataDTO.setCount(playlistCount);
+      if (pn == null || ps == null) {
+        throw new RuntimeException("Must specify pn and ps");
+      }
+      pagedDataDTO.setHasMore(pn * ps < playlistCount);
+      List<PMSLibrary> playlists = playlistMapper.getPlaylistByCreatorId(id, ps * (pn - 1), ps);
+      for (PMSLibrary playlist : playlists) {
+        String cover = playlist.getCover();
+        try {
+          String reflectedCoverUrl = qiniuOSS.reflectKeyToFinalOSSLink(cover);
+          playlist.setCover(reflectedCoverUrl);
+        } catch (UnsupportedEncodingException | QiniuException e) {
+          throw new RuntimeException(e);
+        }
+      }
+      pagedDataDTO.setList(playlists);
+      //      result = Result.fail("Test");
+      result = Result.ok(pagedDataDTO);
     } else if (platform == 1) {
+      // TODO: need to implement pagination for qqmusic.
       result = qqMusicPlaylistService.getPlaylists(qqMusicId.toString(), qqMusicCookie);
     } else if (platform == 2) {
+      // TODO: need to implement pagination for ncm.
       result = ncmPlaylistService.getPlaylists(ncmId, 0, 1000, ncmCookie);
     } else if (platform == 3) {
       result = biliFavListService.getFavLists(pn, ps, biliId, biliPlatform, type, biliCookie);
@@ -101,7 +158,28 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+      Long playlistId = detailPlaylist.getId();
+      List<Long> songsId = relationMapper.getAllSongsIdByPlaylistId(playlistId);
+      List<PMSSong> songs = new ArrayList<>(songsId.size());
+      if (!songsId.isEmpty()) {
+        songs = songMapper.getSongs(songsId);
+        for (PMSSong song : songs) {
+          List<Long> singersId = relationMapper.getAllSingersIdBySongId(song.getId());
+          List<PMSSinger> singers = singerMapper.getSingers(singersId);
+          List<BasicSinger> basicSingers = new ArrayList<>(singers);
+          song.setSingers(basicSingers);
+        }
+      }
+      String cover = detailPlaylist.getCover();
+      try {
+        String reflectedCoverUrl = qiniuOSS.reflectKeyToFinalOSSLink(cover);
+        detailPlaylist.setCover(reflectedCoverUrl);
+      } catch (UnsupportedEncodingException | QiniuException e) {
+        throw new RuntimeException(e);
+      }
+      detailPlaylist.setSongs(songs);
+      result = Result.ok(detailPlaylist);
     } else if (platform == 1) {
       result = qqMusicPlaylistService.getDetailPlaylist(libraryId, qqMusicCookie);
     } else if (platform == 2) {
@@ -128,13 +206,101 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   public Result createLibrary(Map<String, String> library, Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      PMSDetailLibrary pmsDetailLibrary = new PMSDetailLibrary();
+      pmsDetailLibrary.setCreatorId(1L);
+      String name = library.get("name");
+      if (name == null) {
+        throw new RuntimeException("Playlist name mustn't be null");
+      }
+      pmsDetailLibrary.setName(library.get("name"));
+      pmsDetailLibrary.setCover("default_library_cover");
+      pmsDetailLibrary.setItemCount(0);
+      long currentTimeMillis = System.currentTimeMillis();
+      pmsDetailLibrary.setCreateTime(currentTimeMillis);
+      pmsDetailLibrary.setUpdateTime(currentTimeMillis);
+      String intro = library.get("intro");
+      if (intro == null || intro.isEmpty()) {
+        intro = "";
+      }
+      pmsDetailLibrary.setIntro(intro);
+      Long playlistId = playlistMapper.createPlaylist(pmsDetailLibrary);
+      if (playlistId != null) {
+        result = Result.ok(playlistId);
+      } else {
+        result = Result.fail("Fail to create playlist");
+      }
     } else if (platform == 1) {
       result = qqMusicPlaylistService.createPlaylist(library.get("name"), qqMusicCookie);
     } else if (platform == 2) {
       result = ncmPlaylistService.createPlaylist(library.get("name"), ncmCookie);
     } else if (platform == 3) {
       result = biliFavListService.createFavList(library, biliCookie);
+    } else {
+      throw new RuntimeException("Invalid platform");
+    }
+    return result;
+  }
+
+  /**
+   * Update library.
+   *
+   * @param library UpdateLibraryDTO that contains the name of library, {"name"(required):name,
+   *     "intro":intro, "cover":cover} (PMSDetailLibrary)
+   * @param platform Which platform this library belongs to.
+   * @return The response of request wrapped by Result DTO.
+   */
+  @Override
+  public Result updateLibrary(UpdateLibraryDTO library, Integer platform) {
+    Result result;
+    if (platform == 0) {
+      PMSDetailLibrary pmsDetailLibrary = new PMSDetailLibrary();
+      pmsDetailLibrary.setId(library.getId());
+      pmsDetailLibrary.setCreatorId(1L);
+      String name = library.getName();
+      if (name == null) {
+        throw new RuntimeException("Playlist name mustn't be null");
+      }
+      pmsDetailLibrary.setName(library.getName());
+
+      MultipartFile cover = library.getCover();
+      String coverString;
+      if (cover != null && !cover.isEmpty()) {
+        PMSLibrary playlist = playlistMapper.getPlaylist(library.getId());
+        String playlistCover = playlist.getCover();
+        boolean isDefaultCover = "default_library_cover".equals(playlistCover);
+        if (isDefaultCover) {
+          playlistCover = null;
+        }
+        try {
+          InputStream fileInputStream = cover.getInputStream();
+          coverString = qiniuOSS.uploadFileByInputStream(fileInputStream, playlistCover);
+          if (isDefaultCover) {
+            pmsDetailLibrary.setCover(coverString);
+          }
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      long currentTimeMillis = System.currentTimeMillis();
+      pmsDetailLibrary.setUpdateTime(currentTimeMillis);
+      String intro = library.getIntro();
+      if (intro == null || intro.isEmpty()) {
+        intro = "";
+      }
+      pmsDetailLibrary.setIntro(intro);
+      Long playlistId = playlistMapper.updatePlaylist(pmsDetailLibrary);
+      if (playlistId != null) {
+        result = Result.ok(playlistId);
+      } else {
+        result = Result.fail("Fail to update playlist");
+      }
+    } else if (platform == 1) {
+      throw new RuntimeException("Not yet implement qqmusic platform");
+    } else if (platform == 2) {
+      throw new RuntimeException("Not yet implement ncm platform");
+    } else if (platform == 3) {
+      throw new RuntimeException("Not yet implement bilibili platform");
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -152,7 +318,8 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   public Result deleteLibrary(String libraryId, Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      Long playlistId = playlistMapper.deletePlaylist(Long.valueOf(libraryId));
+      result = Result.ok(playlistId);
     } else if (platform == 1) {
       result = qqMusicPlaylistService.deletePlaylist(libraryId, qqMusicCookie);
     } else if (platform == 2) {
@@ -170,7 +337,10 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
    *
    * @param libraryId Target library id.
    * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
-   * @param songsId Songs' id, multiple songs id separated with comma.
+   * @param songsIds Songs' id, multiple songs id separated with comma.
+   * @param songs The songs list to be added to library in pms.
+   * @param resources The bilibili resources list to be added to library in pms.
+   * @param isAddToPMSLibrary Whether adding songs to pms library.
    * @param isFavoriteSearchedResource Whether favorite searched resource.
    * @param platform Which platform the library belongs to.
    * @return The response of request wrapped by Result DTO.
@@ -179,33 +349,239 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   public Result addSongsToLibrary(
       String libraryId,
       String biliSourceFavListId,
-      String songsId,
-      String isFavoriteSearchedResource,
+      String songsIds,
+      List<BasicSong> songs,
+      List<BiliResource> resources,
+      Boolean isAddToPMSLibrary,
+      Boolean isFavoriteSearchedResource,
       Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      String[] songsIdsList = songsIds.split(",");
+      PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+      detailPlaylist.setUpdateTime(System.currentTimeMillis());
+      List<Map<String, Long>> params = new ArrayList<>();
+      for (String songsId : songsIdsList) {
+        params.add(
+            new HashMap<String, Long>() {
+              {
+                put("fkPlaylistId", Long.valueOf(libraryId));
+                put("fkSongId", Long.valueOf(songsId));
+              }
+            });
+      }
+      Integer oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      relationMapper.addRelationPlaylistSong(params);
+      Integer newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      Integer newAddedSongsCount = newRowCount - oldRowCount;
+      Integer itemCount = detailPlaylist.getItemCount();
+      detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
+      result = Result.ok(playlistMapper.updatePlaylist(detailPlaylist));
     } else if (platform == 1) {
-      result =
-          qqMusicPlaylistService.addSongsToPlaylist(
-              Integer.valueOf(libraryId), songsId, qqMusicCookie);
-    } else if (platform == 2) {
-      result = ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
-    } else if (platform == 3) {
-      if ("true".equals(isFavoriteSearchedResource)) {
-        result =
-            biliFavListService.favoriteResourceToFavLists(
-                Long.valueOf(songsId), 2, libraryId, biliCookie);
+      if (isAddToPMSLibrary) {
+        result = addQQMusicSongsToPMSLibrary(libraryId, songs);
       } else {
         result =
-            biliFavListService.multipleAddResources(
-                biliSourceFavListId, libraryId, biliId, songsId, "web", biliCookie);
+            qqMusicPlaylistService.addSongsToPlaylist(
+                Integer.valueOf(libraryId), songsIds, qqMusicCookie);
       }
-
+    } else if (platform == 2) {
+      if (isAddToPMSLibrary) {
+        result = addNCMSongsToPMSLibrary(libraryId, songs);
+      } else {
+        result =
+            ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsIds, ncmCookie);
+      }
+    } else if (platform == 3) {
+      if (isAddToPMSLibrary) {
+        result = addBiliResourcesToPMSLibrary(libraryId, resources);
+      } else {
+        if (isFavoriteSearchedResource) {
+          result =
+              biliFavListService.favoriteResourceToFavLists(
+                  Long.valueOf(songsIds), 2, libraryId, biliCookie);
+        } else {
+          result =
+              biliFavListService.multipleAddResources(
+                  biliSourceFavListId, libraryId, biliId, songsIds, "web", biliCookie);
+        }
+      }
     } else {
       throw new RuntimeException("Invalid platform");
     }
     return result;
+  }
+
+  @NotNull
+  private Result addQQMusicSongsToPMSLibrary(String libraryId, List<BasicSong> songs) {
+    PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+    detailPlaylist.setUpdateTime(System.currentTimeMillis());
+    List<Map<String, Long>> songIds = new ArrayList<>();
+    List<Map<String, String>> qqMusicSongs = new ArrayList<>();
+    Integer oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    for (BasicSong song : songs) {
+      QQMusicSong qqMusicSong = (QQMusicSong) song;
+      PMSSong pmsSong = new PMSSong();
+      pmsSong.setType(1);
+      pmsSong.setName(qqMusicSong.getName());
+      pmsSong.setCover(qqMusicSong.getCover());
+      pmsSong.setPayPlay(qqMusicSong.getPayPlay());
+      pmsSong.setIsTakenDown(qqMusicSong.getIsTakenDown());
+      Long songId = songMapper.addSong(pmsSong);
+      songIds.add(
+          new HashMap<String, Long>() {
+            {
+              put("fkPlaylistId", Long.valueOf(libraryId));
+              put("fkSongId", songId);
+            }
+          });
+      qqMusicSongs.add(
+          new HashMap<String, String>() {
+            {
+              put("songId", qqMusicSong.getSongId());
+              put("songMid", qqMusicSong.getSongMid());
+              put("mediaMid", qqMusicSong.getMediaMid());
+            }
+          });
+      List<BasicSinger> qqMusicSingers = qqMusicSong.getSingers();
+      List<Map<String, Long>> singerIds = new ArrayList<>(qqMusicSingers.size());
+      for (BasicSinger singer : qqMusicSingers) {
+        PMSSinger pmsSinger = new PMSSinger();
+        pmsSinger.setType(1);
+        pmsSinger.setName(singer.getName());
+        pmsSinger.setHeadPic(singer.getHeadPic());
+        Long singerId = singerMapper.addSinger(pmsSinger);
+        singerIds.add(
+            new HashMap<String, Long>() {
+              {
+                put("fkSingerId", singerId);
+                put("fkSongId", songId);
+              }
+            });
+      }
+      relationMapper.addRelationSongSinger(singerIds);
+    }
+    Integer newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    Integer newAddedSongsCount = newRowCount - oldRowCount;
+    Integer itemCount = detailPlaylist.getItemCount();
+    detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
+    playlistMapper.updatePlaylist(detailPlaylist);
+    songMapper.addQQMusicSong(qqMusicSongs);
+    relationMapper.addRelationPlaylistSong(songIds);
+    return Result.ok();
+  }
+
+  @NotNull
+  private Result addNCMSongsToPMSLibrary(String libraryId, List<BasicSong> songs) {
+    PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+    detailPlaylist.setUpdateTime(System.currentTimeMillis());
+    List<Map<String, Long>> songIds = new ArrayList<>();
+    List<Map<String, Long>> ncmSongs = new ArrayList<>();
+    Integer oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    for (BasicSong song : songs) {
+      NCMSong ncmSong = (NCMSong) song;
+      PMSSong pmsSong = new PMSSong();
+      pmsSong.setType(2);
+      pmsSong.setName(ncmSong.getName());
+      pmsSong.setCover(ncmSong.getCover());
+      pmsSong.setPayPlay(ncmSong.getPayPlay());
+      pmsSong.setIsTakenDown(ncmSong.getIsTakenDown());
+      Long songId = songMapper.addSong(pmsSong);
+      songIds.add(
+          new HashMap<String, Long>() {
+            {
+              put("fkPlaylistId", Long.valueOf(libraryId));
+              put("fkSongId", songId);
+            }
+          });
+      ncmSongs.add(
+          new HashMap<String, Long>() {
+            {
+              put("ncmId", ncmSong.getId());
+              put("mvId", ncmSong.getMvId());
+            }
+          });
+      List<BasicSinger> ncmSingers = ncmSong.getSingers();
+      List<Map<String, Long>> singerIds = new ArrayList<>(ncmSingers.size());
+      for (BasicSinger singer : ncmSingers) {
+        PMSSinger pmsSinger = new PMSSinger();
+        pmsSinger.setType(2);
+        pmsSinger.setName(singer.getName());
+        pmsSinger.setHeadPic(singer.getHeadPic());
+        Long singerId = singerMapper.addSinger(pmsSinger);
+        singerIds.add(
+            new HashMap<String, Long>() {
+              {
+                put("fkSingerId", singerId);
+                put("fkSongId", songId);
+              }
+            });
+      }
+      relationMapper.addRelationSongSinger(singerIds);
+    }
+    Integer newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    Integer newAddedSongsCount = newRowCount - oldRowCount;
+    Integer itemCount = detailPlaylist.getItemCount();
+    detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
+    playlistMapper.updatePlaylist(detailPlaylist);
+    songMapper.addNCMSong(ncmSongs);
+    relationMapper.addRelationPlaylistSong(songIds);
+    return Result.ok();
+  }
+
+  @NotNull
+  private Result addBiliResourcesToPMSLibrary(String libraryId, List<BiliResource> resources) {
+    PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+    detailPlaylist.setUpdateTime(System.currentTimeMillis());
+    List<Map<String, Long>> songIds = new ArrayList<>();
+    List<Map<String, String>> biliResources = new ArrayList<>();
+    Integer oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    for (BiliResource resource : resources) {
+      PMSSong pmsSong = new PMSSong();
+      pmsSong.setType(3);
+      pmsSong.setName(resource.getTitle());
+      pmsSong.setCover(resource.getCover());
+      pmsSong.setPayPlay(0);
+      pmsSong.setIsTakenDown(false);
+      Long songId = songMapper.addSong(pmsSong);
+      songIds.add(
+          new HashMap<String, Long>() {
+            {
+              put("fkPlaylistId", Long.valueOf(libraryId));
+              put("fkSongId", songId);
+            }
+          });
+      biliResources.add(
+          new HashMap<String, String>() {
+            {
+              put("aid", resource.getId().toString());
+              put("bvid", resource.getBvid());
+            }
+          });
+
+      PMSSinger pmsSinger = new PMSSinger();
+      pmsSinger.setType(3);
+      pmsSinger.setName(resource.getUpperName());
+      pmsSinger.setHeadPic("");
+      Long singerId = singerMapper.addSinger(pmsSinger);
+      List<Map<String, Long>> singers = new ArrayList<>();
+      singers.add(
+          new HashMap<String, Long>() {
+            {
+              put("fkSingerId", singerId);
+              put("fkSongId", songId);
+            }
+          });
+      relationMapper.addRelationSongSinger(singers);
+    }
+    Integer newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    Integer newAddedSongsCount = newRowCount - oldRowCount;
+    Integer itemCount = detailPlaylist.getItemCount();
+    detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
+    playlistMapper.updatePlaylist(detailPlaylist);
+    songMapper.addBiliResource(biliResources);
+    relationMapper.addRelationPlaylistSong(songIds);
+    return Result.ok();
   }
 
   /**
@@ -223,7 +599,36 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       String songsId, String fromLibrary, String toLibrary, Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      String[] songsIds = songsId.split(",");
+      PMSDetailLibrary detailFromPlaylist =
+          playlistMapper.getDetailPlaylist(Long.valueOf(fromLibrary));
+      detailFromPlaylist.setUpdateTime(System.currentTimeMillis());
+      Integer fromItemCount = detailFromPlaylist.getItemCount();
+      detailFromPlaylist.setItemCount(fromItemCount - songsIds.length);
+      playlistMapper.updatePlaylist(detailFromPlaylist);
+      PMSDetailLibrary detailToPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(toLibrary));
+      detailToPlaylist.setUpdateTime(System.currentTimeMillis());
+      Map<String, Object> params = new HashMap<>();
+      List<Map<String, Long>> addedParams = new ArrayList<>();
+      params.put("libraryId", fromLibrary);
+      params.put("songsIds", songsIds);
+      relationMapper.deleteRelationPlaylistSong(params);
+      Integer oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      for (String songId : songsIds) {
+        addedParams.add(
+            new HashMap<String, Long>() {
+              {
+                put("fkPlaylistId", Long.valueOf(toLibrary));
+                put("fkSongId", Long.valueOf(songId));
+              }
+            });
+      }
+      relationMapper.addRelationPlaylistSong(addedParams);
+      Integer newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      Integer addedSongsCount = newRowCount - oldRowCount;
+      detailToPlaylist.setItemCount(detailToPlaylist.getItemCount() + addedSongsCount);
+      playlistMapper.updatePlaylist(detailToPlaylist);
+      result = Result.ok();
     } else if (platform == 1) {
       result =
           qqMusicPlaylistService.moveSongsToOtherPlaylist(
@@ -258,7 +663,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   public Result removeSongsFromLibrary(String libraryId, String songsId, Integer platform) {
     Result result;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      String[] songsIds = songsId.split(",");
+      PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
+      detailPlaylist.setUpdateTime(System.currentTimeMillis());
+      Integer itemCount = detailPlaylist.getItemCount();
+      detailPlaylist.setItemCount(itemCount - songsIds.length);
+      playlistMapper.updatePlaylist(detailPlaylist);
+      Map<String, Object> params = new HashMap<>();
+      params.put("libraryId", libraryId);
+      params.put("songsIds", songsIds);
+      relationMapper.deleteRelationPlaylistSong(params);
+      result = Result.ok();
     } else if (platform == 1) {
       result =
           qqMusicPlaylistService.removeSongsFromPlaylist(

@@ -1,13 +1,20 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.Basic.BasicUser;
+import com.daw.pms.Entity.Bilibili.BiliUser;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMUser;
+import com.daw.pms.Entity.PMS.PMSUser;
+import com.daw.pms.Entity.QQMusic.QQMusicUser;
+import com.daw.pms.Mapper.UserMapper;
 import com.daw.pms.Service.Bilibili.BiliUserService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,44 +26,20 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService, Serializable {
-  @Value("${pms.id}")
-  private Long pmsId;
-
-  @Value("${pms.name}")
-  private String pmsName;
-
-  @Value("${pms.headPic}")
-  private String pmsHeadPic;
-
-  @Value("${pms.bgPic}")
-  private String pmsBgPic;
-
-  @Value("${qqmusic.id}")
-  private Long qqMusicId;
-
-  @Value("${qqmusic.cookie}")
-  private String qqMusicCookie;
-
-  @Value("${ncm.id}")
-  private Long ncmId;
-
-  @Value("${ncm.cookie}")
-  private String ncmCookie;
-
-  @Value("${bilibili.cookie}")
-  private String biliCookie;
-
   private final QQMusicUserService qqMusicUserService;
   private final NCMUserService ncmUserService;
   private final BiliUserService biliUserService;
+  private final UserMapper userMapper;
 
   public UserServiceImpl(
       QQMusicUserService qqMusicUserService,
       NCMUserService ncmUserService,
-      BiliUserService biliUserService) {
+      BiliUserService biliUserService,
+      UserMapper userMapper) {
     this.qqMusicUserService = qqMusicUserService;
     this.ncmUserService = ncmUserService;
     this.biliUserService = biliUserService;
+    this.userMapper = userMapper;
   }
 
   /**
@@ -70,15 +53,50 @@ public class UserServiceImpl implements UserService, Serializable {
   @Override
   public BasicUser getUserInfo(Long id, @NotNull Integer platform) {
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      return getPMSUser(id);
     } else if (platform == 1) {
-      return qqMusicUserService.getUserInfo(qqMusicId, qqMusicCookie);
+      UserDTO userDTO = userMapper.getUser(id);
+      return qqMusicUserService.getUserInfo(userDTO.getQqmusicId(), userDTO.getQqmusicCookie());
     } else if (platform == 2) {
-      return ncmUserService.getUserInfo(ncmId, ncmCookie);
+      UserDTO userDTO = userMapper.getUser(id);
+      return ncmUserService.getUserInfo(userDTO.getNcmId(), userDTO.getNcmCookie());
     } else if (platform == 3) {
-      return biliUserService.getUserInfo(biliCookie);
+      UserDTO userDTO = userMapper.getUser(id);
+      return biliUserService.getUserInfo(userDTO.getBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
+  }
+
+  private PMSUser getPMSUser(Long id) {
+    UserDTO userDTO = userMapper.getUser(id);
+    PMSUser pmsUser = new PMSUser();
+    pmsUser.setId(userDTO.getId());
+    pmsUser.setName(userDTO.getName());
+    pmsUser.setHeadPic(userDTO.getAvatar());
+    pmsUser.setBgPic(userDTO.getBgPic());
+    pmsUser.setIntro(userDTO.getIntro());
+    Map<String, BasicUser> subUsers = new HashMap<>();
+    try {
+      QQMusicUser qqMusicUser =
+          qqMusicUserService.getUserInfo(userDTO.getQqmusicId(), userDTO.getQqmusicCookie());
+      subUsers.put("qqmusic", qqMusicUser);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    try {
+      NCMUser ncmUser = ncmUserService.getUserInfo(userDTO.getNcmId(), userDTO.getNcmCookie());
+      subUsers.put("ncm", ncmUser);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    try {
+      BiliUser biliUser = biliUserService.getUserInfo(userDTO.getBiliCookie());
+      subUsers.put("bilibili", biliUser);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    pmsUser.setSubUsers(subUsers);
+    return pmsUser;
   }
 }

@@ -14,6 +14,9 @@ public class PMSUser extends BasicUser {
   /** User id in playlist master server. */
   private Long id;
 
+  /** Description of pms user. */
+  private String intro;
+
   /** All managed sub users in playlist master server. */
   private Map<String, BasicUser> subUsers;
 }
