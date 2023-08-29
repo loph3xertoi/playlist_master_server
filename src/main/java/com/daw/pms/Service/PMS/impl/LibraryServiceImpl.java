@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.Synchronized;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -228,7 +229,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       pmsDetailLibrary.setIntro(intro);
       int createdPlaylistCount = playlistMapper.createPlaylist(pmsDetailLibrary);
       if (createdPlaylistCount != 0) {
-        result = Result.ok(pmsDetailLibrary.getCreatorId());
+        result = Result.ok(pmsDetailLibrary.getId());
       } else {
         result = Result.fail("Fail to create playlist");
       }
@@ -521,6 +522,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   @NotNull
+  @Synchronized
   private Result addQQMusicSongsToPMSLibrary(String libraryId, List<BasicSong> songs) {
     List<Map<String, Long>> songIds = new ArrayList<>();
     List<Map<String, String>> qqMusicSongs = new ArrayList<>();
@@ -614,6 +616,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   @NotNull
+  @Synchronized
   private Result addNCMSongsToPMSLibrary(String libraryId, List<BasicSong> songs) {
     List<Map<String, Long>> songIds = new ArrayList<>();
     List<Map<String, String>> ncmSongs = new ArrayList<>();
@@ -638,6 +641,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
             });
         continue;
       }
+
       PMSSong pmsSong = new PMSSong();
       pmsSong.setType(2);
       pmsSong.setName(ncmSong.getName());
@@ -704,6 +708,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   @NotNull
+  @Synchronized
   private Result addBiliResourcesToPMSLibrary(String libraryId, List<BiliResource> resources) {
     List<Map<String, Long>> songIds = new ArrayList<>();
     List<Map<String, String>> biliResources = new ArrayList<>();
