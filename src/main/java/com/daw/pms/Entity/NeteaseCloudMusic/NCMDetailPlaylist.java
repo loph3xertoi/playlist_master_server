@@ -30,7 +30,7 @@ public class NCMDetailPlaylist extends BasicLibrary {
   private Long createTime;
 
   /** Playing count of this playlist. */
-  private Integer playCount;
+  private int playCount;
 
   /** The description of your playlist. */
   private String description;

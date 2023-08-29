@@ -1,4 +1,4 @@
-package com.daw.pms.Entity.Provider;
+package com.daw.pms.Provider;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +19,8 @@ public class RelationSqlProvider {
       String subSql =
           new SQL()
               .INSERT_INTO("tb_song_singer")
-              .VALUES("fk_song_id", "#{fkSongId}")
-              .VALUES("fk_singer_id", "#{fkSingerId}")
+              .VALUES("fk_song_id", fkSongId.toString())
+              .VALUES("fk_singer_id", fkSingerId.toString())
               .toString();
       sql.append(subSql).append(";");
     }
@@ -41,8 +41,8 @@ public class RelationSqlProvider {
       String subSql =
           new SQL()
               .INSERT_INTO("tb_playlist_song")
-              .VALUES("fk_playlist_id", "#{fkPlaylistId}")
-              .VALUES("fk_song_id", "#{fkSongId}")
+              .VALUES("fk_playlist_id", fkPlaylistId.toString())
+              .VALUES("fk_song_id", fkSongId.toString())
               .toString();
       sql.append(subSql).append(";");
     }

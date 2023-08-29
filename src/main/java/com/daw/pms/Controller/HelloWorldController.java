@@ -16,8 +16,7 @@ public class HelloWorldController {
   }
 
   @PostMapping("/myendpoint")
-  public Result myEndpoint(
-      @RequestBody Map<String, Object> library, @RequestParam Integer platform) {
+  public Result myEndpoint(@RequestBody Map<String, Object> library, @RequestParam int platform) {
     System.out.println(library);
     return null;
   }

@@ -14,7 +14,7 @@ class QQMusicSongServiceImplTest {
 
   @Test
   void getSongsIdFromPlaylist() {
-    System.out.println(qqMusicSongService.getSongsIdFromPlaylist("14", qqMusicCookie));
+    System.out.println(qqMusicSongService.getSongsIdFromPlaylist(14, qqMusicCookie));
   }
 
   // 002GNiJS1BwnQJ 003aW4ny3SpmBa

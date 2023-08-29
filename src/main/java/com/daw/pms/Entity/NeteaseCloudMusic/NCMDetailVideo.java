@@ -17,19 +17,19 @@ public class NCMDetailVideo extends BasicVideo {
   private String desc;
 
   /** Viewed count of the video. */
-  private Integer playCount;
+  private int playCount;
 
   /** Subscribed count of the video. */
-  private Integer subCount;
+  private int subCount;
 
   /** Shared count of the video. */
-  private Integer shareCount;
+  private int shareCount;
 
   /** Commented count of the video. */
-  private Integer commentCount;
+  private int commentCount;
 
   /** The duration of the mv. */
-  private Integer duration;
+  private int duration;
 
   /** The published time of the mv. */
   private String publishTime;

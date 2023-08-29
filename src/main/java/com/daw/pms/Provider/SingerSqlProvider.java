@@ -1,6 +1,7 @@
-package com.daw.pms.Entity.Provider;
+package com.daw.pms.Provider;
 
 import com.daw.pms.Entity.PMS.PMSSinger;
+import java.util.List;
 import org.apache.ibatis.jdbc.SQL;
 
 public class SingerSqlProvider {
@@ -50,5 +51,36 @@ public class SingerSqlProvider {
         .VALUES("avatar", "#{headPic}")
         .VALUES("type", "#{type}")
         .toString();
+  }
+
+  public String getSingersByIds(List<Long> ids) {
+    String sql =
+        new SQL() {
+          { // @Select("select * from tb_pms_singer where id in (#{ids})")
+            SELECT("*");
+            FROM("tb_pms_singer");
+            if (ids != null) {
+              WHERE(getSqlConditionCollection("id", ids));
+            }
+          }
+        }.toString();
+    return sql;
+  }
+
+  private String getSqlConditionCollection(String columnName, List<Long> ids) {
+    StringBuilder strConditions = new StringBuilder();
+    if (ids != null && ids.size() > 0) {
+      int count = ids.size();
+      for (int i = 0; i < count; i++) {
+        String condition = ids.get(i).toString();
+        strConditions.append(condition);
+        if (i < count - 1) {
+          strConditions.append(",");
+        }
+      }
+      return columnName + " in (" + strConditions + ")";
+    } else {
+      return "1=2";
+    }
   }
 }

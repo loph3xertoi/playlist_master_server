@@ -42,14 +42,14 @@ public interface QQMusicPlaylistService {
   Result createPlaylist(String name, String cookie);
 
   /**
-   * Delete playlist with dirId {@code dirId}.
+   * Delete playlist with dirIds {@code dirIds}.
    *
-   * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
+   * @param dirIds The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/delete?dirid={@code dirId}
+   * @apiNote GET /playlist/delete?dirid={@code dirIds}
    */
-  Result deletePlaylist(String dirId, String cookie);
+  Result deletePlaylist(String dirIds, String cookie);
 
   /**
    * Add songs with mids {@code songsMid} to playlist with dirId {@code dirId}
@@ -60,7 +60,7 @@ public interface QQMusicPlaylistService {
    * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
    */
-  Result addSongsToPlaylist(Integer dirId, String songsMid, String cookie);
+  Result addSongsToPlaylist(int dirId, String songsMid, String cookie);
 
   /**
    * Move songs {@code songsId} from playlist with {@code fromDirId} to playlist with {@code
@@ -73,8 +73,7 @@ public interface QQMusicPlaylistService {
    * @return The response of request wrapped by Result DTO.
    * @apiNote GET /move?id={@code songsId}&from_dir={@code fromDirId}&to_dir={@code toDirId}
    */
-  Result moveSongsToOtherPlaylist(
-      String songsId, Integer fromDirId, Integer toDirId, String cookie);
+  Result moveSongsToOtherPlaylist(String songsId, int fromDirId, int toDirId, String cookie);
 
   /**
    * Remove songs with song id {@code songId} from playlist with dirId {@code dirId}.
@@ -85,5 +84,5 @@ public interface QQMusicPlaylistService {
    * @return The response of request wrapped by Result DTO.
    * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
    */
-  Result removeSongsFromPlaylist(Integer dirId, String songsId, String cookie);
+  Result removeSongsFromPlaylist(int dirId, String songsId, String cookie);
 }

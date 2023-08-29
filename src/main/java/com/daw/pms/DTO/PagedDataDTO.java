@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class PagedDataDTO<T> implements Serializable {
   /** The total count of target data. */
-  private Integer count;
+  private int count;
 
   /** The paged data. */
   private List<T> list;

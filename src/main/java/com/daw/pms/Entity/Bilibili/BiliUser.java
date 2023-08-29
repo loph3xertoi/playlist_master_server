@@ -20,37 +20,37 @@ public class BiliUser extends BasicUser {
   private Long mid;
 
   /** Your gender, 0 represents secret, 1 represents male, 2 represents female. */
-  private Integer gender;
+  private int gender;
 
   /** Your sign. */
   private String sign;
 
   /** Your account's level in bilibili. */
-  private Integer level;
+  private int level;
 
   /** Current level exp. */
-  private Integer currentLevelExp;
+  private int currentLevelExp;
 
   /** Next level exp, if your level is 6, this value will be string "--". */
-  private Integer nextLevelExp;
+  private int nextLevelExp;
 
   /** Your coins' count. */
-  private Integer coins;
+  private int coins;
 
   /** Your bcoin's count. */
-  private Integer bcoin;
+  private int bcoin;
 
   /** Upper you are following. */
-  private Integer following;
+  private int following;
 
   /** Your follower's count. */
-  private Integer follower;
+  private int follower;
 
   /** Your dynamic count, */
-  private Integer dynamicCount;
+  private int dynamicCount;
 
   /** Your moral in bilibili. */
-  private Integer moral;
+  private int moral;
 
   /** Whether bind email. */
   private Boolean bindEmail;
@@ -59,7 +59,7 @@ public class BiliUser extends BasicUser {
   private Boolean bindPhone;
 
   /** Vip type, 0 means no vip, 1 means month vip, 2 means year vip. */
-  private Integer vipType;
+  private int vipType;
 
   /** Vip state. */
   private Boolean vipActive;
@@ -101,7 +101,7 @@ public class BiliUser extends BasicUser {
   private Boolean wearingFansBadge;
 
   /** The level of your fans badge. */
-  private Integer fansBadgeLevel;
+  private int fansBadgeLevel;
 
   /** The text of your fans badge. */
   private String fansBadgeText;
@@ -128,7 +128,7 @@ public class BiliUser extends BasicUser {
   //  private String city;
 
   /** Your ISP, 0 represents china mobile, 1 represents china telecom. */
-  private Integer isp;
+  private int isp;
 
   /** Your latitude. */
   private Double latitude;
@@ -137,5 +137,5 @@ public class BiliUser extends BasicUser {
   private Double longitude;
 
   /** Your country code. */
-  private Integer countryCode;
+  private int countryCode;
 }

@@ -23,10 +23,10 @@ public class BiliResource implements Serializable {
   private String cover;
 
   /** The page of this resource, has multiple resources if greater than 1. */
-  private Integer page;
+  private int page;
 
   /** The duration of this resource. */
-  private Integer duration;
+  private int duration;
 
   /** The upper's name of this resource. */
   private String upperName;

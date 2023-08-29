@@ -20,5 +20,5 @@ public class QQMusicVideo extends BasicVideo {
   private String vid;
 
   /** Viewed times of the video. */
-  private Integer playCnt;
+  private int playCnt;
 }

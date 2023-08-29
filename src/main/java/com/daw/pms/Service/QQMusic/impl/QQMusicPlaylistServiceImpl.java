@@ -239,7 +239,7 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     }
     int resultCode = jsonNode.get("result").intValue();
     if (resultCode == 100) {
-      Integer dirId = jsonNode.get("data").get("dirid").intValue();
+      int dirId = jsonNode.get("data").get("dirid").intValue();
       return Result.ok(dirId);
     } else if (resultCode == 200) {
       throw new RuntimeException("Library already exists");
@@ -251,21 +251,21 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   }
 
   /**
-   * Delete playlist with dirId {@code dirId}.
+   * Delete playlist with dirIds {@code dirIds}.
    *
-   * @param dirId The dirId of playlist you want to delete, multiple dirId separated with comma.
+   * @param dirIds The dirId of playlist you want to delete, multiple dirId separated with comma.
    * @param cookie Your cookie for qq music.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/delete?dirid={@code dirId}
+   * @apiNote GET /playlist/delete?dirid={@code dirIds}
    */
   @Override
-  public Result deletePlaylist(String dirId, String cookie) {
+  public Result deletePlaylist(String dirIds, String cookie) {
     return extractDeletingPlaylistResult(
         requestGetAPI(
             QQMusicAPI.DELETE_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("dirid", dirId);
+                put("dirid", dirIds);
               }
             },
             Optional.of(cookie)));
@@ -301,13 +301,13 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
    */
   @Override
-  public Result addSongsToPlaylist(Integer dirId, String songsMid, String cookie) {
+  public Result addSongsToPlaylist(int dirId, String songsMid, String cookie) {
     return extractAddingSongsToPlaylistResult(
         requestGetAPI(
             QQMusicAPI.ADD_SONGS_TO_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("dirid", dirId.toString());
+                put("dirid", String.valueOf(dirId));
                 put("mid", songsMid);
               }
             },
@@ -347,15 +347,15 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    */
   @Override
   public Result moveSongsToOtherPlaylist(
-      String songsId, Integer fromDirId, Integer toDirId, String cookie) {
+      String songsId, int fromDirId, int toDirId, String cookie) {
     return extractMovingSongsToOtherPlaylist(
         requestGetAPI(
             QQMusicAPI.MOVE_SONGS_TO_OTHER_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("id", songsId);
-                put("from_dir", fromDirId.toString());
-                put("to_dir", toDirId.toString());
+                put("from_dir", String.valueOf(fromDirId));
+                put("to_dir", String.valueOf(toDirId));
               }
             },
             Optional.of(cookie)));
@@ -391,13 +391,13 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
    * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
    */
   @Override
-  public Result removeSongsFromPlaylist(Integer dirId, String songsId, String cookie) {
+  public Result removeSongsFromPlaylist(int dirId, String songsId, String cookie) {
     return extractRemovingPlaylistResult(
         requestGetAPI(
             QQMusicAPI.REMOVE_SONGS_FROM_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("dirid", dirId.toString());
+                put("dirid", String.valueOf(dirId));
                 put("id", songsId);
               }
             },

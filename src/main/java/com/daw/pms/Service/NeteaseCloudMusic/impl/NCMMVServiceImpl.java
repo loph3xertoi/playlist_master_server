@@ -56,7 +56,7 @@ public class NCMMVServiceImpl implements NCMMVService {
               .collect(
                   Collectors.toMap(
                       rate -> rate,
-                      rate -> getMVLink(ncmDetailVideo.getId(), Integer.valueOf(rate), cookie)));
+                      rate -> getMVLink(ncmDetailVideo.getId(), Integer.parseInt(rate), cookie)));
       ncmDetailVideo.setLinks(links);
     }
     return ncmDetailVideo;

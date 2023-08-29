@@ -32,13 +32,13 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    * @apiNote GET /playlist/map?dirid={@code dirId}
    */
   @Override
-  public List<String> getSongsIdFromPlaylist(String dirId, String cookie) {
+  public List<String> getSongsIdFromPlaylist(int dirId, String cookie) {
     return extractSongsIdFromPlaylist(
         requestGetAPI(
             QQMusicAPI.GET_SONGS_ID_FROM_PLAYLIST,
             new HashMap<String, String>() {
               {
-                put("dirid", dirId);
+                put("dirid", String.valueOf(dirId));
               }
             },
             Optional.of(cookie)));
@@ -448,7 +448,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
   @Override
-  public Result searchSongsByKeyword(String name, Integer pageNo, Integer pageSize, String cookie) {
+  public Result searchSongsByKeyword(String name, int pageNo, int pageSize, String cookie) {
     Result result =
         extractSearchedSongs(
             requestGetAPI(
@@ -465,7 +465,7 @@ public class QQMusicSongServiceImpl extends QQMusicBase
       return result;
     }
     PagedDataDTO<QQMusicSong> pagedSongs = (PagedDataDTO<QQMusicSong>) result.getData();
-    Integer count = pagedSongs.getCount();
+    int count = pagedSongs.getCount();
     Boolean hasMore = count > pageSize * pageNo;
     pagedSongs.setHasMore(hasMore);
     List<QQMusicSong> list = pagedSongs.getList();

@@ -23,25 +23,25 @@ public class NCMUser extends BasicUser {
   private Short level;
 
   /** Total listened songs' number. */
-  private Integer listenSongs;
+  private int listenSongs;
 
   /** The number of people you are following. */
-  private Integer follows;
+  private int follows;
 
   /** The number of your fans. */
-  private Integer fans;
+  private int fans;
 
   /** The count of all your playlists. */
-  private Integer playlistCount;
+  private int playlistCount;
 
   /** User creating time. */
   private Long createTime;
 
   /** User vip type, 0 means no vip. */
-  private Integer vipType;
+  private int vipType;
 
   /** Your red vip level. */
-  private Integer redVipLevel;
+  private int redVipLevel;
 
   /** Expire time of your red vip. */
   private Long redVipExpireTime;
@@ -56,7 +56,7 @@ public class NCMUser extends BasicUser {
   private String redVipDynamicIconUrl2;
 
   /** Your music package vip level. */
-  private Integer musicPackageVipLevel;
+  private int musicPackageVipLevel;
 
   /** Expire time of your music package vip. */
   private Long musicPackageVipExpireTime;
@@ -65,7 +65,7 @@ public class NCMUser extends BasicUser {
   private String musicPackageVipLevelIcon;
 
   /** Your red plus vip level. */
-  private Integer redPlusVipLevel;
+  private int redPlusVipLevel;
 
   /** Expire time of your red plus vip. */
   private Long redPlusVipExpireTime;
@@ -83,10 +83,10 @@ public class NCMUser extends BasicUser {
   private Short gender;
 
   /** Province region code. */
-  private Integer province;
+  private int province;
 
   /** City region code. */
-  private Integer city;
+  private int city;
 
   /** Last login time. */
   private Long lastLoginTime;

@@ -4,7 +4,13 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.UpdateLibraryDTO;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Entity.Bilibili.BiliResource;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
+import com.daw.pms.Entity.PMS.PMSSong;
+import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.PMS.LibraryService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.cache.annotation.*;
@@ -49,7 +55,7 @@ public class LibraryController {
       @RequestParam(required = false) Integer ps,
       @RequestParam(required = false) String biliPlatform,
       @RequestParam(required = false) Integer type,
-      @RequestParam Integer platform) {
+      @RequestParam int platform) {
     Result result;
     try {
       result = libraryService.getLibraries(id, pn, ps, biliPlatform, type, platform);
@@ -79,7 +85,7 @@ public class LibraryController {
    */
   @PostMapping("/library")
   public Result createLibrary(
-      @RequestBody Map<String, String> library, @RequestParam Integer platform) {
+      @RequestBody Map<String, String> library, @RequestParam int platform) {
     try {
       return libraryService.createLibrary(library, platform);
     } catch (ResourceAccessException e) {
@@ -107,7 +113,7 @@ public class LibraryController {
    */
   @PutMapping("/library")
   public Result updateLibrary(
-      @ModelAttribute UpdateLibraryDTO library, @RequestParam Integer platform) {
+      @ModelAttribute UpdateLibraryDTO library, @RequestParam int platform) {
     try {
       return libraryService.updateLibrary(library, platform);
     } catch (ResourceAccessException e) {
@@ -150,7 +156,7 @@ public class LibraryController {
       @RequestParam(required = false) String order,
       @RequestParam(required = false) Integer range,
       @RequestParam(required = false) Integer type,
-      @RequestParam Integer platform) {
+      @RequestParam int platform) {
     Result result;
     try {
       result =
@@ -179,7 +185,7 @@ public class LibraryController {
    * @apiNote DELETE /library/{@code libraryId}?platform={@code platform}
    */
   @DeleteMapping("/library/{libraryId}")
-  public Result deleteLibrary(@PathVariable String libraryId, @RequestParam Integer platform) {
+  public Result deleteLibrary(@PathVariable String libraryId, @RequestParam int platform) {
     try {
       return libraryService.deleteLibrary(libraryId, platform);
     } catch (ResourceAccessException e) {
@@ -213,12 +219,42 @@ public class LibraryController {
    */
   @PostMapping("/addSongsToLibrary")
   public Result addSongsToLibrary(
-      @RequestBody Map<String, Object> requestBody, @RequestParam Integer platform) {
+      @RequestBody Map<String, Object> requestBody, @RequestParam int platform) {
     String libraryId = (String) requestBody.get("libraryId");
     String biliSourceFavListId = (String) requestBody.get("biliSourceFavListId");
     String songsIds = (String) requestBody.get("songsIds");
-    List<BasicSong> songs = (List<BasicSong>) requestBody.get("songs");
-    List<BiliResource> resources = (List<BiliResource>) requestBody.get("resources");
+    List<Map<String, Object>> songs = (List<Map<String, Object>>) requestBody.get("songs");
+    List<BasicSong> basicSongs = null;
+    if (songs != null && !songs.isEmpty()) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      basicSongs = new ArrayList<>(songs.size());
+      Class<? extends BasicSong> basicSongClass;
+      if (platform == 0) {
+        basicSongClass = PMSSong.class;
+      } else if (platform == 1) {
+        basicSongClass = QQMusicSong.class;
+      } else if (platform == 2) {
+        basicSongClass = NCMSong.class;
+      } else {
+        throw new RuntimeException("Invalid platform");
+      }
+      for (Map<String, Object> song : songs) {
+        BasicSong basicSong = objectMapper.convertValue(song, basicSongClass);
+        basicSongs.add(basicSong);
+      }
+    }
+    List<Map<String, Object>> resources = (List<Map<String, Object>>) requestBody.get("resources");
+    List<BiliResource> biliResources = null;
+    if (resources != null && !resources.isEmpty()) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      biliResources = new ArrayList<>(resources.size());
+      for (Map<String, Object> resource : resources) {
+        BiliResource biliResource = objectMapper.convertValue(resource, BiliResource.class);
+        biliResources.add(biliResource);
+      }
+    }
     Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
     Boolean isFavoriteSearchedResource = (Boolean) requestBody.get("isFavoriteSearchedResource");
     try {
@@ -226,8 +262,8 @@ public class LibraryController {
           libraryId,
           biliSourceFavListId,
           songsIds,
-          songs,
-          resources,
+          basicSongs,
+          biliResources,
           isAddToPMSLibrary,
           isFavoriteSearchedResource,
           platform);
@@ -257,7 +293,7 @@ public class LibraryController {
    */
   @PutMapping("/moveSongsToOtherLibrary")
   public Result moveSongsToOtherLibrary(
-      @RequestBody Map<String, String> requestBody, @RequestParam Integer platform) {
+      @RequestBody Map<String, String> requestBody, @RequestParam int platform) {
     String songsId = requestBody.get("songsId");
     String fromLibrary = requestBody.get("fromLibrary");
     String toLibrary = requestBody.get("toLibrary");
@@ -293,7 +329,7 @@ public class LibraryController {
       @RequestParam String libraryId,
       @RequestParam String songsId,
       @RequestParam String tid,
-      @RequestParam Integer platform) {
+      @RequestParam int platform) {
     try {
       return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
     } catch (ResourceAccessException e) {

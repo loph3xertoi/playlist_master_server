@@ -26,14 +26,14 @@ public class QQMusicUser extends BasicUser {
   private String listenPic;
 
   /** The number of people visited your homepage. */
-  private Integer visitorNum;
+  private int visitorNum;
 
   /** The number of your qq music fans. */
-  private Integer fansNum;
+  private int fansNum;
 
   /** The number of people you are following. */
-  private Integer followNum;
+  private int followNum;
 
   /** The number of qq friends. */
-  private Integer friendsNum;
+  private int friendsNum;
 }

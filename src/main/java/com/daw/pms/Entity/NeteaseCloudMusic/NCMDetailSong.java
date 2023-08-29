@@ -27,7 +27,7 @@ public class NCMDetailSong extends BasicSong {
   private String albumName;
 
   /** The duration of this song. */
-  private Integer duration;
+  private int duration;
 
   /** The release time of this song */
   private String publishTime;
@@ -39,26 +39,26 @@ public class NCMDetailSong extends BasicSong {
   private List<Integer> pmPlaylists;
 
   /** High bitrate of this song. */
-  private Integer hBr;
+  private int hBr;
 
   /** The size of high bitrate of this song. */
-  private Long hSize;
+  private long hSize;
 
   /** Middle bitrate of this song. */
-  private Integer mBr;
+  private int mBr;
 
   /** The size of middle bitrate of this song. */
-  private Long mSize;
+  private long mSize;
 
   /** Low bitrate of this song. */
-  private Integer lBr;
+  private int lBr;
 
   /** The size of low bitrate of this song. */
-  private Long lSize;
+  private long lSize;
 
   /** Super quality bitrate of this song. */
-  private Integer sqBr;
+  private int sqBr;
 
   /** The size of Super quality bitrate of this song. */
-  private Long sqSize;
+  private long sqSize;
 }

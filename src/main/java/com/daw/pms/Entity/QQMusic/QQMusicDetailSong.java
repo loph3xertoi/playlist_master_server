@@ -33,7 +33,7 @@ public class QQMusicDetailSong extends BasicSong {
   private String mediaMid;
 
   /** The duration of the song. */
-  private Integer duration;
+  private int duration;
 
   /** The description of the song. */
   private String songDesc;
@@ -48,14 +48,14 @@ public class QQMusicDetailSong extends BasicSong {
   private List<Integer> pmPlaylists;
 
   /** The song's size in 128k. */
-  private Long size128;
+  private long size128;
 
   /** The song's size in 320k. */
-  private Long size320;
+  private long size320;
 
   /** The song's size in Ape. */
-  private Long sizeApe;
+  private long sizeApe;
 
   /** The song's size in Flac. */
-  private Long sizeFlac;
+  private long sizeFlac;
 }

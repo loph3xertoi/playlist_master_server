@@ -64,7 +64,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     return extractFavLists(rawFavLists, type);
   }
 
-  private Result extractFavLists(String rawFavLists, Integer type) {
+  private Result extractFavLists(String rawFavLists, int type) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {
@@ -152,7 +152,7 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     return extractDetailFavList(rawDetailFavList, type);
   }
 
-  private Result extractDetailFavList(String rawDetailFavList, Integer type) {
+  private Result extractDetailFavList(String rawDetailFavList, int type) {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode;
     try {

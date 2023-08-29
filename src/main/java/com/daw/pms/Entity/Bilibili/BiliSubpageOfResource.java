@@ -19,17 +19,17 @@ public class BiliSubpageOfResource implements Serializable {
   private Long cid;
 
   /** The page number of this resource. */
-  private Integer page;
+  private int page;
 
   /** The name of this part of resource. */
   private String partName;
 
   /** The duration of this part of resource. */
-  private Integer duration;
+  private int duration;
 
   /** The width of this part of resource. */
-  private Integer width;
+  private int width;
 
   /** The height of this part of resource. */
-  private Integer height;
+  private int height;
 }

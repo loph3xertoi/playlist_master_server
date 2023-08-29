@@ -47,7 +47,11 @@ public class EvictCacheAspect {
     Result result = (Result) resultObj;
     if (result.getSuccess()) {
       Object[] args = joinPoint.getArgs();
-      Integer platform = (Integer) args[args.length - 1];
+      Signature signature = joinPoint.getSignature();
+      Map<String, Object> requestBody = (Map<String, Object>) args[0];
+      String methodName = signature.getName();
+      int platform = (int) args[args.length - 1];
+      Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
       //      String keyStr = "getLibraries(0,1,20,web,0," + platform + ")";
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
       try (Cursor<byte[]> cursor =
@@ -66,6 +70,23 @@ public class EvictCacheAspect {
           redisCache.evictIfPresent(key);
         }
       }
+      // Evict cache for pms libraries when updating pms libraries.
+      // TODO: change to real user id from session.
+      if ("addSongsToLibrary".equals(methodName) && isAddToPMSLibrary) {
+        try (Cursor<byte[]> cursor =
+            redisConnection.scan(
+                ScanOptions.scanOptions()
+                    .match("library-cache::getLibraries(1,*0)")
+                    .count(1000)
+                    .build())) {
+          while (cursor.hasNext()) {
+            byte[] fullKeyByte = cursor.next();
+            String fullKey = new String(fullKeyByte);
+            String key = fullKey.substring("library-cache::".length());
+            redisCache.evictIfPresent(key);
+          }
+        }
+      }
     }
   }
 
@@ -79,7 +100,7 @@ public class EvictCacheAspect {
       Object[] args = joinPoint.getArgs();
       Signature signature = joinPoint.getSignature();
       String methodName = signature.getName();
-      Integer platform = (Integer) args[args.length - 1];
+      int platform = (int) args[args.length - 1];
       //      String keyStr = "library-cache::getDetailLibrary(172408678,1,20,,,null,0,3)";
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
 

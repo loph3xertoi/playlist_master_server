@@ -21,7 +21,7 @@ public interface QQMusicSongService {
    * @return A list of songId for your playlist with {@code dirId}.
    * @apiNote GET /playlist/map?dirid={@code dirId}
    */
-  List<String> getSongsIdFromPlaylist(String dirId, String cookie);
+  List<String> getSongsIdFromPlaylist(int dirId, String cookie);
 
   /**
    * Get detail song with mid {@code songMid}.
@@ -99,5 +99,5 @@ public interface QQMusicSongService {
    * @return Searched result wrapped in Result DTO, the data is PagedDataDTO<QQMusicSong>.
    * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
    */
-  Result searchSongsByKeyword(String name, Integer pageNo, Integer pageSize, String cookie);
+  Result searchSongsByKeyword(String name, int pageNo, int pageSize, String cookie);
 }

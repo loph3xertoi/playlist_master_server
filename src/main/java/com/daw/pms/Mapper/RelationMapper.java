@@ -1,6 +1,6 @@
 package com.daw.pms.Mapper;
 
-import com.daw.pms.Entity.Provider.RelationSqlProvider;
+import com.daw.pms.Provider.RelationSqlProvider;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.*;
@@ -27,19 +27,18 @@ public interface RelationMapper {
 
   @InsertProvider(type = RelationSqlProvider.class, method = "addRelationSongSinger")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long addRelationSongSinger(List<Map<String, Long>> params);
+  int addRelationSongSinger(@Param("params") List<Map<String, Long>> params);
 
   @InsertProvider(type = RelationSqlProvider.class, method = "addRelationPlaylistSong")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long addRelationPlaylistSong(List<Map<String, Long>> params);
+  int addRelationPlaylistSong(@Param("params") List<Map<String, Long>> params);
 
   @DeleteProvider(type = RelationSqlProvider.class, method = "deleteRelationPlaylistSong")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long deleteRelationPlaylistSong(Map<String, Object> params);
+  int deleteRelationPlaylistSong(Map<String, Object> params);
 
   @Select("select count(*) from tb_song_singer")
-  Integer getRowCountOfRelationSongSinger();
+  int getRowCountOfRelationSongSinger();
 
   @Select("select count(*) from tb_playlist_song")
-  Integer getRowCountOfRelationPlaylistSong();
+  int getRowCountOfRelationPlaylistSong();
 }

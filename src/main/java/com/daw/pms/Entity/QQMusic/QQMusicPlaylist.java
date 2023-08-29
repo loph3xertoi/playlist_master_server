@@ -17,7 +17,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class QQMusicPlaylist extends BasicLibrary {
   /** The dirId(local id) of this playlist. */
-  private Integer dirId;
+  private int dirId;
 
   /** The tid(global id) of this playlist. */
   private String tid;

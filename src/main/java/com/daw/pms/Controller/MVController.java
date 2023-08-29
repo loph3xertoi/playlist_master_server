@@ -38,7 +38,7 @@ public class MVController {
    * @apiNote GET /mv/{@code vid}?platform={@code platform}
    */
   @GetMapping("/mv/{vid}")
-  public Result getDetailMV(@PathVariable String vid, @RequestParam Integer platform) {
+  public Result getDetailMV(@PathVariable String vid, @RequestParam int platform) {
     BasicVideo video;
     try {
       video = mvService.getDetailMV(vid, platform);
@@ -67,7 +67,7 @@ public class MVController {
    * @deprecated DON'T USE, NEED TO CONFORM THE RESULT.
    */
   @GetMapping("/mvLink/{vids}")
-  public Result getMVsLink(@PathVariable String vids, @RequestParam Integer platform) {
+  public Result getMVsLink(@PathVariable String vids, @RequestParam int platform) {
     return Result.ok(mvService.getMVsLink(vids, platform));
   }
 
@@ -87,7 +87,7 @@ public class MVController {
       @PathVariable Long songId,
       @RequestParam(required = false) String mvId,
       @RequestParam(required = false) Integer limit,
-      @RequestParam Integer platform) {
+      @RequestParam int platform) {
     List<BasicVideo> relatedVideos;
     try {
       relatedVideos = mvService.getRelatedVideos(songId, mvId, limit, platform);

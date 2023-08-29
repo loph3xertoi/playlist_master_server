@@ -1,27 +1,28 @@
 package com.daw.pms.Mapper;
 
 import com.daw.pms.Entity.PMS.PMSSinger;
-import com.daw.pms.Entity.Provider.SingerSqlProvider;
+import com.daw.pms.Provider.SingerSqlProvider;
 import java.util.List;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface SingerMapper {
   @Select("select * from tb_pms_singer where id = #{id}")
-  PMSSinger getSinger(Long id);
+  PMSSinger getSingerById(Long id);
 
-  @Select("select * from tb_pms_singer where id in (#{list})")
-  List<PMSSinger> getSingers(List<Long> ids);
+  @SelectProvider(type = SingerSqlProvider.class, method = "getSingersByIds")
+  List<PMSSinger> getSingersByIds(@Param("ids") List<Long> ids);
+
+  @Select("select * from tb_pms_singer where name = #{name} and type = #{type}")
+  PMSSinger getSingerByNameAndType(String name, Integer type);
 
   @InsertProvider(type = SingerSqlProvider.class, method = "addSinger")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long addSinger(PMSSinger singer);
+  int addSinger(PMSSinger singer);
 
   @Delete("delete from tb_pms_singer where id = #{id}")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long deleteSinger(Long id);
+  int deleteSinger(Long id);
 
   @UpdateProvider(type = SingerSqlProvider.class, method = "updateSinger")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long updateSinger(PMSSinger singer);
+  int updateSinger(PMSSinger singer);
 }

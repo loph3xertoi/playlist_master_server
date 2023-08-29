@@ -1,4 +1,4 @@
-package com.daw.pms.Entity.Provider;
+package com.daw.pms.Provider;
 
 import com.daw.pms.Entity.PMS.PMSDetailLibrary;
 import java.util.List;
@@ -33,7 +33,7 @@ public class PlaylistSqlProvider {
       sql.SET("t1.cover = #{cover}");
     }
     if (songsCount != null) {
-      sql.SET("t1.songs_count = #{songsCount}");
+      sql.SET("t1.songs_count = #{itemCount}");
     }
     if (intro != null) {
       sql.SET("t2.intro = #{intro}");
@@ -54,15 +54,14 @@ public class PlaylistSqlProvider {
           {
             DELETE_FROM("tb_pms_playlist");
             if (ids != null) {
-              WHERE(getSqlConditionCollection(ids));
+              WHERE(getSqlConditionCollection("id", ids));
             }
           }
         }.toString();
-    System.out.println(sql);
     return sql;
   }
 
-  private String getSqlConditionCollection(List<Long> ids) {
+  private String getSqlConditionCollection(String columnName, List<Long> ids) {
     StringBuilder strConditions = new StringBuilder();
     if (ids != null && ids.size() > 0) {
       int count = ids.size();
@@ -73,7 +72,7 @@ public class PlaylistSqlProvider {
           strConditions.append(",");
         }
       }
-      return "id" + " in (" + strConditions + ")";
+      return columnName + " in (" + strConditions + ")";
     } else {
       return "1=2";
     }

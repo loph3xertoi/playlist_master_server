@@ -14,7 +14,6 @@ import com.daw.pms.Service.QQMusic.QQMusicUserService;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService, Serializable {
    * @return User information for specific platform.
    */
   @Override
-  public BasicUser getUserInfo(Long id, @NotNull Integer platform) {
+  public BasicUser getUserInfo(Long id, Integer platform) {
     if (platform == 0) {
       return getPMSUser(id);
     } else if (platform == 1) {

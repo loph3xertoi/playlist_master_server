@@ -61,7 +61,7 @@ public class SongServiceImpl implements SongService, Serializable {
     if (platform == 0) {
       PMSSong song = songMapper.getSong(Long.valueOf(ids));
       Result linksResult = getSongsLink(ids, "standard", 0);
-      Integer type = song.getType();
+      int type = song.getType();
       if (linksResult.getSuccess()) {
         Object data = linksResult.getData();
         if (type == 1) {
@@ -162,7 +162,7 @@ public class SongServiceImpl implements SongService, Serializable {
       List<PMSSong> songs = songMapper.getSongs(songsIdsList);
       PMSSong song = songs.get(0);
       Long songId = song.getId();
-      Integer type = song.getType();
+      int type = song.getType();
       if (type == 1) {
         Map<String, String> qqMusicSong = songMapper.getQQMusicSong(songId);
         String originalSongId = qqMusicSong.get("songId");

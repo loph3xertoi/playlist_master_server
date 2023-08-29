@@ -2,7 +2,7 @@ package com.daw.pms.Mapper;
 
 import com.daw.pms.Entity.PMS.PMSDetailLibrary;
 import com.daw.pms.Entity.PMS.PMSLibrary;
-import com.daw.pms.Entity.Provider.PlaylistSqlProvider;
+import com.daw.pms.Provider.PlaylistSqlProvider;
 import java.util.List;
 import org.apache.ibatis.annotations.*;
 
@@ -23,7 +23,7 @@ public interface PlaylistMapper {
     @Result(property = "creatorId", column = "creator_id"),
     @Result(property = "itemCount", column = "songs_count")
   })
-  List<PMSLibrary> getPlaylistByCreatorId(Long creatorId, Integer offset, Integer pageSize);
+  List<PMSLibrary> getPlaylistByCreatorId(Long creatorId, int offset, int pageSize);
 
   @Select(
       "select * from tb_pms_playlist a join tb_pms_detail_playlist b on a.id = b.id where a.id = #{id}")
@@ -36,21 +36,18 @@ public interface PlaylistMapper {
   PMSDetailLibrary getDetailPlaylist(Long id);
 
   @Select("select count(*) from tb_pms_playlist where creator_id = #{creatorId}")
-  Integer getCountOfUserPlaylists(Long creatorId);
+  int getCountOfUserPlaylists(Long creatorId);
 
   @InsertProvider(type = PlaylistSqlProvider.class, method = "createPlaylist")
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long createPlaylist(PMSDetailLibrary library);
+  int createPlaylist(PMSDetailLibrary library);
 
   @Delete("delete from tb_pms_playlist where id = #{id}")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long deletePlaylist(Long id);
+  int deletePlaylist(Long id);
 
   @DeleteProvider(type = PlaylistSqlProvider.class, method = "deletePlaylists")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long deletePlaylists(@Param("ids") List<Long> ids);
+  int deletePlaylists(@Param("ids") List<Long> ids);
 
   @UpdateProvider(type = PlaylistSqlProvider.class, method = "updatePlaylist")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
-  Long updatePlaylist(PMSDetailLibrary library);
+  int updatePlaylist(PMSDetailLibrary library);
 }

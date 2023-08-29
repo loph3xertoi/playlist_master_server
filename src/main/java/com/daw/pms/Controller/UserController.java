@@ -37,7 +37,7 @@ public class UserController {
    * @apiNote GET /user/{@code id}?platform={@code platform}
    */
   @GetMapping("/user/{id}")
-  public Result getUser(@PathVariable Long id, @RequestParam Integer platform) {
+  public Result getUser(@PathVariable Long id, @RequestParam int platform) {
     try {
       return Result.ok(userService.getUserInfo(id, platform));
     } catch (ResourceAccessException e) {

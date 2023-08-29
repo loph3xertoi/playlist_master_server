@@ -18,16 +18,16 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class QQMusicDetailVideo extends BasicVideo {
   /** The published date of the mv. */
-  private Integer pubDate;
+  private int pubDate;
 
   /** The vid of the mv. */
   private String vid;
 
   /** The duration the mv. */
-  private Integer duration;
+  private int duration;
 
   /** Viewed times of the video. */
-  private Integer playCnt;
+  private int playCnt;
 
   /** Description of the mv. */
   private String desc;

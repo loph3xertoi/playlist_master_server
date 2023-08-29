@@ -21,10 +21,10 @@ public class QQMusicDetailPlaylist extends BasicLibrary {
   private String desc;
 
   /** Listen times of this playlist. */
-  private Integer listenNum;
+  private int listenNum;
 
   /** The dirId(local dawid) of this playlist. */
-  private Integer dirId;
+  private int dirId;
 
   /** The tid(global id) of this playlist. */
   private String tid;

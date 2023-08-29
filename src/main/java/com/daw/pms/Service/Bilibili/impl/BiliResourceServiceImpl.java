@@ -412,7 +412,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
    * @param cookie Your cookie for bilibili.
    * @return Searched resources wrapped with Result DTO, the data is PagedDataDTO<BiliResource>.
    */
-  // String keyword, Integer offset, Integer limit, Integer type, String cookie
+  // String keyword, int offset, int limit, int type, String cookie
   @Override
   public Result searchResources(
       String searchType,
@@ -471,7 +471,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       resource.setType(2);
       resource.setPage(1);
       String durationStr = resourceNode.get("duration").textValue();
-      Integer durationInSecs =
+      int durationInSecs =
           Integer.parseInt(durationStr.split(":")[0]) * 60
               + Integer.parseInt(durationStr.split(":")[1]);
       resource.setDuration(durationInSecs);

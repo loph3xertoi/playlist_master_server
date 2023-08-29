@@ -39,7 +39,7 @@ public class SongController {
    * @apiNote GET /song/{@code songId}?platform={@code platform}
    */
   @GetMapping("/song/{songId}")
-  public Result getDetailSong(@PathVariable String songId, @RequestParam Integer platform) {
+  public Result getDetailSong(@PathVariable String songId, @RequestParam int platform) {
     try {
       return songService.getDetailSong(songId, platform);
     } catch (ResourceAccessException e) {
@@ -65,7 +65,7 @@ public class SongController {
    * @apiNote GET /similarSongs/{@code songId}?platform={@code platform}
    */
   @GetMapping("/similarSongs/{songId}")
-  public Result getSimilarSongs(@PathVariable String songId, @RequestParam Integer platform) {
+  public Result getSimilarSongs(@PathVariable String songId, @RequestParam int platform) {
     List<BasicSong> similarSongs;
     try {
       similarSongs = songService.getSimilarSongs(songId, platform);
@@ -102,7 +102,7 @@ public class SongController {
   //      @PathVariable String songMid,
   //      @RequestParam String mediaMid,
   //      @RequestParam String type,
-  //      @RequestParam Integer platform) {
+  //      @RequestParam int platform) {
   //    return Result.ok(songService.getSongsLink(songMid, type, mediaMid, platform));
   //  }
 
@@ -116,7 +116,7 @@ public class SongController {
    */
   @GetMapping("/songsLink/{SongIds}")
   @CacheEvict
-  public Result getSongsLink(@PathVariable String SongIds, @RequestParam Integer platform) {
+  public Result getSongsLink(@PathVariable String SongIds, @RequestParam int platform) {
     try {
       return songService.getSongsLink(SongIds, "standard", platform);
     } catch (ResourceAccessException e) {
@@ -145,9 +145,9 @@ public class SongController {
   @GetMapping("/search/song/{keyword}")
   public Result searchSong(
       @PathVariable String keyword,
-      @RequestParam Integer pageNo,
-      @RequestParam Integer pageSize,
-      @RequestParam Integer platform) {
+      @RequestParam int pageNo,
+      @RequestParam int pageSize,
+      @RequestParam int platform) {
     try {
       return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
     } catch (ResourceAccessException e) {
