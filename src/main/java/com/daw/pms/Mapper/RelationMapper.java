@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface RelationMapper {
   @Select("select * from tb_song_singer where id = #{id}")
-  Map<String, Long> getRelationSongSinger(Long id);
+  Map<String, Object> getRelationSongSinger(Long id);
 
   @Select("select fk_singer_id from tb_song_singer where fk_song_id = #{id}")
   List<Long> getAllSingersIdBySongId(Long id);
@@ -17,7 +17,7 @@ public interface RelationMapper {
   List<Long> getAllSongsIdBySingerId(Long id);
 
   @Select("select * from tb_playlist_song where id = #{id}")
-  Map<String, Long> getRelationPlaylistSong(Long id);
+  Map<String, Object> getRelationPlaylistSong(Long id);
 
   @Select("select fk_song_id from tb_playlist_song where fk_playlist_id = #{id}")
   List<Long> getAllSongsIdByPlaylistId(Long id);

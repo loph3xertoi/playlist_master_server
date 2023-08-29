@@ -607,7 +607,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
     playlistMapper.updatePlaylist(detailPlaylist);
-    songMapper.addQQMusicSong(qqMusicSongs);
+    if (!qqMusicSongs.isEmpty()) {
+      songMapper.addQQMusicSong(qqMusicSongs);
+    }
     return Result.ok();
   }
 
@@ -625,13 +627,13 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     detailPlaylist.setUpdateTime(System.currentTimeMillis());
     for (BasicSong song : songs) {
       NCMSong ncmSong = (NCMSong) song;
-      Map<String, String> selectedNCMSong = songMapper.getNCMSongByNCMId(ncmSong.getId());
+      Map<String, Object> selectedNCMSong = songMapper.getNCMSongByNCMId(ncmSong.getId());
       if (selectedNCMSong != null) {
         songIds.add(
             new HashMap<String, Long>() {
               {
                 put("fkPlaylistId", Long.valueOf(libraryId));
-                put("fkSongId", Long.valueOf(selectedNCMSong.get("pmsSongId")));
+                put("fkSongId", Long.valueOf(String.valueOf(selectedNCMSong.get("pmsSongId"))));
               }
             });
         continue;
@@ -695,7 +697,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
     playlistMapper.updatePlaylist(detailPlaylist);
-    songMapper.addNCMSong(ncmSongs);
+    if (!ncmSongs.isEmpty()) {
+      songMapper.addNCMSong(ncmSongs);
+    }
     return Result.ok();
   }
 
@@ -712,13 +716,15 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     }
     detailPlaylist.setUpdateTime(System.currentTimeMillis());
     for (BiliResource resource : resources) {
-      Map<String, String> selectedBiliResource = songMapper.getBiliResourceByAid(resource.getId());
+      Map<String, Object> selectedBiliResource = songMapper.getBiliResourceByAid(resource.getId());
       if (selectedBiliResource != null) {
         songIds.add(
             new HashMap<String, Long>() {
               {
                 put("fkPlaylistId", Long.valueOf(libraryId));
-                put("fkSongId", Long.valueOf(selectedBiliResource.get("pmsSongId")));
+                put(
+                    "fkSongId",
+                    Long.valueOf(String.valueOf(selectedBiliResource.get("pmsSongId"))));
               }
             });
         continue;
@@ -779,7 +785,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
     playlistMapper.updatePlaylist(detailPlaylist);
-    songMapper.addBiliResource(biliResources);
+    if (!biliResources.isEmpty()) {
+      songMapper.addBiliResource(biliResources);
+    }
     return Result.ok();
   }
 

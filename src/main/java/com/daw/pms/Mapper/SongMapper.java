@@ -40,7 +40,7 @@ public interface SongMapper {
     @Result(property = "songMid", column = "song_mid"),
     @Result(property = "mediaMid", column = "media_mid")
   })
-  Map<String, String> getQQMusicSong(Long id);
+  Map<String, Object> getQQMusicSong(Long id);
 
   @Select("select * from tb_qqmusic_song where song_id = #{songId}")
   @Results({
@@ -71,7 +71,7 @@ public interface SongMapper {
     @Result(property = "ncmId", column = "ncm_id"),
     @Result(property = "mvId", column = "mv_id")
   })
-  Map<String, String> getNCMSong(Long id);
+  Map<String, Object> getNCMSong(Long id);
 
   @Select("select * from tb_ncm_song where ncm_id = #{ncmId}")
   @Results({
@@ -79,7 +79,7 @@ public interface SongMapper {
     @Result(property = "ncmId", column = "ncm_id"),
     @Result(property = "mvId", column = "mv_id")
   })
-  Map<String, String> getNCMSongByNCMId(Long ncmId);
+  Map<String, Object> getNCMSongByNCMId(Long ncmId);
 
   @SelectProvider(type = SongSqlProvider.class, method = "getExistedIdsAndNCMIdsList")
   List<Map<String, Object>> getExistedIdsAndNCMIdsList(@Param("ncmIds") List<Long> ncmIds);
@@ -97,7 +97,7 @@ public interface SongMapper {
 
   @Select("select * from tb_bilibili_resource where pms_song_id = #{id}")
   @Results({@Result(property = "pmsSongId", column = "pms_song_id")})
-  Map<String, String> getBiliResource(Long id);
+  Map<String, Object> getBiliResource(Long id);
 
   @Select("select * from tb_bilibili_resource where aid = #{aid}")
   @Results({
@@ -105,7 +105,7 @@ public interface SongMapper {
     @Result(property = "aid", column = "aid"),
     @Result(property = "bvid", column = "bvid")
   })
-  Map<String, String> getBiliResourceByAid(Long aid);
+  Map<String, Object> getBiliResourceByAid(Long aid);
 
   @SelectProvider(type = SongSqlProvider.class, method = "getExistedIdsAndAidsList")
   List<Map<String, Object>> getExistedIdsAndAidsList(@Param("aids") List<Long> aids);

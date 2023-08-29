@@ -164,17 +164,17 @@ public class SongServiceImpl implements SongService, Serializable {
       Long songId = song.getId();
       int type = song.getType();
       if (type == 1) {
-        Map<String, String> qqMusicSong = songMapper.getQQMusicSong(songId);
-        String originalSongId = qqMusicSong.get("songId");
+        Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);
+        String originalSongId = String.valueOf(qqMusicSong.get("songId"));
         result = qqMusicSongService.getSongsLink(originalSongId, qqMusicCookie);
       } else if (type == 2) {
-        Map<String, String> ncmSong = songMapper.getNCMSong(songId);
-        String originalSongId = ncmSong.get("ncmId");
+        Map<String, Object> ncmSong = songMapper.getNCMSong(songId);
+        String originalSongId = String.valueOf(ncmSong.get("ncmId"));
         result = ncmSongService.getSongsLink(originalSongId, level, ncmCookie);
       } else if (type == 3) {
-        Map<String, String> biliResource = songMapper.getBiliResource(songId);
-        String aid = biliResource.get("aid");
-        String bvid = biliResource.get("bvid");
+        Map<String, Object> biliResource = songMapper.getBiliResource(songId);
+        String aid = String.valueOf(biliResource.get("aid"));
+        String bvid = String.valueOf(biliResource.get("bvid"));
         String url = "https://api.bilibili.com/x/player/pagelist?bvid=" + bvid;
         String response = httpTools.requestGetAPIByFinalUrl(url, Optional.ofNullable(biliCookie));
         Long cid = extractCid(response);
