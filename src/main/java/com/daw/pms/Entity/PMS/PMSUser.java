@@ -18,5 +18,5 @@ public class PMSUser extends BasicUser {
   private String intro;
 
   /** All managed sub users in playlist master server. */
-  private Map<String, BasicUser> subUsers;
+  private Map<String, ? extends BasicUser> subUsers;
 }

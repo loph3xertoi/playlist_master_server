@@ -46,7 +46,7 @@ public class NCMSongServiceImpl implements NCMSongService {
                 Optional.of(cookie)));
     NCMLyrics lyrics = getLyrics(Long.valueOf(ids), cookie);
     detailSong.setLyrics(lyrics);
-    List<BasicSinger> singers = detailSong.getSingers();
+    List<? extends BasicSinger> singers = detailSong.getSingers();
     for (BasicSinger singer : singers) {
       String singerId = ((NCMSinger) singer).getId().toString();
       if (singerId.equals("0")) {

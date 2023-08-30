@@ -16,6 +16,10 @@ public interface SingerMapper {
   @Select("select * from tb_pms_singer where name = #{name} and type = #{type}")
   PMSSinger getSingerByNameAndType(String name, Integer type);
 
+  @Select(
+      "select b.id, b.type, b.name, b.avatar from tb_song_singer a join tb_pms_singer b on a.fk_singer_id = b.id where a.fk_song_id = #{songId}")
+  List<PMSSinger> getAllSingersBySongId(Long songId);
+
   @InsertProvider(type = SingerSqlProvider.class, method = "addSinger")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   int addSinger(PMSSinger singer);

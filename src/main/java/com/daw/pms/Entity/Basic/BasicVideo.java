@@ -20,5 +20,5 @@ public class BasicVideo implements Serializable {
   private String cover;
 
   /** The singers of this video. */
-  private List<BasicSinger> singers;
+  private List<? extends BasicSinger> singers;
 }

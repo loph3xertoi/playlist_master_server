@@ -3,7 +3,13 @@ package com.daw.pms.Service.PMS.impl;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicSong;
+import com.daw.pms.Entity.Bilibili.BiliResource;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
+import com.daw.pms.Entity.PMS.PMSDetailSong;
+import com.daw.pms.Entity.PMS.PMSSinger;
 import com.daw.pms.Entity.PMS.PMSSong;
+import com.daw.pms.Entity.QQMusic.QQMusicSong;
+import com.daw.pms.Mapper.SingerMapper;
 import com.daw.pms.Mapper.SongMapper;
 import com.daw.pms.Service.Bilibili.BiliResourceService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
@@ -34,18 +40,21 @@ public class SongServiceImpl implements SongService, Serializable {
   private final NCMSongService ncmSongService;
   private final BiliResourceService biliResourceService;
   private final SongMapper songMapper;
+  private final SingerMapper singerMapper;
 
   public SongServiceImpl(
       HttpTools httpTools,
       QQMusicSongService qqMusicSongService,
       NCMSongService ncmSongService,
       BiliResourceService biliResourceService,
-      SongMapper songMapper) {
+      SongMapper songMapper,
+      SingerMapper singerMapper) {
     this.httpTools = httpTools;
     this.qqMusicSongService = qqMusicSongService;
     this.ncmSongService = ncmSongService;
     this.biliResourceService = biliResourceService;
     this.songMapper = songMapper;
+    this.singerMapper = singerMapper;
   }
 
   /**
@@ -60,6 +69,7 @@ public class SongServiceImpl implements SongService, Serializable {
     Result result;
     if (platform == 0) {
       PMSSong song = songMapper.getSong(Long.valueOf(ids));
+      PMSDetailSong detailSong = new PMSDetailSong(song);
       Result linksResult = getSongsLink(ids, "standard", 0);
       int type = song.getType();
       if (linksResult.getSuccess()) {
@@ -68,8 +78,10 @@ public class SongServiceImpl implements SongService, Serializable {
           //          Map<String, String> links = (Map<String, String>) linksResult.getData();
           return Result.ok();
         } else if (type == 2) {
-          //          Map<String, String> links = (Map<String, String>) linksResult.getData();
-          return Result.ok();
+          Map<String, String> links = (Map<String, String>) linksResult.getData();
+          Map.Entry<String, String> entry = links.entrySet().iterator().next();
+          String songLink = entry.getValue();
+          detailSong.setSongLink(songLink);
         } else if (type == 3) {
           //          Map<String, String> links = (Map<String, String>) linksResult.getData();
           return Result.ok();
@@ -79,6 +91,48 @@ public class SongServiceImpl implements SongService, Serializable {
       } else {
         throw new RuntimeException("Fail to get detail pms song: " + linksResult.getMessage());
       }
+      List<PMSSinger> singers = singerMapper.getAllSingersBySongId(song.getId());
+      detailSong.setSingers(singers);
+      // Set basic song or bilibili resource.
+      if (type == 1) {
+        QQMusicSong qqMusicSong = new QQMusicSong();
+        Map<String, Object> qqMusicSongMap = songMapper.getQQMusicSong(Long.valueOf(ids));
+        qqMusicSong.setSongId(qqMusicSongMap.get("songId").toString());
+        qqMusicSong.setSongMid(qqMusicSongMap.get("songMid").toString());
+        qqMusicSong.setMediaMid(qqMusicSongMap.get("mediaMid").toString());
+        qqMusicSong.setName(detailSong.getName());
+        qqMusicSong.setCover(detailSong.getCover());
+        qqMusicSong.setPayPlay(detailSong.getPayPlay());
+        qqMusicSong.setIsTakenDown(detailSong.getIsTakenDown());
+        qqMusicSong.setSongLink(detailSong.getSongLink());
+        qqMusicSong.setSingers(singers);
+        detailSong.setBasicSong(qqMusicSong);
+      } else if (type == 2) {
+        NCMSong ncmSong = new NCMSong();
+        Map<String, Object> ncmSongMap = songMapper.getNCMSong(Long.valueOf(ids));
+        ncmSong.setId(Long.valueOf(String.valueOf(ncmSongMap.get("ncmId"))));
+        ncmSong.setMvId(Long.valueOf(String.valueOf(ncmSongMap.get("mvId"))));
+        ncmSong.setName(detailSong.getName());
+        ncmSong.setCover(detailSong.getCover());
+        ncmSong.setPayPlay(detailSong.getPayPlay());
+        ncmSong.setIsTakenDown(detailSong.getIsTakenDown());
+        ncmSong.setSongLink(detailSong.getSongLink());
+        ncmSong.setSingers(singers);
+        detailSong.setBasicSong(ncmSong);
+      } else if (type == 3) {
+        BiliResource biliResource = new BiliResource();
+        Map<String, Object> biliResourceMap = songMapper.getBiliResource(Long.valueOf(ids));
+        biliResource.setId(Long.valueOf(String.valueOf(biliResourceMap.get("aid"))));
+        biliResource.setBvid(String.valueOf(biliResourceMap.get("bvid")));
+        biliResource.setTitle(detailSong.getName());
+        biliResource.setCover(detailSong.getCover());
+        List<PMSSinger> pmsSingers = singerMapper.getAllSingersBySongId(biliResource.getId());
+        biliResource.setUpperName(pmsSingers.get(0).getName());
+        detailSong.setBiliResource(biliResource);
+      } else {
+        throw new RuntimeException("Unsupported song type");
+      }
+      result = Result.ok(detailSong);
     } else if (platform == 1) {
       result = qqMusicSongService.getDetailSong(ids, qqMusicCookie);
     } else if (platform == 2) {

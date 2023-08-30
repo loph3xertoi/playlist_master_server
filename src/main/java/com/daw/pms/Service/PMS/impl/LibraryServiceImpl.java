@@ -572,7 +572,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
               put("mediaMid", qqMusicSong.getMediaMid());
             }
           });
-      List<BasicSinger> qqMusicSingers = qqMusicSong.getSingers();
+      List<? extends BasicSinger> qqMusicSingers = qqMusicSong.getSingers();
       List<Map<String, Long>> singerIds = new ArrayList<>(qqMusicSingers.size());
       for (BasicSinger singer : qqMusicSingers) {
         String name = singer.getName();
@@ -664,7 +664,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
               put("mvId", String.valueOf(ncmSong.getMvId()));
             }
           });
-      List<BasicSinger> ncmSingers = ncmSong.getSingers();
+      List<? extends BasicSinger> ncmSingers = ncmSong.getSingers();
       List<Map<String, Long>> singerIds = new ArrayList<>(ncmSingers.size());
       for (BasicSinger singer : ncmSingers) {
         String name = singer.getName();
