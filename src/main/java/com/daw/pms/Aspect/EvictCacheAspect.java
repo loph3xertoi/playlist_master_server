@@ -48,10 +48,8 @@ public class EvictCacheAspect {
     if (result.getSuccess()) {
       Object[] args = joinPoint.getArgs();
       Signature signature = joinPoint.getSignature();
-      Map<String, Object> requestBody = (Map<String, Object>) args[0];
       String methodName = signature.getName();
       int platform = (int) args[args.length - 1];
-      Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
       //      String keyStr = "getLibraries(0,1,20,web,0," + platform + ")";
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
       try (Cursor<byte[]> cursor =
@@ -72,18 +70,22 @@ public class EvictCacheAspect {
       }
       // Evict cache for pms libraries when updating pms libraries.
       // TODO: change to real user id from session.
-      if ("addSongsToLibrary".equals(methodName) && isAddToPMSLibrary) {
-        try (Cursor<byte[]> cursor =
-            redisConnection.scan(
-                ScanOptions.scanOptions()
-                    .match("library-cache::getLibraries(1,*0)")
-                    .count(1000)
-                    .build())) {
-          while (cursor.hasNext()) {
-            byte[] fullKeyByte = cursor.next();
-            String fullKey = new String(fullKeyByte);
-            String key = fullKey.substring("library-cache::".length());
-            redisCache.evictIfPresent(key);
+      if ("addSongsToLibrary".equals(methodName)) {
+        Map<String, Object> requestBody = (Map<String, Object>) args[0];
+        Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
+        if (isAddToPMSLibrary) {
+          try (Cursor<byte[]> cursor =
+              redisConnection.scan(
+                  ScanOptions.scanOptions()
+                      .match("library-cache::getLibraries(1,*0)")
+                      .count(1000)
+                      .build())) {
+            while (cursor.hasNext()) {
+              byte[] fullKeyByte = cursor.next();
+              String fullKey = new String(fullKeyByte);
+              String key = fullKey.substring("library-cache::".length());
+              redisCache.evictIfPresent(key);
+            }
           }
         }
       }
@@ -105,9 +107,12 @@ public class EvictCacheAspect {
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
 
       String firstParam;
+      Boolean isAddToPMSLibrary = false;
       String secondParam = null;
       if ("addSongsToLibrary".equals(methodName)) {
-        firstParam = ((Map<String, String>) args[0]).get("tid");
+        Map<String, Object> reqeust = (Map<String, Object>) args[0];
+        firstParam = (String) reqeust.get("tid");
+        isAddToPMSLibrary = (Boolean) reqeust.get("isAddToPMSLibrary");
       } else if ("moveSongsToOtherLibrary".equals(methodName)) {
         firstParam = ((Map<String, String>) args[0]).get("fromTid");
         secondParam = ((Map<String, String>) args[0]).get("toTid");
@@ -117,6 +122,9 @@ public class EvictCacheAspect {
         firstParam = ((UpdateLibraryDTO) args[0]).getId().toString();
       } else {
         throw new RuntimeException("Invalid method name");
+      }
+      if (isAddToPMSLibrary) {
+        platform = 0;
       }
       String pattern = "library-cache::getDetailLibrary(" + firstParam + ",*" + platform + ")";
       try (Cursor<byte[]> cursor =
