@@ -408,7 +408,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   @NotNull
   private Result addPMSSongsToPMSLibrary(String libraryId, String songsIds) {
     Result result;
-    List<String> songsIdsList = Arrays.asList(songsIds.split(","));
+    List<String> songsIdsList = new ArrayList<>(Arrays.asList(songsIds.split(",")));
     PMSDetailLibrary detailPlaylist = playlistMapper.getDetailPlaylist(Long.valueOf(libraryId));
     List<Long> songsIdsInPlaylist =
         relationMapper.getAllSongsIdByPlaylistId(detailPlaylist.getId());
@@ -827,16 +827,21 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       params.put("songsIds", songsIds);
       relationMapper.deleteRelationPlaylistSong(params);
       int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      List<Long> idsInToLibrary = relationMapper.getAllSongsIdByPlaylistId(Long.valueOf(toLibrary));
       for (String songId : songsIds) {
-        addedParams.add(
-            new HashMap<String, Long>() {
-              {
-                put("fkPlaylistId", Long.valueOf(toLibrary));
-                put("fkSongId", Long.valueOf(songId));
-              }
-            });
+        if (!idsInToLibrary.contains(Long.valueOf(songId))) {
+          addedParams.add(
+              new HashMap<String, Long>() {
+                {
+                  put("fkPlaylistId", Long.valueOf(toLibrary));
+                  put("fkSongId", Long.valueOf(songId));
+                }
+              });
+        }
       }
-      relationMapper.addRelationPlaylistSong(addedParams);
+      if (!addedParams.isEmpty()) {
+        relationMapper.addRelationPlaylistSong(addedParams);
+      }
       int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
       int addedSongsCount = newRowCount - oldRowCount;
       detailToPlaylist.setItemCount(detailToPlaylist.getItemCount() + addedSongsCount);

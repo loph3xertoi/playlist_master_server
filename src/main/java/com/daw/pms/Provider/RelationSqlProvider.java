@@ -51,16 +51,13 @@ public class RelationSqlProvider {
 
   public String deleteRelationPlaylistSong(Map<String, Object> params) {
     StringBuilder sql = new StringBuilder();
-    Long libraryId = (Long) params.get("libraryId");
-    Long[] songsIds = (Long[]) params.get("songsIds");
-    if (libraryId == null) {
-      throw new RuntimeException("The libraryId mustn't be null");
-    }
-    for (Long songId : songsIds) {
+    String libraryId = (String) params.get("libraryId");
+    String[] songsIds = (String[]) params.get("songsIds");
+    for (String songId : songsIds) {
       String subSql =
           new SQL()
               .DELETE_FROM("tb_playlist_song")
-              .WHERE("fk_playlist_id = " + libraryId + " and fk_song_id = " + songId.toString())
+              .WHERE("fk_playlist_id = " + libraryId + " and fk_song_id = " + songId)
               .toString();
       sql.append(subSql).append(";");
     }
