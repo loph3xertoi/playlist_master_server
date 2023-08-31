@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * User controller.
@@ -40,17 +39,8 @@ public class UserController {
   public Result getUser(@PathVariable Long id, @RequestParam int platform) {
     try {
       return Result.ok(userService.getUserInfo(id, platform));
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 }

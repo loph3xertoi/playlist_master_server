@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.cache.annotation.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Library controller.
@@ -59,17 +58,8 @@ public class LibraryController {
     Result result;
     try {
       result = libraryService.getLibraries(id, pn, ps, biliPlatform, type, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     return result;
   }
@@ -88,17 +78,8 @@ public class LibraryController {
       @RequestBody Map<String, String> library, @RequestParam int platform) {
     try {
       return libraryService.createLibrary(library, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -116,17 +97,8 @@ public class LibraryController {
       @ModelAttribute UpdateLibraryDTO library, @RequestParam int platform) {
     try {
       return libraryService.updateLibrary(library, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -161,17 +133,8 @@ public class LibraryController {
     try {
       result =
           libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     return result;
   }
@@ -188,17 +151,8 @@ public class LibraryController {
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam int platform) {
     try {
       return libraryService.deleteLibrary(libraryId, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -267,17 +221,8 @@ public class LibraryController {
           isAddToPMSLibrary,
           isFavoriteSearchedResource,
           platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -299,17 +244,8 @@ public class LibraryController {
     String toLibrary = requestBody.get("toLibrary");
     try {
       return libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -332,17 +268,8 @@ public class LibraryController {
       @RequestParam int platform) {
     try {
       return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 }

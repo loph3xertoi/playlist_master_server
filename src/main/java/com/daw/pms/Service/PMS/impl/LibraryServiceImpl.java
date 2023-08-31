@@ -544,7 +544,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
             new HashMap<String, Long>() {
               {
                 put("fkPlaylistId", Long.valueOf(libraryId));
-                put("fkSongId", Long.valueOf(selectedQQMusicSong.get("pmsSongId")));
+                put("fkSongId", Long.valueOf(String.valueOf(selectedQQMusicSong.get("pmsSongId"))));
               }
             });
         continue;

@@ -167,10 +167,10 @@ public class SongSqlProvider {
       String subSql =
           new SQL()
               .INSERT_INTO("tb_qqmusic_song")
-              .VALUES("pms_song_id", pmsSongId)
-              .VALUES("song_id", songId)
-              .VALUES("song_mid", songMid)
-              .VALUES("media_mid", mediaMid)
+              .VALUES("pms_song_id", "\"" + pmsSongId + "\"")
+              .VALUES("song_id", "\"" + songId + "\"")
+              .VALUES("song_mid", "\"" + songMid + "\"")
+              .VALUES("media_mid", "\"" + mediaMid + "\"")
               .toString();
       sql.append(subSql).append(";");
     }
@@ -195,9 +195,9 @@ public class SongSqlProvider {
       String subSql =
           new SQL()
               .INSERT_INTO("tb_ncm_song")
-              .VALUES("pms_song_id", pmsSongId)
-              .VALUES("ncm_id", ncmId)
-              .VALUES("mv_id", mvId)
+              .VALUES("pms_song_id", "\"" + pmsSongId + "\"")
+              .VALUES("ncm_id", "\"" + ncmId + "\"")
+              .VALUES("mv_id", "\"" + mvId + "\"")
               .toString();
       sql.append(subSql).append(";");
     }
@@ -222,9 +222,9 @@ public class SongSqlProvider {
       String subSql =
           new SQL()
               .INSERT_INTO("tb_bilibili_resource")
-              .VALUES("pms_song_id", pmsSongId)
-              .VALUES("aid", aid)
-              .VALUES("bvid", bvid)
+              .VALUES("pms_song_id", "\"" + pmsSongId + "\"")
+              .VALUES("aid", "\"" + aid + "\"")
+              .VALUES("bvid", "\"" + bvid + "\"")
               .toString();
       sql.append(subSql).append(";");
     }

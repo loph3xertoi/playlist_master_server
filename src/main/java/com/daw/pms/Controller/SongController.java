@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Song controller.
@@ -42,17 +41,8 @@ public class SongController {
   public Result getDetailSong(@PathVariable String songId, @RequestParam int platform) {
     try {
       return songService.getDetailSong(songId, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -69,17 +59,8 @@ public class SongController {
     List<BasicSong> similarSongs;
     try {
       similarSongs = songService.getSimilarSongs(songId, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     return Result.ok(similarSongs, (long) similarSongs.size());
   }
@@ -119,17 +100,8 @@ public class SongController {
   public Result getSongsLink(@PathVariable String SongIds, @RequestParam int platform) {
     try {
       return songService.getSongsLink(SongIds, "standard", platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 
@@ -150,17 +122,8 @@ public class SongController {
       @RequestParam int platform) {
     try {
       return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
-    } catch (ResourceAccessException e) {
-      String remoteServer =
-          platform == 0
-              ? "pms"
-              : platform == 1
-                  ? "proxy qqmusic server"
-                  : platform == 2 ? "proxy ncm server" : "proxy bilibili server";
-      String errorMsg = "Fail to connect to " + remoteServer;
-      return Result.fail(errorMsg);
     } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n" + e.getStackTrace()[0].toString());
+      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
   }
 }
