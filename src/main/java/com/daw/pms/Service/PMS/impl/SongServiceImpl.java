@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.BiliLinksDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicSong;
@@ -85,8 +86,24 @@ public class SongServiceImpl implements SongService, Serializable {
           String songLink = entry.getValue();
           detailSong.setSongLink(songLink);
         } else if (type == 3) {
-          //          Map<String, String> links = (Map<String, String>) linksResult.getData();
-          return Result.ok();
+          BiliLinksDTO linksDTO = (BiliLinksDTO) linksResult.getData();
+          Map<String, String> audios = linksDTO.getAudio();
+          String maxKey = null;
+          int maxValue = Integer.MIN_VALUE;
+          for (Map.Entry<String, String> entry : audios.entrySet()) {
+            String key = entry.getKey();
+            int intValue = Integer.parseInt(key);
+            if (intValue > maxValue) {
+              maxKey = key;
+              maxValue = intValue;
+            }
+          }
+          if (maxKey != null) {
+            String songLink = audios.get(maxKey);
+            detailSong.setSongLink(songLink);
+          } else {
+            throw new RuntimeException("No available audio");
+          }
         } else {
           throw new RuntimeException("Invalid song type");
         }
@@ -128,8 +145,7 @@ public class SongServiceImpl implements SongService, Serializable {
         biliResource.setBvid(String.valueOf(biliResourceMap.get("bvid")));
         biliResource.setTitle(detailSong.getName());
         biliResource.setCover(detailSong.getCover());
-        List<PMSSinger> pmsSingers = singerMapper.getAllSingersBySongId(biliResource.getId());
-        biliResource.setUpperName(pmsSingers.get(0).getName());
+        biliResource.setUpperName(detailSong.getSingers().get(0).getName());
         detailSong.setBiliResource(biliResource);
       } else {
         throw new RuntimeException("Unsupported song type");

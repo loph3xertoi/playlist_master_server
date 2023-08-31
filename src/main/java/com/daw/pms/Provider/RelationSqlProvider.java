@@ -51,7 +51,7 @@ public class RelationSqlProvider {
 
   public String deleteRelationPlaylistSong(Map<String, Object> params) {
     StringBuilder sql = new StringBuilder();
-    String libraryId = (String) params.get("libraryId");
+    String libraryId = String.valueOf(params.get("libraryId"));
     String[] songsIds = (String[]) params.get("songsIds");
     for (String songId : songsIds) {
       String subSql =

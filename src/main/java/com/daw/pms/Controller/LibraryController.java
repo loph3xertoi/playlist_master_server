@@ -174,9 +174,9 @@ public class LibraryController {
   @PostMapping("/addSongsToLibrary")
   public Result addSongsToLibrary(
       @RequestBody Map<String, Object> requestBody, @RequestParam int platform) {
-    String libraryId = (String) requestBody.get("libraryId");
-    String biliSourceFavListId = (String) requestBody.get("biliSourceFavListId");
-    String songsIds = (String) requestBody.get("songsIds");
+    String libraryId = String.valueOf(requestBody.get("libraryId"));
+    String biliSourceFavListId = String.valueOf(requestBody.get("biliSourceFavListId"));
+    String songsIds = String.valueOf(requestBody.get("songsIds"));
     List<Map<String, Object>> songs = (List<Map<String, Object>>) requestBody.get("songs");
     List<BasicSong> basicSongs = null;
     if (songs != null && !songs.isEmpty()) {

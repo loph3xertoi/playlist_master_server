@@ -111,13 +111,13 @@ public class EvictCacheAspect {
       String secondParam = null;
       if ("addSongsToLibrary".equals(methodName)) {
         Map<String, Object> reqeust = (Map<String, Object>) args[0];
-        firstParam = (String) reqeust.get("tid");
+        firstParam = String.valueOf(reqeust.get("tid"));
         isAddToPMSLibrary = (Boolean) reqeust.get("isAddToPMSLibrary");
       } else if ("moveSongsToOtherLibrary".equals(methodName)) {
         firstParam = ((Map<String, String>) args[0]).get("fromTid");
         secondParam = ((Map<String, String>) args[0]).get("toTid");
       } else if ("removeSongsFromLibrary".equals(methodName)) {
-        firstParam = (String) args[2];
+        firstParam = String.valueOf(args[2]);
       } else if ("updateLibrary".equals(methodName)) {
         firstParam = ((UpdateLibraryDTO) args[0]).getId().toString();
       } else {
