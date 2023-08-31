@@ -75,8 +75,10 @@ public class SongServiceImpl implements SongService, Serializable {
       if (linksResult.getSuccess()) {
         Object data = linksResult.getData();
         if (type == 1) {
-          //          Map<String, String> links = (Map<String, String>) linksResult.getData();
-          return Result.ok();
+          Map<String, String> links = (Map<String, String>) linksResult.getData();
+          Map.Entry<String, String> entry = links.entrySet().iterator().next();
+          String songLink = entry.getValue();
+          detailSong.setSongLink(songLink);
         } else if (type == 2) {
           Map<String, String> links = (Map<String, String>) linksResult.getData();
           Map.Entry<String, String> entry = links.entrySet().iterator().next();
@@ -219,8 +221,8 @@ public class SongServiceImpl implements SongService, Serializable {
       int type = song.getType();
       if (type == 1) {
         Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);
-        String originalSongId = String.valueOf(qqMusicSong.get("songId"));
-        result = qqMusicSongService.getSongsLink(originalSongId, qqMusicCookie);
+        String songMid = String.valueOf(qqMusicSong.get("songMid"));
+        result = qqMusicSongService.getSongsLink(songMid, qqMusicCookie);
       } else if (type == 2) {
         Map<String, Object> ncmSong = songMapper.getNCMSong(songId);
         String originalSongId = String.valueOf(ncmSong.get("ncmId"));
