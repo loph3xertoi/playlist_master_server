@@ -32,9 +32,11 @@ public interface MVService {
    *
    * @param songId The song's id.
    * @param mvId The mv's id, only in ncm platform.
-   * @param limit The limit of related videos, only in ncm platform.
+   * @param limit The limit of related videos, only used in ncm platform.
+   * @param songType The pms song's type, only used in pms platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
    */
-  List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, Integer platform);
+  List<BasicVideo> getRelatedVideos(
+      Long songId, String mvId, Integer limit, Integer songType, Integer platform);
 }

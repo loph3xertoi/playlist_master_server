@@ -67,6 +67,7 @@ public class MVController {
    * @param songId The song's id.
    * @param mvId The mv's id, only in ncm platform.
    * @param limit The limit of related videos, only in ncm platform.
+   * @param songType The pms song's type, only used in pms platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
    * @apiNote GET /relatedMV/{@code songId}?mvId={@code mvId}&limit={@code limit}&platform={@code
@@ -77,10 +78,11 @@ public class MVController {
       @PathVariable Long songId,
       @RequestParam(required = false) String mvId,
       @RequestParam(required = false) Integer limit,
+      @RequestParam(required = false) Integer songType,
       @RequestParam int platform) {
     List<BasicVideo> relatedVideos;
     try {
-      relatedVideos = mvService.getRelatedVideos(songId, mvId, limit, platform);
+      relatedVideos = mvService.getRelatedVideos(songId, mvId, limit, songType, platform);
     } catch (Exception e) {
       return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }

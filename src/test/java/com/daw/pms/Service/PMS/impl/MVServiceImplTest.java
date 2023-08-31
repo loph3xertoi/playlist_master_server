@@ -51,28 +51,29 @@ class MVServiceImplTest {
   @Test
   void getRelatedVideos() {
     try {
-      List<BasicVideo> pmsRelatedVideos = mvService.getRelatedVideos(0L, "0", 0, 0);
+      List<BasicVideo> pmsRelatedVideos = mvService.getRelatedVideos(0L, "0", 0, 0, 0);
       System.out.println("pmsRelatedVideos: \n" + pmsRelatedVideos);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicVideo> qqmusicRelatedVideos = mvService.getRelatedVideos(102340965L, "0", 0, 1);
+      List<BasicVideo> qqmusicRelatedVideos = mvService.getRelatedVideos(102340965L, "0", 0, 1, 1);
       System.out.println("qqmusicRelatedVideos: \n" + qqmusicRelatedVideos);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicVideo> ncmRelatedVideos = mvService.getRelatedVideos(460514067L, "5457128", 10, 2);
+      List<BasicVideo> ncmRelatedVideos =
+          mvService.getRelatedVideos(460514067L, "5457128", 10, 2, 2);
       System.out.println("ncmRelatedVideos: \n" + ncmRelatedVideos);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicVideo> bilibiliRelatedVideos = mvService.getRelatedVideos(0L, "0", 0, 3);
+      List<BasicVideo> bilibiliRelatedVideos = mvService.getRelatedVideos(0L, "0", 0, 3, 3);
       System.out.println("bilibiliRelatedVideos: \n" + bilibiliRelatedVideos);
     } catch (Exception e) {
       e.printStackTrace();

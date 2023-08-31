@@ -1,6 +1,7 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.Entity.Basic.BasicVideo;
+import com.daw.pms.Mapper.SongMapper;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMMVService;
 import com.daw.pms.Service.PMS.MVService;
 import com.daw.pms.Service.QQMusic.QQMusicMVService;
@@ -20,10 +21,13 @@ public class MVServiceImpl implements MVService, Serializable {
 
   private final QQMusicMVService qqMusicMVService;
   private final NCMMVService ncmMVService;
+  private final SongMapper songMapper;
 
-  public MVServiceImpl(QQMusicMVService qqMusicMVService, NCMMVService ncmMVService) {
+  public MVServiceImpl(
+      QQMusicMVService qqMusicMVService, NCMMVService ncmMVService, SongMapper songMapper) {
     this.qqMusicMVService = qqMusicMVService;
     this.ncmMVService = ncmMVService;
+    this.songMapper = songMapper;
   }
 
   /**
@@ -76,16 +80,28 @@ public class MVServiceImpl implements MVService, Serializable {
    *
    * @param songId The song's id.
    * @param mvId The mv's id, only in ncm platform.
-   * @param limit The limit of related videos, only in ncm platform.
+   * @param limit The limit of related videos, only used in ncm platform.
+   * @param songType The pms song's type, only used in pms platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
    */
   @Override
   public List<BasicVideo> getRelatedVideos(
-      Long songId, String mvId, Integer limit, Integer platform) {
+      Long songId, String mvId, Integer limit, Integer songType, Integer platform) {
     List<BasicVideo> relatedVideos;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      if (songType == 1) {
+        Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);
+        Integer qqMusicSongId = Integer.valueOf(qqMusicSong.get("songId").toString());
+        relatedVideos = qqMusicMVService.getRelatedVideos(qqMusicSongId, qqMusicCookie);
+      } else if (songType == 2) {
+        Map<String, Object> ncmSong = songMapper.getNCMSong(songId);
+        Long ncmId = Long.valueOf(ncmSong.get("ncmId").toString());
+        String ncmMvId = ncmSong.get("mvId").toString();
+        relatedVideos = ncmMVService.getRelatedVideos(ncmId, ncmMvId, 9999, ncmCookie);
+      } else {
+        throw new RuntimeException("Invalid song type");
+      }
     } else if (platform == 1) {
       relatedVideos = qqMusicMVService.getRelatedVideos(songId.intValue(), qqMusicCookie);
     } else if (platform == 2) {
