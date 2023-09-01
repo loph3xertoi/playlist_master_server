@@ -4,12 +4,12 @@ import com.daw.pms.DTO.BiliLinksDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicLyrics;
 import com.daw.pms.Entity.Basic.BasicSong;
-import com.daw.pms.Entity.Bilibili.BiliResource;
-import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
+import com.daw.pms.Entity.Bilibili.BiliDetailResource;
+import com.daw.pms.Entity.NeteaseCloudMusic.NCMDetailSong;
 import com.daw.pms.Entity.PMS.PMSDetailSong;
 import com.daw.pms.Entity.PMS.PMSSinger;
 import com.daw.pms.Entity.PMS.PMSSong;
-import com.daw.pms.Entity.QQMusic.QQMusicSong;
+import com.daw.pms.Entity.QQMusic.QQMusicDetailSong;
 import com.daw.pms.Mapper.SingerMapper;
 import com.daw.pms.Mapper.SongMapper;
 import com.daw.pms.Service.Bilibili.BiliResourceService;
@@ -74,39 +74,8 @@ public class SongServiceImpl implements SongService, Serializable {
       Result linksResult = getSongsLink(ids, "standard", 0);
       int type = song.getType();
       if (linksResult.getSuccess()) {
-        Object data = linksResult.getData();
-        if (type == 1) {
-          Map<String, String> links = (Map<String, String>) linksResult.getData();
-          Map.Entry<String, String> entry = links.entrySet().iterator().next();
-          String songLink = entry.getValue();
-          detailSong.setSongLink(songLink);
-        } else if (type == 2) {
-          Map<String, String> links = (Map<String, String>) linksResult.getData();
-          Map.Entry<String, String> entry = links.entrySet().iterator().next();
-          String songLink = entry.getValue();
-          detailSong.setSongLink(songLink);
-        } else if (type == 3) {
-          BiliLinksDTO linksDTO = (BiliLinksDTO) linksResult.getData();
-          Map<String, String> audios = linksDTO.getAudio();
-          String maxKey = null;
-          int maxValue = Integer.MIN_VALUE;
-          for (Map.Entry<String, String> entry : audios.entrySet()) {
-            String key = entry.getKey();
-            int intValue = Integer.parseInt(key);
-            if (intValue > maxValue) {
-              maxKey = key;
-              maxValue = intValue;
-            }
-          }
-          if (maxKey != null) {
-            String songLink = audios.get(maxKey);
-            detailSong.setSongLink(songLink);
-          } else {
-            throw new RuntimeException("No available audio");
-          }
-        } else {
-          throw new RuntimeException("Invalid song type");
-        }
+        String songLink = String.valueOf(linksResult.getData());
+        detailSong.setSongLink(songLink);
       } else {
         throw new RuntimeException("Fail to get detail pms song: " + linksResult.getMessage());
       }
@@ -114,39 +83,24 @@ public class SongServiceImpl implements SongService, Serializable {
       detailSong.setSingers(singers);
       // Set basic song or bilibili resource.
       if (type == 1) {
-        QQMusicSong qqMusicSong = new QQMusicSong();
         Map<String, Object> qqMusicSongMap = songMapper.getQQMusicSong(Long.valueOf(ids));
-        qqMusicSong.setSongId(qqMusicSongMap.get("songId").toString());
-        qqMusicSong.setSongMid(qqMusicSongMap.get("songMid").toString());
-        qqMusicSong.setMediaMid(qqMusicSongMap.get("mediaMid").toString());
-        qqMusicSong.setName(detailSong.getName());
-        qqMusicSong.setCover(detailSong.getCover());
-        qqMusicSong.setPayPlay(detailSong.getPayPlay());
-        qqMusicSong.setIsTakenDown(detailSong.getIsTakenDown());
-        qqMusicSong.setSongLink(detailSong.getSongLink());
-        qqMusicSong.setSingers(singers);
-        detailSong.setBasicSong(qqMusicSong);
+        String qqMusicSongMid = String.valueOf(qqMusicSongMap.get("songMid"));
+        Result qqmusicDetailSongResult = getDetailSong(qqMusicSongMid, 1);
+        QQMusicDetailSong qqmusicDetailSong = (QQMusicDetailSong) qqmusicDetailSongResult.getData();
+        detailSong.setBasicSong(qqmusicDetailSong);
       } else if (type == 2) {
-        NCMSong ncmSong = new NCMSong();
         Map<String, Object> ncmSongMap = songMapper.getNCMSong(Long.valueOf(ids));
-        ncmSong.setId(Long.valueOf(String.valueOf(ncmSongMap.get("ncmId"))));
-        ncmSong.setMvId(Long.valueOf(String.valueOf(ncmSongMap.get("mvId"))));
-        ncmSong.setName(detailSong.getName());
-        ncmSong.setCover(detailSong.getCover());
-        ncmSong.setPayPlay(detailSong.getPayPlay());
-        ncmSong.setIsTakenDown(detailSong.getIsTakenDown());
-        ncmSong.setSongLink(detailSong.getSongLink());
-        ncmSong.setSingers(singers);
-        detailSong.setBasicSong(ncmSong);
+        String ncmSongId = String.valueOf(ncmSongMap.get("ncmId"));
+        Result ncmDetailSongResult = getDetailSong(ncmSongId, 2);
+        NCMDetailSong ncmDetailSong = (NCMDetailSong) ncmDetailSongResult.getData();
+        detailSong.setBasicSong(ncmDetailSong);
       } else if (type == 3) {
-        BiliResource biliResource = new BiliResource();
         Map<String, Object> biliResourceMap = songMapper.getBiliResource(Long.valueOf(ids));
-        biliResource.setId(Long.valueOf(String.valueOf(biliResourceMap.get("aid"))));
-        biliResource.setBvid(String.valueOf(biliResourceMap.get("bvid")));
-        biliResource.setTitle(detailSong.getName());
-        biliResource.setCover(detailSong.getCover());
-        biliResource.setUpperName(detailSong.getSingers().get(0).getName());
-        detailSong.setBiliResource(biliResource);
+        String biliResourceBvid = String.valueOf(biliResourceMap.get("bvid"));
+        Result biliDetailResourceResult = getDetailSong(biliResourceBvid, 3);
+        BiliDetailResource biliDetailResource =
+            (BiliDetailResource) biliDetailResourceResult.getData();
+        detailSong.setBiliResource(biliDetailResource);
       } else {
         throw new RuntimeException("Unsupported song type");
       }
@@ -233,7 +187,8 @@ public class SongServiceImpl implements SongService, Serializable {
    *     jymaster.
    * @param platform The platform id.
    * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
-   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform).
+   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform), single
+   *     song link in pms platform.
    */
   @Override
   public Result getSongsLink(String ids, String level, Integer platform) {
@@ -251,11 +206,25 @@ public class SongServiceImpl implements SongService, Serializable {
       if (type == 1) {
         Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);
         String songMid = String.valueOf(qqMusicSong.get("songMid"));
-        result = qqMusicSongService.getSongsLink(songMid, qqMusicCookie);
+        Result rawSongsResult = qqMusicSongService.getSongsLink(songMid, qqMusicCookie);
+        HashMap<String, String> songLinksMap = (HashMap<String, String>) rawSongsResult.getData();
+        String songLink = songLinksMap.get(songMid);
+        if (songLink != null) {
+          result = Result.ok(songLink);
+        } else {
+          result = Result.fail("Fail to get qqmusic song link");
+        }
       } else if (type == 2) {
         Map<String, Object> ncmSong = songMapper.getNCMSong(songId);
         String originalSongId = String.valueOf(ncmSong.get("ncmId"));
-        result = ncmSongService.getSongsLink(originalSongId, level, ncmCookie);
+        Result rawSongsResult = ncmSongService.getSongsLink(originalSongId, level, ncmCookie);
+        String songLink = rawSongsResult.getData().toString().split("=")[1];
+        if (songLink != null) {
+          songLink = songLink.substring(0, songLink.length() - 1);
+          result = Result.ok(songLink);
+        } else {
+          result = Result.fail("Fail to get ncm song link");
+        }
       } else if (type == 3) {
         Map<String, Object> biliResource = songMapper.getBiliResource(songId);
         String aid = String.valueOf(biliResource.get("aid"));
@@ -263,7 +232,21 @@ public class SongServiceImpl implements SongService, Serializable {
         String url = "https://api.bilibili.com/x/player/pagelist?bvid=" + bvid;
         String response = httpTools.requestGetAPIByFinalUrl(url, Optional.ofNullable(biliCookie));
         Long cid = extractCid(response);
-        result = biliResourceService.getResourceDashLink(bvid, cid, biliCookie);
+        Result rawResourcesResult = biliResourceService.getResourceDashLink(bvid, cid, biliCookie);
+        Map<String, String> audiosMap = ((BiliLinksDTO) rawResourcesResult.getData()).getAudio();
+        int maxKey = Integer.MIN_VALUE;
+        for (String str : audiosMap.keySet()) {
+          int value = Integer.parseInt(str);
+          if (value > maxKey) {
+            maxKey = value;
+          }
+        }
+        String resourceLink = audiosMap.get(String.valueOf(maxKey));
+        if (resourceLink != null) {
+          result = Result.ok(resourceLink);
+        } else {
+          result = Result.fail("Fail to get bilibili resource link");
+        }
       } else {
         throw new RuntimeException("Invalid song type");
       }

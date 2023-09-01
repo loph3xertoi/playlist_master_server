@@ -32,9 +32,9 @@ public class PMSDetailSong extends BasicSong {
   /** The type of this song, 1 for qqmusic, 2 for ncm, 3 for bilibili. */
   private Integer type;
 
-  /** Original QQMusic song or NCM song. */
+  /** Original song of this pms song with type QQMusicDetailSong or NCMDetailSong. */
   private BasicSong basicSong;
 
-  /** Original BiliBili resources. */
+  /** Original resource of this pms song with type BiliDetailResource. */
   private BiliResource biliResource;
 }
