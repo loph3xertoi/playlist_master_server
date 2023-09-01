@@ -167,14 +167,27 @@ public class SongServiceImpl implements SongService, Serializable {
    * Return a list of similar song with {@code songId}.
    *
    * @param songId The song id.
+   * @param songType The pms song type, only used in pms platform.
    * @param platform The platform the song belongs to.
    * @return A list of similar songs with {@code songId}.
    */
   @Override
-  public List<BasicSong> getSimilarSongs(String songId, Integer platform) {
-    List<BasicSong> similarSongs;
+  public List<? extends BasicSong> getSimilarSongs(
+      String songId, Integer songType, Integer platform) {
+    List<? extends BasicSong> similarSongs;
     if (platform == 0) {
-      throw new RuntimeException("Not yet implement pms platform.");
+      if (songType == 1) {
+        Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(Long.valueOf(songId));
+        String qqmusicSongId = qqMusicSong.get("songId").toString();
+        similarSongs =
+            new ArrayList<>(qqMusicSongService.getSimilarSongs(qqmusicSongId, qqMusicCookie));
+      } else if (songType == 2) {
+        Map<String, Object> ncmSong = songMapper.getNCMSong(Long.valueOf(songId));
+        Long ncmId = Long.valueOf(ncmSong.get("ncmId").toString());
+        similarSongs = new ArrayList<>(ncmSongService.getSimilarSongs(ncmId, ncmCookie));
+      } else {
+        throw new RuntimeException("Invalid song type");
+      }
     } else if (platform == 1) {
       similarSongs = new ArrayList<>(qqMusicSongService.getSimilarSongs(songId, qqMusicCookie));
     } else if (platform == 2) {

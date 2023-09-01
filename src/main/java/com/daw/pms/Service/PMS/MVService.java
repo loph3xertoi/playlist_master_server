@@ -37,6 +37,6 @@ public interface MVService {
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
    */
-  List<BasicVideo> getRelatedVideos(
+  List<? extends BasicVideo> getRelatedVideos(
       Long songId, String mvId, Integer limit, Integer songType, Integer platform);
 }

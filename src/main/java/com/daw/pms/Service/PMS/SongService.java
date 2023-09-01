@@ -26,10 +26,11 @@ public interface SongService {
    * Return a list of similar song with {@code songId}.
    *
    * @param songId The song id.
+   * @param songType The pms song type, only used in pms platform.
    * @param platform The platform the song belongs to.
    * @return A list of similar songs with {@code songId}.
    */
-  List<BasicSong> getSimilarSongs(String songId, Integer platform);
+  List<? extends BasicSong> getSimilarSongs(String songId, Integer songType, Integer platform);
 
   /**
    * Get the lyrics of the song with {@code id}.

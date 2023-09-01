@@ -46,28 +46,29 @@ class SongServiceTest {
   @Test
   void getSimilarSongs() {
     try {
-      List<BasicSong> pmsSimilarSongs = songService.getSimilarSongs("1", 0);
+      List<? extends BasicSong> pmsSimilarSongs = songService.getSimilarSongs("1", 0, 0);
       System.out.println("pmsSimilarSongs: \n" + pmsSimilarSongs);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicSong> qqmusicSimilarSongs = songService.getSimilarSongs("240442614", 1);
+      List<? extends BasicSong> qqmusicSimilarSongs =
+          songService.getSimilarSongs("240442614", 1, 1);
       System.out.println("qqmusicSimilarSongs: \n" + qqmusicSimilarSongs);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicSong> ncmSimilarSongs = songService.getSimilarSongs("347230", 2);
+      List<? extends BasicSong> ncmSimilarSongs = songService.getSimilarSongs("347230", 2, 2);
       System.out.println("ncmSimilarSongs: \n" + ncmSimilarSongs);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      List<BasicSong> bilibiliSimilarSongs = songService.getSimilarSongs("1", 3);
+      List<? extends BasicSong> bilibiliSimilarSongs = songService.getSimilarSongs("1", 3, 3);
       System.out.println("bilibiliSimilarSongs: \n" + bilibiliSimilarSongs);
     } catch (Exception e) {
       e.printStackTrace();

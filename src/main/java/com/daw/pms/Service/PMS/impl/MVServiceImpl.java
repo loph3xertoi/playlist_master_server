@@ -86,9 +86,9 @@ public class MVServiceImpl implements MVService, Serializable {
    * @return All the related video about the song with {@code songId}.
    */
   @Override
-  public List<BasicVideo> getRelatedVideos(
+  public List<? extends BasicVideo> getRelatedVideos(
       Long songId, String mvId, Integer limit, Integer songType, Integer platform) {
-    List<BasicVideo> relatedVideos;
+    List<? extends BasicVideo> relatedVideos;
     if (platform == 0) {
       if (songType == 1) {
         Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);

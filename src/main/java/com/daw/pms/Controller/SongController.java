@@ -50,15 +50,19 @@ public class SongController {
    * Get similar songs with song id {@code songId}.
    *
    * @param songId The song id.
+   * @param songType The pms song type, only used in pms platform.
    * @param platform The platform id.
    * @return The similar songs.
    * @apiNote GET /similarSongs/{@code songId}?platform={@code platform}
    */
   @GetMapping("/similarSongs/{songId}")
-  public Result getSimilarSongs(@PathVariable String songId, @RequestParam int platform) {
-    List<BasicSong> similarSongs;
+  public Result getSimilarSongs(
+      @PathVariable String songId,
+      @RequestParam(required = false) Integer songType,
+      @RequestParam int platform) {
+    List<? extends BasicSong> similarSongs;
     try {
-      similarSongs = songService.getSimilarSongs(songId, platform);
+      similarSongs = songService.getSimilarSongs(songId, songType, platform);
     } catch (Exception e) {
       return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
