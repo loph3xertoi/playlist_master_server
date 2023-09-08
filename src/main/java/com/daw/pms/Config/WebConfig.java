@@ -11,8 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
   }
 
-//  @Override
-//  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//    registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
-//  }
+  //  @Override
+  //  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+  //    registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+  //  }
 }

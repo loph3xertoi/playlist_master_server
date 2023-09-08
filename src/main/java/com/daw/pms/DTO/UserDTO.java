@@ -1,12 +1,18 @@
 package com.daw.pms.DTO;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UserDTO implements Serializable {
   private Long id;
-  private String name;
+  @NotBlank private String name;
+  @NotBlank private String pass;
+  @NotBlank private String role;
+  private String email;
+  private String phone;
+  @NotBlank private Boolean enabled;
   private String intro;
   private String avatar;
   private String bgPic;

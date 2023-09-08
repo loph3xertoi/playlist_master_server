@@ -7,10 +7,7 @@ import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Entity.Bilibili.BiliResource;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
-import com.daw.pms.Entity.PMS.PMSDetailLibrary;
-import com.daw.pms.Entity.PMS.PMSLibrary;
-import com.daw.pms.Entity.PMS.PMSSinger;
-import com.daw.pms.Entity.PMS.PMSSong;
+import com.daw.pms.Entity.PMS.*;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Mapper.PlaylistMapper;
 import com.daw.pms.Mapper.RelationMapper;
@@ -20,6 +17,7 @@ import com.daw.pms.Service.Bilibili.BiliFavListService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
+import com.daw.pms.Utils.PMSUserDetailsUtil;
 import com.daw.pms.Utils.QiniuOSS;
 import com.qiniu.common.QiniuException;
 import java.io.InputStream;
@@ -27,8 +25,8 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import lombok.Synchronized;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,11 +96,11 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   @Override
   public Result getLibraries(
       Long id, Integer pn, Integer ps, String biliPlatform, Integer type, Integer platform) {
-    // TODO: find user id by pms id in specific platform.
     Result result;
     if (platform == 0) {
+      Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
       PagedDataDTO<PMSLibrary> pagedDataDTO = new PagedDataDTO<>();
-      int playlistCount = playlistMapper.getCountOfUserPlaylists(id);
+      int playlistCount = playlistMapper.getCountOfUserPlaylists(pmsUserId);
       pagedDataDTO.setCount(playlistCount);
       if (pn == null || ps == null) {
         throw new RuntimeException("Must specify pn and ps");

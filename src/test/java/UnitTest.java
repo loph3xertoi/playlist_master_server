@@ -1,7 +1,12 @@
+import com.daw.pms.DTO.RegisterFormDTO;
 import com.daw.pms.Entity.QQMusic.QQMusicUser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import org.junit.jupiter.api.Test;
 
 public class UnitTest {
@@ -24,5 +29,20 @@ public class UnitTest {
     //    assertEquals(product.getName(), "The Best Product");
     //    assertEquals(product.getBrandName(), "ACME Products");
     //    assertEquals(product.getOwnerName(), "Ultimate Corp, Inc.");
+  }
+
+  @Test
+  public void testRegisterFormDTOValidation() {
+    // given
+    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    RegisterFormDTO registerFormDTO = new RegisterFormDTO();
+    registerFormDTO.setName("daw");
+    registerFormDTO.setEmail("11");
+    registerFormDTO.setPassword("1234");
+    // when
+    Set<ConstraintViolation<RegisterFormDTO>> violations = validator.validate(registerFormDTO);
+    System.out.println(violations);
+    // then
+    // ...
   }
 }

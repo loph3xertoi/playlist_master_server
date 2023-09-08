@@ -2,12 +2,10 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Service.PMS.UserService;
+import com.daw.pms.Utils.PMSUserDetailsUtil;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * User controller.
@@ -29,18 +27,29 @@ public class UserController {
   /**
    * Get user information for specific platform.
    *
-   * @param id Your user id in pms.
+   * @param id Your pms user id, Used for cache evicting.
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
    *     represents netease cloud music, 3 represents bilibili.
    * @return User information for specific platform.
    * @apiNote GET /user/{@code id}?platform={@code platform}
    */
   @GetMapping("/user/{id}")
-  public Result getUser(@PathVariable Long id, @RequestParam int platform) {
-    try {
-      return Result.ok(userService.getUserInfo(id, platform));
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+  public Result getUser(@PathVariable String id, @RequestParam int platform) {
+    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    return Result.ok(userService.getUserInfo(pmsUserId, platform));
+  }
+
+  /**
+   * Update the credential of third app.
+   *
+   * @param thirdId Third app's id of user.
+   * @param thirdCookie Third app's cookie of user.
+   * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
+   * @return The result for updating credential.
+   */
+  @PutMapping("/credential")
+  public Result updateThirdAppCredential(
+      @RequestParam String thirdId, @RequestParam String thirdCookie, @RequestParam int platform) {
+    return userService.updateThirdAppCredential(thirdId, thirdCookie, platform);
   }
 }

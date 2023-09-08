@@ -1,5 +1,7 @@
 package com.daw.pms.Service.PMS;
 
+import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.Basic.BasicUser;
 
 /**
@@ -19,4 +21,55 @@ public interface UserService {
    * @return User information for specific platform.
    */
   BasicUser getUserInfo(Long id, Integer platform);
+
+  /**
+   * Check if the pms user with username already exists.
+   *
+   * @param username User name.
+   * @return True if the username already exists, false otherwise.
+   */
+  boolean checkIfPMSUserNameExist(String username);
+
+  /**
+   * Update the third party app's credential of current user.
+   *
+   * @param thirdId Third app's id of user.
+   * @param thirdCookie Third app's cookie of user.
+   * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
+   * @return The result for updating credential.
+   */
+  Result updateThirdAppCredential(String thirdId, String thirdCookie, Integer platform);
+
+  /**
+   * Update pms user's pass.
+   *
+   * @param pmsUserId The pms user's id.
+   * @param newPassword New plain password without encoded.
+   * @return Common result.
+   */
+  Result updatePassword(Long pmsUserId, String newPassword);
+
+  /**
+   * Add new pms user.
+   *
+   * @param userDTO User dto.
+   * @return Registered user's id in pms if success.
+   */
+  Result addUser(UserDTO userDTO);
+
+  /**
+   * The user email.
+   *
+   * @param email User's email.
+   * @return True if the user binding this email exists.
+   */
+  boolean identifyUserByEmail(String email);
+
+  /**
+   * Get user id by email.
+   *
+   * @param email User's email.
+   * @return User id.
+   */
+  Long getUserIdByEmail(String email);
 }

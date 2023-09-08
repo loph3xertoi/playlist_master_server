@@ -39,11 +39,7 @@ public class SongController {
    */
   @GetMapping("/song/{songId}")
   public Result getDetailSong(@PathVariable String songId, @RequestParam int platform) {
-    try {
-      return songService.getDetailSong(songId, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return songService.getDetailSong(songId, platform);
   }
 
   /**
@@ -60,12 +56,8 @@ public class SongController {
       @PathVariable String songId,
       @RequestParam(required = false) Integer songType,
       @RequestParam int platform) {
-    List<? extends BasicSong> similarSongs;
-    try {
-      similarSongs = songService.getSimilarSongs(songId, songType, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    List<? extends BasicSong> similarSongs =
+        songService.getSimilarSongs(songId, songType, platform);
     return Result.ok(similarSongs, (long) similarSongs.size());
   }
 
@@ -102,11 +94,7 @@ public class SongController {
   @GetMapping("/songsLink/{SongIds}")
   @CacheEvict
   public Result getSongsLink(@PathVariable String SongIds, @RequestParam int platform) {
-    try {
-      return songService.getSongsLink(SongIds, "standard", platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return songService.getSongsLink(SongIds, "standard", platform);
   }
 
   /**
@@ -124,10 +112,6 @@ public class SongController {
       @RequestParam int pageNo,
       @RequestParam int pageSize,
       @RequestParam int platform) {
-    try {
-      return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
   }
 }

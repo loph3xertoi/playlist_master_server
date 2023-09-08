@@ -80,12 +80,8 @@ public class MVController {
       @RequestParam(required = false) Integer limit,
       @RequestParam(required = false) Integer songType,
       @RequestParam int platform) {
-    List<? extends BasicVideo> relatedVideos;
-    try {
-      relatedVideos = mvService.getRelatedVideos(songId, mvId, limit, songType, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    List<? extends BasicVideo> relatedVideos =
+        mvService.getRelatedVideos(songId, mvId, limit, songType, platform);
     return Result.ok(relatedVideos, (long) relatedVideos.size());
   }
 }

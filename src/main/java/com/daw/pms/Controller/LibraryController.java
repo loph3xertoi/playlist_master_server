@@ -8,6 +8,7 @@ import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import com.daw.pms.Entity.PMS.PMSSong;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.PMS.LibraryService;
+import com.daw.pms.Utils.PMSUserDetailsUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class LibraryController {
   /**
    * Get all libraries with {@code platform}.
    *
-   * @param id Your user id in pms.
+   * @param id Your user id in pms, used for cache evicting.
    * @param pn The page number, only used in bilibili.
    * @param ps The page size, only used in bilibili.
    * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
@@ -55,13 +56,8 @@ public class LibraryController {
       @RequestParam(required = false) String biliPlatform,
       @RequestParam(required = false) Integer type,
       @RequestParam int platform) {
-    Result result;
-    try {
-      result = libraryService.getLibraries(id, pn, ps, biliPlatform, type, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
-    return result;
+    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    return libraryService.getLibraries(pmsUserId, pn, ps, biliPlatform, type, platform);
   }
 
   /**
@@ -76,11 +72,7 @@ public class LibraryController {
   @PostMapping("/library")
   public Result createLibrary(
       @RequestBody Map<String, String> library, @RequestParam int platform) {
-    try {
-      return libraryService.createLibrary(library, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.createLibrary(library, platform);
   }
 
   /**
@@ -95,11 +87,7 @@ public class LibraryController {
   @PutMapping("/library")
   public Result updateLibrary(
       @ModelAttribute UpdateLibraryDTO library, @RequestParam int platform) {
-    try {
-      return libraryService.updateLibrary(library, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.updateLibrary(library, platform);
   }
 
   /**
@@ -129,14 +117,7 @@ public class LibraryController {
       @RequestParam(required = false) Integer range,
       @RequestParam(required = false) Integer type,
       @RequestParam int platform) {
-    Result result;
-    try {
-      result =
-          libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
-    return result;
+    return libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
   }
 
   /**
@@ -149,11 +130,7 @@ public class LibraryController {
    */
   @DeleteMapping("/library/{libraryId}")
   public Result deleteLibrary(@PathVariable String libraryId, @RequestParam int platform) {
-    try {
-      return libraryService.deleteLibrary(libraryId, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.deleteLibrary(libraryId, platform);
   }
 
   /**
@@ -211,19 +188,15 @@ public class LibraryController {
     }
     Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
     Boolean isFavoriteSearchedResource = (Boolean) requestBody.get("isFavoriteSearchedResource");
-    try {
-      return libraryService.addSongsToLibrary(
-          libraryId,
-          biliSourceFavListId,
-          songsIds,
-          basicSongs,
-          biliResources,
-          isAddToPMSLibrary,
-          isFavoriteSearchedResource,
-          platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.addSongsToLibrary(
+        libraryId,
+        biliSourceFavListId,
+        songsIds,
+        basicSongs,
+        biliResources,
+        isAddToPMSLibrary,
+        isFavoriteSearchedResource,
+        platform);
   }
 
   /**
@@ -242,11 +215,7 @@ public class LibraryController {
     String songsId = requestBody.get("songsId");
     String fromLibrary = requestBody.get("fromLibrary");
     String toLibrary = requestBody.get("toLibrary");
-    try {
-      return libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.moveSongsToOtherLibrary(songsId, fromLibrary, toLibrary, platform);
   }
 
   /**
@@ -266,10 +235,6 @@ public class LibraryController {
       @RequestParam String songsId,
       @RequestParam String tid,
       @RequestParam int platform) {
-    try {
-      return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
-    } catch (Exception e) {
-      return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
-    }
+    return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
   }
 }

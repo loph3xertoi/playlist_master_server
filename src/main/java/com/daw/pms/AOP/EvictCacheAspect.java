@@ -1,7 +1,8 @@
-package com.daw.pms.Aspect;
+package com.daw.pms.AOP;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.UpdateLibraryDTO;
+import com.daw.pms.Utils.PMSUserDetailsUtil;
 import java.util.Map;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -50,15 +51,13 @@ public class EvictCacheAspect {
       Signature signature = joinPoint.getSignature();
       String methodName = signature.getName();
       int platform = (int) args[args.length - 1];
-      //      String keyStr = "getLibraries(0,1,20,web,0," + platform + ")";
+      Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      //      String keyStr = "getLibraries(1,1,20,web,0," + platform + ")";
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
       try (Cursor<byte[]> cursor =
           redisConnection.scan(
               ScanOptions.scanOptions()
-                  .match(
-                      "library-cache::getLibraries(1,*"
-                          + platform
-                          + ")") // TODO: change to real user id from session.
+                  .match("library-cache::getLibraries(" + pmsUserId + ",*" + platform + ")")
                   .count(1000)
                   .build())) {
         while (cursor.hasNext()) {
@@ -69,7 +68,6 @@ public class EvictCacheAspect {
         }
       }
       // Evict cache for pms libraries when updating pms libraries.
-      // TODO: change to real user id from session.
       if ("addSongsToLibrary".equals(methodName)) {
         Map<String, Object> requestBody = (Map<String, Object>) args[0];
         Boolean isAddToPMSLibrary = (Boolean) requestBody.get("isAddToPMSLibrary");
@@ -77,7 +75,7 @@ public class EvictCacheAspect {
           try (Cursor<byte[]> cursor =
               redisConnection.scan(
                   ScanOptions.scanOptions()
-                      .match("library-cache::getLibraries(1,*0)")
+                      .match("library-cache::getLibraries(" + pmsUserId + ",*0)")
                       .count(1000)
                       .build())) {
             while (cursor.hasNext()) {
