@@ -1,8 +1,10 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.PMSUserDetailsUtil;
+import javax.validation.Valid;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +44,13 @@ public class UserController {
   /**
    * Update the credential of third app.
    *
-   * @param thirdId Third app's id of user.
-   * @param thirdCookie Third app's cookie of user.
+   * @param credentialDTO Credential dto.
    * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
    * @return The result for updating credential.
    */
   @PutMapping("/credential")
   public Result updateThirdAppCredential(
-      @RequestParam String thirdId, @RequestParam String thirdCookie, @RequestParam int platform) {
-    return userService.updateThirdAppCredential(thirdId, thirdCookie, platform);
+      @Valid @RequestBody ThirdAppCredentialDTO credentialDTO, @RequestParam int platform) {
+    return userService.updateThirdAppCredential(credentialDTO, platform);
   }
 }

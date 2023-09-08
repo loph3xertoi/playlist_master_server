@@ -1,6 +1,7 @@
 package com.daw.pms.Service.PMS;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.Basic.BasicUser;
 
@@ -33,12 +34,11 @@ public interface UserService {
   /**
    * Update the third party app's credential of current user.
    *
-   * @param thirdId Third app's id of user.
-   * @param thirdCookie Third app's cookie of user.
+   * @param credentialDTO Credential dto.
    * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
    * @return The result for updating credential.
    */
-  Result updateThirdAppCredential(String thirdId, String thirdCookie, Integer platform);
+  Result updateThirdAppCredential(ThirdAppCredentialDTO credentialDTO, Integer platform);
 
   /**
    * Update pms user's pass.

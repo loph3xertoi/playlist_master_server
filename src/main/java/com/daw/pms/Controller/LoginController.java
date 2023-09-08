@@ -85,7 +85,7 @@ public class LoginController {
   }
 
   /**
-   * Verify token for resetting user's password.
+   * Verify token for resetting user's password, need to log in first.
    *
    * @param resetPassDTO DTO for resetting password.
    * @return Common result.
@@ -97,7 +97,7 @@ public class LoginController {
   }
 
   /**
-   * Verify token for resetting user's password.
+   * Verify token for resetting user's password, no need to log in.
    *
    * @param resetPassNologinDTO DTO for resetting password.
    * @return Common result.

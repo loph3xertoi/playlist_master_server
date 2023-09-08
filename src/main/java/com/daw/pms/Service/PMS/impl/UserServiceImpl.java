@@ -1,6 +1,7 @@
 package com.daw.pms.Service.PMS.impl;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.Basic.BasicUser;
 import com.daw.pms.Entity.Bilibili.BiliUser;
@@ -88,14 +89,15 @@ public class UserServiceImpl implements UserService, Serializable {
   /**
    * Update the third party app's credential of current user.
    *
-   * @param thirdId Third app's id of user.
-   * @param thirdCookie Third app's cookie of user.
+   * @param credentialDTO Credential dto.
    * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
    * @return The result for updating credential.
    */
   @Override
-  public Result updateThirdAppCredential(String thirdId, String thirdCookie, Integer platform) {
+  public Result updateThirdAppCredential(ThirdAppCredentialDTO credentialDTO, Integer platform) {
     Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    String thirdId = credentialDTO.getThirdId();
+    String thirdCookie = credentialDTO.getThirdCookie();
     if (platform == 1) {
       return updateQQMusicCredential(pmsUserId, thirdId, thirdCookie);
     } else if (platform == 2) {
