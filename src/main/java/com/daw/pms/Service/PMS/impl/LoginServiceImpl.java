@@ -71,18 +71,23 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public Result register(RegisterFormDTO registerFormDTO) {
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(registerFormDTO.getName());
-    if (!isUsernameExists) {
-      String encodedPassword = passwordEncoder.encode(registerFormDTO.getPassword());
-      UserDTO userDTO = new UserDTO();
-      userDTO.setName(registerFormDTO.getName());
-      userDTO.setPass(encodedPassword);
-      userDTO.setRole("ROLE_" + UserRole.USER);
-      userDTO.setEnabled(true);
-      userDTO.setEmail(registerFormDTO.getEmail());
-      return userService.addUser(userDTO);
-    } else {
+    if (isUsernameExists) {
       return Result.fail("Name already exists, please change username.");
     }
+
+    boolean isEmailAddressExists = userService.checkIfEmailAddressExist(registerFormDTO.getEmail());
+    if (isEmailAddressExists) {
+      return Result.fail("Email already exists, please login.");
+    }
+
+    String encodedPassword = passwordEncoder.encode(registerFormDTO.getPassword());
+    UserDTO userDTO = new UserDTO();
+    userDTO.setName(registerFormDTO.getName());
+    userDTO.setPass(encodedPassword);
+    userDTO.setRole("ROLE_" + UserRole.USER);
+    userDTO.setEnabled(true);
+    userDTO.setEmail(registerFormDTO.getEmail());
+    return userService.addUser(userDTO);
   }
 
   /**

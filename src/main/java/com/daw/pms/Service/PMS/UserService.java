@@ -32,6 +32,14 @@ public interface UserService {
   boolean checkIfPMSUserNameExist(String username);
 
   /**
+   * Check if the pms user binds this email already exists.
+   *
+   * @param email User email.
+   * @return True if the email has already been bound, false otherwise.
+   */
+  boolean checkIfEmailAddressExist(String email);
+
+  /**
    * Update the third party app's credential of current user.
    *
    * @param credentialDTO Credential dto.

@@ -34,6 +34,9 @@ public interface UserMapper {
   int checkIfUserNameExist(String name);
 
   @Select("select COUNT(*) from tb_pms_user where email = #{email}")
+  int checkIfEmailAddressExist(String email);
+
+  @Select("select COUNT(*) from tb_pms_user where email = #{email}")
   int identifyUserByEmail(String email);
 
   @Select("select id from tb_pms_user where email = #{email}")

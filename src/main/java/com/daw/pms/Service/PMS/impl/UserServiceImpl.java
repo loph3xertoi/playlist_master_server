@@ -87,6 +87,17 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
+   * Check if the pms user binds this email already exists.
+   *
+   * @param email User email.
+   * @return True if the email has already been bound, false otherwise.
+   */
+  @Override
+  public boolean checkIfEmailAddressExist(String email) {
+    return userMapper.checkIfEmailAddressExist(email) == 1;
+  }
+
+  /**
    * Update the third party app's credential of current user.
    *
    * @param credentialDTO Credential dto.
