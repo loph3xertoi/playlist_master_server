@@ -52,7 +52,7 @@ public class LoginServiceImpl implements LoginService {
     Authentication authenticate =
         authenticationProvider.authenticate(
             new UsernamePasswordAuthenticationToken(
-                loginFormDTO.getName(), loginFormDTO.getPassword()));
+                loginFormDTO.getEmail(), loginFormDTO.getPassword()));
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticate);
     PMSUserDetails pmsUserDetails = (PMSUserDetails) authenticate.getPrincipal();

@@ -30,6 +30,18 @@ public interface UserMapper {
   })
   UserDTO getUserByName(String name);
 
+  @Select("select * from tb_pms_user where email = #{email}")
+  @Results({
+    @Result(property = "bgPic", column = "bg_pic"),
+    @Result(property = "qqmusicId", column = "qqmusic_id"),
+    @Result(property = "qqmusicCookie", column = "qqmusic_cookie"),
+    @Result(property = "ncmId", column = "ncm_id"),
+    @Result(property = "ncmCookie", column = "ncm_cookie"),
+    @Result(property = "bilibiliId", column = "bilibili_id"),
+    @Result(property = "biliCookie", column = "bili_cookie")
+  })
+  UserDTO getUserByEmail(String email);
+
   @Select("select COUNT(*) from tb_pms_user where name = #{name}")
   int checkIfUserNameExist(String name);
 

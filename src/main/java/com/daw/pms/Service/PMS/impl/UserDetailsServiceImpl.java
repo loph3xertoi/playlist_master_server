@@ -17,8 +17,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserDTO user = userMapper.getUserByName(username);
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    UserDTO user = userMapper.getUserByEmail(email);
     if (user == null) {
       throw new UsernameNotFoundException("Could not find user");
     }
