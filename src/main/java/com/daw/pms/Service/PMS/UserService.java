@@ -40,6 +40,14 @@ public interface UserService {
   boolean checkIfEmailAddressExist(String email);
 
   /**
+   * Check if the phone number exists.
+   *
+   * @param phoneNumber Phone number to bind.
+   * @return True if the phone number has already been bound, false otherwise.
+   */
+  boolean checkIfPhoneNumberExist(String phoneNumber);
+
+  /**
    * Update the third party app's credential of current user.
    *
    * @param credentialDTO Credential dto.

@@ -2,10 +2,7 @@ package com.daw.pms.Service.PMS.impl;
 
 import cn.hutool.captcha.generator.RandomGenerator;
 import com.daw.pms.Config.UserRole;
-import com.daw.pms.DTO.LoginFormDTO;
-import com.daw.pms.DTO.RegisterFormDTO;
-import com.daw.pms.DTO.Result;
-import com.daw.pms.DTO.UserDTO;
+import com.daw.pms.DTO.*;
 import com.daw.pms.Entity.PMS.PMSUserDetails;
 import com.daw.pms.Service.PMS.LoginService;
 import com.daw.pms.Service.PMS.UserService;
@@ -69,7 +66,8 @@ public class LoginServiceImpl implements LoginService {
    * @return Registered user's id in pms if success.
    */
   @Override
-  public Result register(RegisterFormDTO registerFormDTO) {
+  public Result register(RegisterFormDTO registerFormDTO)
+      throws MessagingException, UnsupportedEncodingException {
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(registerFormDTO.getName());
     if (isUsernameExists) {
       return Result.fail("Name already exists, please change username.");
@@ -80,14 +78,29 @@ public class LoginServiceImpl implements LoginService {
       return Result.fail("Email already exists, please login.");
     }
 
-    String encodedPassword = passwordEncoder.encode(registerFormDTO.getPassword());
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName(registerFormDTO.getName());
-    userDTO.setPass(encodedPassword);
-    userDTO.setRole("ROLE_" + UserRole.USER);
-    userDTO.setEnabled(true);
-    userDTO.setEmail(registerFormDTO.getEmail());
-    return userService.addUser(userDTO);
+    boolean isPhoneNumberExists =
+        userService.checkIfPhoneNumberExist(registerFormDTO.getPhoneNumber());
+    if (isPhoneNumberExists) {
+      return Result.fail("Phone number already exists, please change phone number.");
+    }
+
+    String currentUserEmail = registerFormDTO.getEmail();
+
+    // Generate verify token.
+    RandomGenerator randomGenerator =
+        new RandomGenerator("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 8);
+    String token = randomGenerator.generate();
+
+    // Store token to redis.
+    String tokenKey = "sign_up_token::" + currentUserEmail;
+    redisTemplate.opsForValue().set(tokenKey, token, 10, TimeUnit.MINUTES);
+
+    // Send token to user's email.
+    emailUtil.sendSignUpEmail(currentUserEmail, token);
+    return Result.ok(
+        "Please check your email, we have send the verified code to your email: "
+            + currentUserEmail
+            + ", the token will expire after 10 minutes.");
   }
 
   /**
@@ -123,7 +136,7 @@ public class LoginServiceImpl implements LoginService {
     redisTemplate.opsForValue().set(tokenKey, token, 10, TimeUnit.MINUTES);
 
     // Send token to user's email.
-    emailUtil.sendEmail(currentUserEmail, token);
+    emailUtil.sendResetPassEmail(currentUserEmail, token);
     return Result.ok(
         "Please check your email, we have send the verified code to your email: "
             + currentUserEmail
@@ -131,16 +144,22 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Forget user's password, send verifying code to user's email, no need to login.
+   * Send token to yur email for verifying, no need to login first.
    *
+   * @param email Email to receive token.
+   * @param type Token type, 1 for sign up, 2 for reset password.
    * @return Common result.
+   * @throws MessagingException MessagingException.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
    */
   @Override
-  public Result forgotPasswordByEmail(String email)
+  public Result sendVerifyToken(String email, Integer type)
       throws MessagingException, UnsupportedEncodingException {
-    boolean userExisted = userService.identifyUserByEmail(email);
-    if (!userExisted) {
-      return Result.fail("No user found binds this email");
+    if (type == 2) {
+      boolean userExisted = userService.identifyUserByEmail(email);
+      if (!userExisted) {
+        return Result.fail("No user found binds this email");
+      }
     }
 
     // Generate verify token.
@@ -149,11 +168,20 @@ public class LoginServiceImpl implements LoginService {
     String token = randomGenerator.generate();
 
     // Store token to redis.
-    String tokenKey = "reset_pass_token::" + email;
+    String tokenKey;
+    if (type == 1) {
+      tokenKey = "sign_up_token::" + email;
+      // Send sign up token to user's email.
+      emailUtil.sendSignUpEmail(email, token);
+    } else if (type == 2) {
+      tokenKey = "reset_pass_token::" + email;
+      // Send reset password token to user's email.
+      emailUtil.sendResetPassEmail(email, token);
+    } else {
+      throw new RuntimeException("Invalid token type");
+    }
     redisTemplate.opsForValue().set(tokenKey, token, 10, TimeUnit.MINUTES);
 
-    // Send token to user's email.
-    emailUtil.sendEmail(email, token);
     return Result.ok(
         "Please check your email, we have send the verified code to your email: "
             + email
@@ -163,11 +191,13 @@ public class LoginServiceImpl implements LoginService {
   /**
    * Verify token for resetting user's password.
    *
-   * @param token Token user input.
-   * @return Common result.
+   * @param resetPassDTO@return Common result.
    */
   @Override
-  public Result verifyResetPassToken(String newPass, String repeatedNewPass, String token) {
+  public Result verifyResetPassToken(ResetPassDTO resetPassDTO) {
+    String newPass = resetPassDTO.getPassword();
+    String repeatedNewPass = resetPassDTO.getRepeatedPassword();
+    String token = resetPassDTO.getToken();
     if (!newPass.equals(repeatedNewPass)) {
       return Result.fail("Passwords don't match, please check your password");
     }
@@ -187,8 +217,12 @@ public class LoginServiceImpl implements LoginService {
   }
 
   @Override
-  public Result verifyResetPassTokenWithoutLogin(
-      String newPass, String repeatedNewPass, String token, String email) {
+  public Result verifyResetPassTokenWithoutLogin(ResetPassNologinDTO resetPassNologinDTO) {
+    String email = resetPassNologinDTO.getEmail();
+    String token = resetPassNologinDTO.getToken();
+    String newPass = resetPassNologinDTO.getPassword();
+    String repeatedNewPass = resetPassNologinDTO.getRepeatedPassword();
+    // Reset password.
     if (!newPass.equals(repeatedNewPass)) {
       return Result.fail("Passwords don't match, please check your password");
     }
@@ -205,5 +239,35 @@ public class LoginServiceImpl implements LoginService {
 
     Long currentUserId = userService.getUserIdByEmail(email);
     return userService.updatePassword(currentUserId, newPass);
+  }
+
+  /**
+   * Verify token for create new account, don't need to log in first.
+   *
+   * @param signUpNologinDTO Sign up dto.
+   * @return Common result.
+   */
+  @Override
+  public Result verifySignUpTokenWithoutLogin(SignUpNologinDTO signUpNologinDTO) {
+    String token = signUpNologinDTO.getToken();
+    String email = signUpNologinDTO.getEmail();
+    String tokenKey = "sign_up_token::" + email;
+    Object realToken = redisTemplate.opsForValue().get(tokenKey);
+    if (realToken == null) {
+      return Result.fail("Token has expired, please resend verified token");
+    }
+
+    if (!realToken.equals(token)) {
+      return Result.fail("Wrong token");
+    }
+
+    String encodedPassword = passwordEncoder.encode(signUpNologinDTO.getPassword());
+    UserDTO userDTO = new UserDTO();
+    userDTO.setName(signUpNologinDTO.getName());
+    userDTO.setPass(encodedPassword);
+    userDTO.setRole("ROLE_" + UserRole.USER);
+    userDTO.setEnabled(true);
+    userDTO.setEmail(signUpNologinDTO.getEmail());
+    return userService.addUser(userDTO);
   }
 }

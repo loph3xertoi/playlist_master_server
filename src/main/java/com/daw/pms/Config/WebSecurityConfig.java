@@ -40,9 +40,14 @@ public class WebSecurityConfig {
     http.csrf()
         .disable()
         .authorizeHttpRequests()
-        .antMatchers(HttpMethod.POST, "/login", "/register", "/verify/nologin")
+        .antMatchers(
+            HttpMethod.POST,
+            "/login",
+            "/register",
+            "/verify/nologin/signUp",
+            "/verify/nologin/resetPassword")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/logout", "/error", "/forgot/nologin")
+        .antMatchers(HttpMethod.GET, "/logout", "/error", "/sendcode")
         .permitAll()
         .antMatchers(HttpMethod.POST, "/verify")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))

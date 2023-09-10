@@ -1,8 +1,6 @@
 package com.daw.pms.Service.PMS;
 
-import com.daw.pms.DTO.LoginFormDTO;
-import com.daw.pms.DTO.RegisterFormDTO;
-import com.daw.pms.DTO.Result;
+import com.daw.pms.DTO.*;
 import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 
@@ -28,7 +26,8 @@ public interface LoginService {
    * @param registerFormDTO Register form dto.
    * @return Registered user's id in pms if success.
    */
-  Result register(RegisterFormDTO registerFormDTO);
+  Result register(RegisterFormDTO registerFormDTO)
+      throws MessagingException, UnsupportedEncodingException;
 
   /**
    * Logout current pms user.
@@ -45,32 +44,38 @@ public interface LoginService {
   Result forgotPassword() throws MessagingException, UnsupportedEncodingException;
 
   /**
-   * Forget user's password, send verifying code to user's email, no need to login.
+   * Send token to yur email for verifying, no need to login first.
    *
+   * @param email Email to receive token.
+   * @param type Token type, 1 for sign up, 2 for reset password.
    * @return Common result.
+   * @throws MessagingException MessagingException.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
    */
-  Result forgotPasswordByEmail(String email)
+  Result sendVerifyToken(String email, Integer type)
       throws MessagingException, UnsupportedEncodingException;
 
   /**
    * Verify token for resetting user's password, need to log in first.
    *
-   * @param newPass New password.
-   * @param repeatedNewPass Repeated password.
-   * @param token Token user input.
+   * @param resetPassDTO DTO for resetting password.
    * @return Common result.
    */
-  Result verifyResetPassToken(String newPass, String repeatedNewPass, String token);
+  Result verifyResetPassToken(ResetPassDTO resetPassDTO);
 
   /**
    * Verify token for resetting user's password, don't need to log in first.
    *
-   * @param newPass New password.
-   * @param repeatedNewPass Repeated password.
-   * @param token Token user input.
-   * @param email User's email.
+   * @param resetPassNologinDTO Reset pass dto.
    * @return Common result.
    */
-  Result verifyResetPassTokenWithoutLogin(
-      String newPass, String repeatedNewPass, String token, String email);
+  Result verifyResetPassTokenWithoutLogin(ResetPassNologinDTO resetPassNologinDTO);
+
+  /**
+   * Verify token for create new account, don't need to log in first.
+   *
+   * @param signUpNologinDTO Sign up dto.
+   * @return Common result.
+   */
+  Result verifySignUpTokenWithoutLogin(SignUpNologinDTO signUpNologinDTO);
 }

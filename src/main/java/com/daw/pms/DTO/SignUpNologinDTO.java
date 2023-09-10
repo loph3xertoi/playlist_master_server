@@ -5,10 +5,12 @@ import com.daw.pms.Annotation.ValidPhoneNumber;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @Data
-public class RegisterFormDTO implements Serializable {
+public class SignUpNologinDTO implements Serializable {
   @NotBlank(message = "No blank name.")
   private String name;
 
@@ -19,4 +21,11 @@ public class RegisterFormDTO implements Serializable {
   @ValidPhoneNumber private String phoneNumber;
 
   @ValidPassword private String password;
+
+  @NotBlank(message = "Please input verified token")
+  @Length(min = 8, max = 8, message = "Token length must be 8")
+  @Pattern(
+      regexp = "^[a-zA-Z0-9]+$",
+      message = "Only english characters or digit are valid in token")
+  private String token;
 }

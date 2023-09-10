@@ -98,6 +98,17 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
+   * Check if the phone number exists.
+   *
+   * @param phoneNumber Phone number to bind.
+   * @return True if the phone number has already been bound, false otherwise.
+   */
+  @Override
+  public boolean checkIfPhoneNumberExist(String phoneNumber) {
+    return userMapper.checkIfPhoneNumberExist(phoneNumber) == 1;
+  }
+
+  /**
    * Update the third party app's credential of current user.
    *
    * @param credentialDTO Credential dto.

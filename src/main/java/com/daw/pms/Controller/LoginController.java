@@ -44,7 +44,8 @@ public class LoginController {
    * @return Registered user's id in pms if success.
    */
   @PostMapping("/register")
-  public Result register(@Valid @RequestBody RegisterFormDTO registerFormDTO) {
+  public Result register(@Valid @RequestBody RegisterFormDTO registerFormDTO)
+      throws MessagingException, UnsupportedEncodingException {
     return loginService.register(registerFormDTO);
   }
 
@@ -69,19 +70,24 @@ public class LoginController {
   }
 
   /**
-   * Forget user's password, send verifying code to user's email, without needing login first.
+   * Send token to yur email for verifying, no need to login first.
    *
+   * @param email Email to receive token.
+   * @param type Token type, 1 for sign up, 2 for reset password.
    * @return Common result.
+   * @throws MessagingException MessagingException.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
    */
-  @GetMapping("/forgot/nologin")
-  public Result forgotPasswordWithoutLogin(
+  @GetMapping("/sendcode")
+  public Result sendVerifyTokenWithoutLogin(
       @Valid
           @RequestParam
           @NotBlank(message = "No blank email.")
           @Email(message = "Email format error.")
-          String email)
+          String email,
+      @RequestParam Integer type)
       throws MessagingException, UnsupportedEncodingException {
-    return loginService.forgotPasswordByEmail(email);
+    return loginService.sendVerifyToken(email, type);
   }
 
   /**
@@ -92,8 +98,7 @@ public class LoginController {
    */
   @PostMapping("/verify")
   public Result verifyResetPassToken(@Valid @RequestBody ResetPassDTO resetPassDTO) {
-    return loginService.verifyResetPassToken(
-        resetPassDTO.getPassword(), resetPassDTO.getRepeatedPassword(), resetPassDTO.getToken());
+    return loginService.verifyResetPassToken(resetPassDTO);
   }
 
   /**
@@ -102,13 +107,21 @@ public class LoginController {
    * @param resetPassNologinDTO DTO for resetting password.
    * @return Common result.
    */
-  @PostMapping("/verify/nologin")
+  @PostMapping("/verify/nologin/resetPassword")
   public Result verifyResetPassTokenWithoutLogin(
       @Valid @RequestBody ResetPassNologinDTO resetPassNologinDTO) {
-    return loginService.verifyResetPassTokenWithoutLogin(
-        resetPassNologinDTO.getPassword(),
-        resetPassNologinDTO.getRepeatedPassword(),
-        resetPassNologinDTO.getToken(),
-        resetPassNologinDTO.getEmail());
+    return loginService.verifyResetPassTokenWithoutLogin(resetPassNologinDTO);
+  }
+
+  /**
+   * Verify token for sign up new account, no need to log in.
+   *
+   * @param signUpNologinDTO DTO for sign up.
+   * @return Common result.
+   */
+  @PostMapping("/verify/nologin/signUp")
+  public Result verifySignUpTokenWithoutLogin(
+      @Valid @RequestBody SignUpNologinDTO signUpNologinDTO) {
+    return loginService.verifySignUpTokenWithoutLogin(signUpNologinDTO);
   }
 }
