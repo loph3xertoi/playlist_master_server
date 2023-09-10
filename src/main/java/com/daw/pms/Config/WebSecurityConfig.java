@@ -47,7 +47,8 @@ public class WebSecurityConfig {
             "/verify/nologin/signUp",
             "/verify/nologin/resetPassword")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/logout", "/error", "/sendcode")
+        .antMatchers(
+            HttpMethod.GET, "/hello", "/logout", "/error", "/sendcode", "/cors/bili/splash")
         .permitAll()
         .antMatchers(HttpMethod.POST, "/verify")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
