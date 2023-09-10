@@ -27,12 +27,12 @@ public class EmailUtil {
     helper.setFrom(tokenSenderEmail, "Reset password");
     helper.setTo(recipientEmail);
 
-    String subject = "Token for resetting your password in playlist master.";
+    String subject = "Recovery code for resetting your password in playlist master.";
 
     String content =
         "<p>Hello,</p>"
             + "<p>You have requested to reset your password.</p>"
-            + "<p>Please use the following verification code(10 minutes):</p>"
+            + "<p>Please use the following recovery code(10 minutes):</p>"
             + "<br>"
             + "<p>"
             + token
@@ -56,12 +56,12 @@ public class EmailUtil {
     helper.setFrom(tokenSenderEmail, "Sign up");
     helper.setTo(recipientEmail);
 
-    String subject = "Token for completing sign up your account in playlist master.";
+    String subject = "Confirmation code for completing sign up your account in playlist master.";
 
     String content =
         "<p>Hello,</p>"
             + "<p>You have requested to sign up new account for playlist master.</p>"
-            + "<p>Please use the following verification code(10 minutes):</p>"
+            + "<p>Please use the following confirmation code(10 minutes):</p>"
             + "<br>"
             + "<p>"
             + token
