@@ -16,6 +16,11 @@ public class UserSqlProvider {
     if (email != null && !email.isEmpty()) {
       sql.VALUES("email", "#{email}");
     }
+
+    String phone = userDTO.getPhone();
+    if (phone != null && !phone.isEmpty()) {
+      sql.VALUES("phone", "#{phone}");
+    }
     return sql.toString();
   }
 }

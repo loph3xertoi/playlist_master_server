@@ -268,6 +268,7 @@ public class LoginServiceImpl implements LoginService {
     userDTO.setRole("ROLE_" + UserRole.USER);
     userDTO.setEnabled(true);
     userDTO.setEmail(signUpNologinDTO.getEmail());
+    userDTO.setPhone(signUpNologinDTO.getPhoneNumber());
     return userService.addUser(userDTO);
   }
 }
