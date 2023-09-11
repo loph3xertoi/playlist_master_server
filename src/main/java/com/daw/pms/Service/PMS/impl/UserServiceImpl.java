@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.BasicPMSUserInfoDTO;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.DTO.UserDTO;
@@ -167,6 +168,22 @@ public class UserServiceImpl implements UserService, Serializable {
   @Override
   public Long getUserIdByEmail(String email) {
     return userMapper.getUserIdByEmail(email);
+  }
+
+  /**
+   * Get basic pms user info.
+   *
+   * @param pmsUserId User id in pms.
+   * @return Basic pms user info.
+   */
+  @Override
+  public Result getBasicPMSUserInfo(Long pmsUserId) {
+    BasicPMSUserInfoDTO basicPMSUserInfo = userMapper.getBasicPMSUserInfo(pmsUserId);
+    if (basicPMSUserInfo != null) {
+      return Result.ok(basicPMSUserInfo);
+    } else {
+      return Result.fail("Get basic pms user info failed");
+    }
   }
 
   private Result updateQQMusicCredential(Long pmsUserId, String qqmusicId, String qqmusicCookie) {

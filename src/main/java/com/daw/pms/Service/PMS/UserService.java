@@ -88,4 +88,12 @@ public interface UserService {
    * @return User id.
    */
   Long getUserIdByEmail(String email);
+
+  /**
+   * Get basic pms user info.
+   *
+   * @param pmsUserId User id in pms.
+   * @return Basic pms user info.
+   */
+  Result getBasicPMSUserInfo(Long pmsUserId);
 }

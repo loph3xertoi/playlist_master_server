@@ -1,5 +1,6 @@
 package com.daw.pms.Mapper;
 
+import com.daw.pms.DTO.BasicPMSUserInfoDTO;
 import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Provider.UserSqlProvider;
 import org.apache.ibatis.annotations.*;
@@ -56,6 +57,9 @@ public interface UserMapper {
 
   @Select("select id from tb_pms_user where email = #{email}")
   Long getUserIdByEmail(String email);
+
+  @Select("select id, name, role, email, phone from tb_pms_user where id = #{id}")
+  BasicPMSUserInfoDTO getBasicPMSUserInfo(Long id);
 
   @InsertProvider(type = UserSqlProvider.class, method = "addUser")
   @Options(useGeneratedKeys = true, keyProperty = "id")

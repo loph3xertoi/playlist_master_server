@@ -53,4 +53,15 @@ public class UserController {
       @Valid @RequestBody ThirdAppCredentialDTO credentialDTO, @RequestParam int platform) {
     return userService.updateThirdAppCredential(credentialDTO, platform);
   }
+
+  /**
+   * Get basic pms user info of the current user login.
+   *
+   * @return Basic pms user info.
+   */
+  @GetMapping("/user/basic")
+  public Result getBasicPMSUserInfo() {
+    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    return userService.getBasicPMSUserInfo(pmsUserId);
+  }
 }
