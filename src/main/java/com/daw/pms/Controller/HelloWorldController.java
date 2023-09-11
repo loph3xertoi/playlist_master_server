@@ -26,4 +26,9 @@ public class HelloWorldController {
     System.out.println(library);
     return null;
   }
+
+  @GetMapping("/check")
+  public Result checkLoginState() {
+    return Result.ok();
+  }
 }
