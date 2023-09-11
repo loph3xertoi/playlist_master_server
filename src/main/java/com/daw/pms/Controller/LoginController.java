@@ -50,11 +50,11 @@ public class LoginController {
   }
 
   /**
-   * Logout current account.
+   * Page for logout successfully.
    *
-   * @return Return success.
+   * @return Common result.
    */
-  @GetMapping("/logout")
+  @GetMapping("/logout/success")
   public Result logout() {
     return Result.ok();
   }

@@ -48,7 +48,7 @@ public class WebSecurityConfig {
             "/verify/nologin/resetPassword")
         .permitAll()
         .antMatchers(
-            HttpMethod.GET, "/hello", "/logout", "/error", "/sendcode", "/cors/bili/splash")
+            HttpMethod.GET, "/hello", "/logout/success", "/error", "/sendcode", "/cors/bili/splash")
         .permitAll()
         .antMatchers(HttpMethod.POST, "/verify")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
@@ -67,7 +67,7 @@ public class WebSecurityConfig {
         .deleteCookies("cookie")
         .invalidateHttpSession(true)
         //        .logoutUrl("/logout")
-        .logoutSuccessUrl("/login")
+        .logoutSuccessUrl("/logout/success")
         .and()
         .exceptionHandling(
             customizer ->
