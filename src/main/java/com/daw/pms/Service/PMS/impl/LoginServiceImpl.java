@@ -228,6 +228,8 @@ public class LoginServiceImpl implements LoginService {
       return Result.fail("Wrong token");
     }
 
+    redisTemplate.delete(tokenKey);
+
     return userService.updatePassword(currentUserId, newPass);
   }
 
@@ -252,6 +254,8 @@ public class LoginServiceImpl implements LoginService {
       return Result.fail("Wrong token");
     }
 
+    redisTemplate.delete(tokenKey);
+
     Long currentUserId = userService.getUserIdByEmail(email);
     return userService.updatePassword(currentUserId, newPass);
   }
@@ -275,6 +279,8 @@ public class LoginServiceImpl implements LoginService {
     if (!realToken.equals(token)) {
       return Result.fail("Wrong token");
     }
+
+    redisTemplate.delete(tokenKey);
 
     String encodedPassword = passwordEncoder.encode(signUpNologinDTO.getPassword());
     UserDTO userDTO = new UserDTO();
