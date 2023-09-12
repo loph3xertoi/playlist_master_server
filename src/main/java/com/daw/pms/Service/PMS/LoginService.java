@@ -47,6 +47,14 @@ public interface LoginService {
   Result forgotPassword() throws MessagingException, UnsupportedEncodingException;
 
   /**
+   * Bind email, send verifying code to user's email, need login first.
+   *
+   * @param email Email to bind.
+   * @return Common result.
+   */
+  Result bindEmail(String email) throws MessagingException, UnsupportedEncodingException;
+
+  /**
    * Send token to yur email for verifying, no need to login first.
    *
    * @param email Email to receive token.
@@ -65,6 +73,14 @@ public interface LoginService {
    * @return Common result.
    */
   Result verifyResetPassToken(ResetPassDTO resetPassDTO);
+
+  /**
+   * Verify token for binding user's email, need to log in first.
+   *
+   * @param bindEmailDTO DTO for bind email.
+   * @return Common result.
+   */
+  Result verifyBindEmailToken(BindEmailDTO bindEmailDTO);
 
   /**
    * Verify token for resetting user's password, don't need to log in first.

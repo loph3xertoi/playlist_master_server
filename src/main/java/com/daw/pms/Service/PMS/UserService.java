@@ -66,6 +66,15 @@ public interface UserService {
   Result updatePassword(Long pmsUserId, String newPassword);
 
   /**
+   * Update pms user's email.
+   *
+   * @param pmsUserId The pms user's id.
+   * @param email Email to bind or update.
+   * @return Common result.
+   */
+  Result updateEmail(Long pmsUserId, String email);
+
+  /**
    * Add new pms user.
    *
    * @param userDTO User dto.

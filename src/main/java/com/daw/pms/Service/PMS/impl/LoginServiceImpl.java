@@ -159,6 +159,33 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
+   * Bind email, send verifying code to user's email, need login first.
+   *
+   * @param email Email to bind.
+   * @return Common result.
+   */
+  @Override
+  public Result bindEmail(String email) throws MessagingException, UnsupportedEncodingException {
+    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+
+    // Generate verify token.
+    RandomGenerator randomGenerator =
+        new RandomGenerator("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 8);
+    String token = randomGenerator.generate();
+
+    // Store token to redis.
+    String tokenKey = "bind_email_token::" + currentUserId;
+    redisTemplate.opsForValue().set(tokenKey, token, 10, TimeUnit.MINUTES);
+
+    // Send token to user's email.
+    emailUtil.sendResetPassEmail(email, token);
+    return Result.ok(
+        "Please check your email, we have send the verified code to your email: "
+            + email
+            + ", the token will expire after 10 minutes.");
+  }
+
+  /**
    * Send token to yur email for verifying, no need to login first.
    *
    * @param email Email to receive token.
@@ -231,6 +258,39 @@ public class LoginServiceImpl implements LoginService {
     redisTemplate.delete(tokenKey);
 
     return userService.updatePassword(currentUserId, newPass);
+  }
+
+  /**
+   * Verify token for binding user's email, need to log in first.
+   *
+   * @param bindEmailDTO DTO for bind email.
+   * @return Common result.
+   */
+  @Override
+  public Result verifyBindEmailToken(BindEmailDTO bindEmailDTO) {
+    String email = bindEmailDTO.getEmail();
+    String token = bindEmailDTO.getToken();
+
+    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+
+    //    boolean emailAddressExist = userService.checkIfEmailAddressExist(email);
+    //    if (emailAddressExist) {
+    //      return Result.fail("Email has been used");
+    //    }
+
+    String tokenKey = "bind_email_token::" + currentUserId;
+    Object realToken = redisTemplate.opsForValue().get(tokenKey);
+    if (realToken == null) {
+      return Result.fail("Token has expired, please resend verified token");
+    }
+
+    if (!realToken.equals(token)) {
+      return Result.fail("Wrong token");
+    }
+
+    redisTemplate.delete(tokenKey);
+
+    return userService.updateEmail(currentUserId, email);
   }
 
   @Override

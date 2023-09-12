@@ -53,7 +53,7 @@ public class WebSecurityConfig {
         .antMatchers(
             HttpMethod.GET, "/hello", "/logout/success", "/error", "/sendcode", "/cors/bili/splash")
         .permitAll()
-        .antMatchers(HttpMethod.POST, "/verify")
+        .antMatchers(HttpMethod.POST, "/verify/resetPassword", "/verify/bindEmail")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.GET, "/users")
         .hasRole(String.valueOf(UserRole.ADMIN))

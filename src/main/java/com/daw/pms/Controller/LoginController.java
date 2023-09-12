@@ -67,9 +67,25 @@ public class LoginController {
    *
    * @return Common result.
    */
-  @GetMapping("/forgot")
+  @GetMapping("/forgot/password")
   public Result forgotPassword() throws MessagingException, UnsupportedEncodingException {
     return loginService.forgotPassword();
+  }
+
+  /**
+   * Bind email, send verifying code to user's email, need login first.
+   *
+   * @return Common result.
+   */
+  @GetMapping("/bind/email")
+  public Result bindEmail(
+      @Valid
+          @RequestParam
+          @NotBlank(message = "No blank email.")
+          @Email(message = "Email format error.")
+          String email)
+      throws MessagingException, UnsupportedEncodingException {
+    return loginService.bindEmail(email);
   }
 
   /**
@@ -99,9 +115,20 @@ public class LoginController {
    * @param resetPassDTO DTO for resetting password.
    * @return Common result.
    */
-  @PostMapping("/verify")
+  @PostMapping("/verify/resetPassword")
   public Result verifyResetPassToken(@Valid @RequestBody ResetPassDTO resetPassDTO) {
     return loginService.verifyResetPassToken(resetPassDTO);
+  }
+
+  /**
+   * Verify token for binding user's email, need to log in first.
+   *
+   * @param bindEmailDTO DTO for bind email.
+   * @return Common result.
+   */
+  @PostMapping("/verify/bindEmail")
+  public Result verifyBingEmailToken(@Valid @RequestBody BindEmailDTO bindEmailDTO) {
+    return loginService.verifyBindEmailToken(bindEmailDTO);
   }
 
   /**

@@ -142,8 +142,29 @@ public class UserServiceImpl implements UserService, Serializable {
   @Override
   public Result updatePassword(Long pmsUserId, String newPassword) {
     String encodedPassword = passwordEncoder.encode(newPassword);
-    userMapper.updateUserPass(pmsUserId, encodedPassword);
-    return Result.ok();
+    int rows = userMapper.updateUserPass(pmsUserId, encodedPassword);
+    if (rows == 1) {
+      return Result.ok();
+    } else {
+      return Result.fail("Failed to update password");
+    }
+  }
+
+  /**
+   * Update pms user's email.
+   *
+   * @param pmsUserId The pms user's id.
+   * @param email Email to bind or update.
+   * @return Common result.
+   */
+  @Override
+  public Result updateEmail(Long pmsUserId, String email) {
+    int rows = userMapper.updateUserEmail(pmsUserId, email);
+    if (rows == 1) {
+      return Result.ok();
+    } else {
+      return Result.fail("Failed to update email");
+    }
   }
 
   /**
