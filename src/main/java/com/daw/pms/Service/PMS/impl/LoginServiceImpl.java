@@ -11,12 +11,15 @@ import com.daw.pms.Utils.PMSUserDetailsUtil;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,34 +30,39 @@ public class LoginServiceImpl implements LoginService {
   private final EmailUtil emailUtil;
   private final DaoAuthenticationProvider authenticationProvider;
   private final UserService userService;
+  private final SessionRegistry sessionRegistry;
 
   public LoginServiceImpl(
       RedisTemplate<String, Object> redisTemplate,
       PasswordEncoder passwordEncoder,
       EmailUtil emailUtil,
       DaoAuthenticationProvider authenticationProvider,
-      UserService userService) {
+      UserService userService,
+      SessionRegistry sessionRegistry) {
     this.redisTemplate = redisTemplate;
     this.passwordEncoder = passwordEncoder;
     this.emailUtil = emailUtil;
     this.authenticationProvider = authenticationProvider;
     this.userService = userService;
+    this.sessionRegistry = sessionRegistry;
   }
 
   /**
    * Login to playlist master.
    *
    * @param loginFormDTO Login info.
+   * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
   @Override
-  public Result login(LoginFormDTO loginFormDTO) {
+  public Result login(LoginFormDTO loginFormDTO, HttpServletRequest request) {
     Authentication authenticate =
         authenticationProvider.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginFormDTO.getEmail(), loginFormDTO.getPassword()));
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticate);
+    sessionRegistry.registerNewSession(request.getSession().getId(), authenticate.getPrincipal());
     PMSUserDetails pmsUserDetails = (PMSUserDetails) authenticate.getPrincipal();
     return Result.ok(pmsUserDetails.getUser().getId());
   }
@@ -106,11 +114,18 @@ public class LoginServiceImpl implements LoginService {
   /**
    * Logout current pms user.
    *
+   * @param request Http servlet request.
    * @return Result for logout.
    */
   @Override
-  public Result logout() {
-    return null;
+  public Result logout(HttpServletRequest request) {
+    for (Cookie cookie : request.getCookies()) {
+      if ("JSESSIONID".equals(cookie.getName())) {
+        sessionRegistry.removeSessionInformation(cookie.getValue());
+        return Result.ok();
+      }
+    }
+    return Result.ok();
   }
 
   /**

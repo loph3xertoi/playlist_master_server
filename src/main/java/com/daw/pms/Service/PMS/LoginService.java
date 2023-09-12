@@ -3,6 +3,7 @@ package com.daw.pms.Service.PMS;
 import com.daw.pms.DTO.*;
 import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Service for handle register, login and logout.
@@ -16,9 +17,10 @@ public interface LoginService {
    * Login to playlist master.
    *
    * @param loginFormDTO Login info.
+   * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
-  Result login(LoginFormDTO loginFormDTO);
+  Result login(LoginFormDTO loginFormDTO, HttpServletRequest request);
 
   /**
    * Register playlist master account.
@@ -32,9 +34,10 @@ public interface LoginService {
   /**
    * Logout current pms user.
    *
+   * @param request Http servlet request.
    * @return Result for logout.
    */
-  Result logout();
+  Result logout(HttpServletRequest request);
 
   /**
    * Forget user's password, send verifying code to user's email, only used when user have login.

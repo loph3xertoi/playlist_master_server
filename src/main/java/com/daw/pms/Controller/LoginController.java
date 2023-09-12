@@ -4,6 +4,7 @@ import com.daw.pms.DTO.*;
 import com.daw.pms.Service.PMS.LoginService;
 import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -30,11 +31,12 @@ public class LoginController {
    * PMS user login endpoint.
    *
    * @param loginFormDTO Login form dto.
+   * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
   @PostMapping("/login")
-  public Result login(@Valid @RequestBody LoginFormDTO loginFormDTO) {
-    return loginService.login(loginFormDTO);
+  public Result login(@Valid @RequestBody LoginFormDTO loginFormDTO, HttpServletRequest request) {
+    return loginService.login(loginFormDTO, request);
   }
 
   /**
@@ -52,11 +54,12 @@ public class LoginController {
   /**
    * Page for logout successfully.
    *
+   * @param request Http servlet request.
    * @return Common result.
    */
   @GetMapping("/logout/success")
-  public Result logout() {
-    return Result.ok();
+  public Result logout(HttpServletRequest request) {
+    return loginService.logout(request);
   }
 
   /**
