@@ -122,6 +122,7 @@ public class WebSecurityConfig {
                 "/",
                 "/users",
                 "/index.html",
+                "/robots.txt",
                 "/favicon.ico",
                 "/css/**",
                 "/js/**",

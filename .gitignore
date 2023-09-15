@@ -33,3 +33,10 @@ build/
 ### VS Code ###
 .vscode/
 src/PlaylistMasterServer.code-workspace
+
+### Node Modules ###
+node_modules/
+
+### Secret ###
+src/main/resources/application.yml
+src/test/java/com/daw/pms/GlobalConfig.java
