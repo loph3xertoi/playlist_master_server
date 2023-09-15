@@ -36,7 +36,7 @@ public class UserController {
   @GetMapping("/user/{id}")
   public Result getUser(@PathVariable String id, @RequestParam int platform) {
     Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
-    return Result.ok(userService.getUserInfo(pmsUserId, platform));
+    return userService.getUserInfo(pmsUserId, platform);
   }
 
   /**

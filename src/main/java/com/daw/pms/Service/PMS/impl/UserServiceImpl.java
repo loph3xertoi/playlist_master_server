@@ -58,19 +58,31 @@ public class UserServiceImpl implements UserService, Serializable {
    * @return User information for specific platform.
    */
   @Override
-  public BasicUser getUserInfo(Long id, Integer platform) {
+  public Result getUserInfo(Long id, Integer platform) {
     UserDTO userDTO = userMapper.getUser(id);
     if (platform == 0) {
       if (userDTO == null) {
-        return null;
+        return Result.fail("No such user");
       }
-      return getPMSUser(userDTO);
+      return Result.ok(getPMSUser(userDTO));
     } else if (platform == 1) {
-      return qqMusicUserService.getUserInfo(userDTO.getQqmusicId(), userDTO.getQqmusicCookie());
+      String qqmusicCookie = userDTO.getQqmusicCookie();
+      if (qqmusicCookie == null) {
+        return Result.fail("Please login QQ Music first");
+      }
+      return Result.ok(qqMusicUserService.getUserInfo(userDTO.getQqmusicId(), qqmusicCookie));
     } else if (platform == 2) {
-      return ncmUserService.getUserInfo(userDTO.getNcmId(), userDTO.getNcmCookie());
+      String ncmCookie = userDTO.getNcmCookie();
+      if (ncmCookie == null) {
+        return Result.fail("Please login Netease Cloud Music first");
+      }
+      return Result.ok(ncmUserService.getUserInfo(userDTO.getNcmId(), ncmCookie));
     } else if (platform == 3) {
-      return biliUserService.getUserInfo(userDTO.getBiliCookie());
+      String biliCookie = userDTO.getBiliCookie();
+      if (biliCookie == null) {
+        return Result.fail("Please login BiliBili first");
+      }
+      return Result.ok(biliUserService.getUserInfo(biliCookie));
     } else {
       throw new RuntimeException("Invalid platform");
     }

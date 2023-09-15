@@ -3,7 +3,6 @@ package com.daw.pms.Service.PMS;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.DTO.UserDTO;
-import com.daw.pms.Entity.Basic.BasicUser;
 
 /**
  * Service for handle all users' information in all music apps.
@@ -21,7 +20,7 @@ public interface UserService {
    *     represents netease cloud music, 3 represents bilibili.
    * @return User information for specific platform.
    */
-  BasicUser getUserInfo(Long id, Integer platform);
+  Result getUserInfo(Long id, Integer platform);
 
   /**
    * Check if the pms user with username already exists.
