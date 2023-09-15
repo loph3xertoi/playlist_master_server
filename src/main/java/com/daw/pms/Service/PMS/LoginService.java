@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface LoginService {
   /**
-   * Login to playlist master.
+   * Login to playlist master by email and password.
    *
    * @param loginFormDTO Login info.
    * @param request Http servlet request.
@@ -23,7 +23,16 @@ public interface LoginService {
   Result login(LoginFormDTO loginFormDTO, HttpServletRequest request);
 
   /**
-   * Register playlist master account.
+   * Login to playlist master by GitHub.
+   *
+   * @param code Authorization code.
+   * @param request Http servlet request.
+   * @return Result whose data is user's id in pms.
+   */
+  Result loginByGitHub(String code, HttpServletRequest request);
+
+  /**
+   * Register playlist master account using email and password.
    *
    * @param registerFormDTO Register form dto.
    * @return Registered user's id in pms if success.

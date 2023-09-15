@@ -27,25 +27,28 @@ public interface UserService {
    * Check if the pms user with username already exists.
    *
    * @param username User name.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the username already exists, false otherwise.
    */
-  boolean checkIfPMSUserNameExist(String username);
+  boolean checkIfPMSUserNameExist(String username, Integer loginType);
 
   /**
    * Check if the pms user binds this email already exists.
    *
    * @param email User email.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the email has already been bound, false otherwise.
    */
-  boolean checkIfEmailAddressExist(String email);
+  boolean checkIfEmailAddressExist(String email, Integer loginType);
 
   /**
    * Check if the phone number exists.
    *
    * @param phoneNumber Phone number to bind.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the phone number has already been bound, false otherwise.
    */
-  boolean checkIfPhoneNumberExist(String phoneNumber);
+  boolean checkIfPhoneNumberExist(String phoneNumber, Integer loginType);
 
   /**
    * Update the third party app's credential of current user.
@@ -83,20 +86,22 @@ public interface UserService {
   Result addUser(UserDTO userDTO);
 
   /**
-   * The user email.
+   * Check if this email has already bound to user in this login type.
    *
    * @param email User's email.
-   * @return True if the user binding this email exists.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @return True if this email has already bound in this login type, false otherwise.
    */
-  boolean identifyUserByEmail(String email);
+  boolean identifyUserByEmail(String email, Integer loginType);
 
   /**
-   * Get user id by email.
+   * Get user id by email in specific login type.
    *
    * @param email User's email.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return User id.
    */
-  Long getUserIdByEmail(String email);
+  Long getUserIdByEmail(String email, Integer loginType);
 
   /**
    * Get basic pms user info.

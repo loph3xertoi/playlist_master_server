@@ -1,0 +1,7 @@
+{
+  "name": "PlaylistMasterServer",
+  "version": "1.0.0",
+  "dependencies": {
+    "three": "^0.156.1"
+  }
+}

@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class QiniuOSS {
-  @Value("${qiniu.access_key}")
+  @Value("${qiniu.access-key}")
   private String accessKey;
 
-  @Value("${qiniu.secret_key}")
+  @Value("${qiniu.secret-key}")
   private String secretKey;
 
   @Value("${qiniu.bucket}")

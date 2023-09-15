@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.*;
 public interface UserMapper {
   @Select("select * from tb_pms_user where id = #{id}")
   @Results({
+    @Result(property = "loginType", column = "login_type"),
     @Result(property = "bgPic", column = "bg_pic"),
     @Result(property = "qqmusicId", column = "qqmusic_id"),
     @Result(property = "qqmusicCookie", column = "qqmusic_cookie"),
@@ -19,8 +20,9 @@ public interface UserMapper {
   })
   UserDTO getUser(Long id);
 
-  @Select("select * from tb_pms_user where name = #{name}")
+  @Select("select * from tb_pms_user where name = #{name} and login_type = #{loginType}")
   @Results({
+    @Result(property = "loginType", column = "login_type"),
     @Result(property = "bgPic", column = "bg_pic"),
     @Result(property = "qqmusicId", column = "qqmusic_id"),
     @Result(property = "qqmusicCookie", column = "qqmusic_cookie"),
@@ -29,10 +31,11 @@ public interface UserMapper {
     @Result(property = "bilibiliId", column = "bilibili_id"),
     @Result(property = "biliCookie", column = "bili_cookie")
   })
-  UserDTO getUserByName(String name);
+  UserDTO getUserByName(String name, Integer loginType);
 
-  @Select("select * from tb_pms_user where email = #{email}")
+  @Select("select * from tb_pms_user where email = #{email} and login_type = #{loginType}")
   @Results({
+    @Result(property = "loginType", column = "login_type"),
     @Result(property = "bgPic", column = "bg_pic"),
     @Result(property = "qqmusicId", column = "qqmusic_id"),
     @Result(property = "qqmusicCookie", column = "qqmusic_cookie"),
@@ -41,24 +44,31 @@ public interface UserMapper {
     @Result(property = "bilibiliId", column = "bilibili_id"),
     @Result(property = "biliCookie", column = "bili_cookie")
   })
-  UserDTO getUserByEmail(String email);
+  UserDTO getUserByEmail(String email, Integer loginType);
 
-  @Select("select COUNT(*) from tb_pms_user where name = #{name}")
-  int checkIfUserNameExist(String name);
+  @Select("select COUNT(*) from tb_pms_user where name = #{name} and login_type = #{loginType}")
+  int checkIfUserNameExist(String name, Integer loginType);
 
-  @Select("select COUNT(*) from tb_pms_user where email = #{email}")
-  int checkIfEmailAddressExist(String email);
+  @Select("select COUNT(*) from tb_pms_user where email = #{email} and login_type = #{loginType}")
+  int checkIfEmailAddressExist(String email, Integer loginType);
 
-  @Select("select COUNT(*) from tb_pms_user where phone = #{phoneNumber}")
-  int checkIfPhoneNumberExist(String phoneNumber);
+  @Select(
+      "select COUNT(*) from tb_pms_user where phone = #{phoneNumber} and login_type = #{loginType}")
+  int checkIfPhoneNumberExist(String phoneNumber, Integer loginType);
 
-  @Select("select COUNT(*) from tb_pms_user where email = #{email}")
-  int identifyUserByEmail(String email);
+  @Select("select COUNT(*) from tb_pms_user where email = #{email} and login_type = #{loginType}")
+  int identifyUserByEmail(String email, Integer loginType);
 
-  @Select("select id from tb_pms_user where email = #{email}")
-  Long getUserIdByEmail(String email);
+  @Select("select id from tb_pms_user where email = #{email} and login_type = #{loginType}")
+  Long getUserIdByEmail(String email, Integer loginType);
 
-  @Select("select id, name, role, email, phone from tb_pms_user where id = #{id}")
+  @Select("select id from tb_pms_user where name = #{name} and login_type = #{loginType}")
+  Long getUserIdByName(String name, Integer loginType);
+
+  @Select("select id, name, role, email, phone, login_type from tb_pms_user where id = #{id}")
+  @Results({
+    @Result(property = "loginType", column = "login_type"),
+  })
   BasicPMSUserInfoDTO getBasicPMSUserInfo(Long id);
 
   @InsertProvider(type = UserSqlProvider.class, method = "addUser")

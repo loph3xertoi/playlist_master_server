@@ -3,17 +3,25 @@ package com.daw.pms.Service.PMS.impl;
 import cn.hutool.captcha.generator.RandomGenerator;
 import com.daw.pms.Config.UserRole;
 import com.daw.pms.DTO.*;
+import com.daw.pms.Entity.OAuth2.CustomOAuth2User;
 import com.daw.pms.Entity.PMS.PMSUserDetails;
 import com.daw.pms.Service.PMS.LoginService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.EmailUtil;
+import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.PMSUserDetailsUtil;
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -21,34 +29,48 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+  private final HttpTools httpTools;
   private final RedisTemplate<String, Object> redisTemplate;
   private final PasswordEncoder passwordEncoder;
   private final EmailUtil emailUtil;
   private final DaoAuthenticationProvider authenticationProvider;
   private final UserService userService;
+  private final OAuth2UserDetailsServiceImpl OAuth2UserDetailsServiceImpl;
   private final SessionRegistry sessionRegistry;
+  private final ClientRegistrationRepository clientRegistrationRepository;
 
   public LoginServiceImpl(
+      HttpTools httpTools,
       RedisTemplate<String, Object> redisTemplate,
       PasswordEncoder passwordEncoder,
       EmailUtil emailUtil,
       DaoAuthenticationProvider authenticationProvider,
       UserService userService,
-      SessionRegistry sessionRegistry) {
+      OAuth2UserDetailsServiceImpl OAuth2UserDetailsServiceImpl,
+      SessionRegistry sessionRegistry,
+      ClientRegistrationRepository clientRegistrationRepository) {
+    this.httpTools = httpTools;
     this.redisTemplate = redisTemplate;
     this.passwordEncoder = passwordEncoder;
     this.emailUtil = emailUtil;
     this.authenticationProvider = authenticationProvider;
     this.userService = userService;
+    this.OAuth2UserDetailsServiceImpl = OAuth2UserDetailsServiceImpl;
     this.sessionRegistry = sessionRegistry;
+    this.clientRegistrationRepository = clientRegistrationRepository;
   }
 
   /**
-   * Login to playlist master.
+   * Login to playlist master by email and password.
    *
    * @param loginFormDTO Login info.
    * @param request Http servlet request.
@@ -68,7 +90,81 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Register playlist master account.
+   * Login to playlist master by GitHub.
+   *
+   * @param code Authorization code.
+   * @param request Http servlet request.
+   * @return Result whose data is user's id in pms.
+   */
+  @Override
+  public Result loginByGitHub(String code, HttpServletRequest request) {
+    System.out.println("Authorization code: " + code);
+    ClientRegistration github = clientRegistrationRepository.findByRegistrationId("github");
+    String access_token_url = github.getProviderDetails().getTokenUri();
+    access_token_url += "?client_id=" + github.getClientId();
+    access_token_url += "&client_secret=" + github.getClientSecret();
+    access_token_url += "&code=" + code;
+    String tokenResponse =
+        httpTools.requestGetAPIByFinalUrlWithProxy(
+            access_token_url, new HttpHeaders(), Optional.empty());
+    Map<String, String> tokenResponseMap =
+        Arrays.stream(tokenResponse.split("&"))
+            .collect(
+                Collectors.toMap(
+                    s -> s.split("=")[0], s -> s.split("=").length == 1 ? "" : s.split("=")[1]));
+    String accessToken = tokenResponseMap.get("access_token");
+    System.out.println("Access token: " + accessToken);
+    Instant issuedAt = Instant.now();
+    Instant expiresAt = issuedAt.plusSeconds(Integer.parseInt(tokenResponseMap.get("expires_in")));
+    OAuth2AccessToken oAuth2AccessToken =
+        new OAuth2AccessToken(
+            OAuth2AccessToken.TokenType.BEARER,
+            accessToken,
+            issuedAt,
+            expiresAt,
+            github.getScopes());
+
+    OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(github, oAuth2AccessToken);
+    CustomOAuth2User oAuth2User =
+        (CustomOAuth2User) OAuth2UserDetailsServiceImpl.loadUser(oAuth2UserRequest);
+    boolean isUsernameExists = userService.checkIfPMSUserNameExist(oAuth2User.getName(), 1);
+    Result result;
+    if (!isUsernameExists) {
+      UserDTO userDTO = new UserDTO();
+      userDTO.setName(oAuth2User.getName());
+      userDTO.setRole("ROLE_" + UserRole.USER);
+      userDTO.setEnabled(true);
+      userDTO.setLoginType(1);
+      userDTO.setEmail(oAuth2User.getEmail());
+      userDTO.setAvatar(oAuth2User.getAvatar());
+
+      result = userService.addUser(userDTO);
+      oAuth2User.setId(Long.valueOf(result.getData().toString()));
+      // Store oauth2 token.
+      OAuth2AuthenticationToken oAuth2AuthenticationToken =
+          new OAuth2AuthenticationToken(
+              oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(oAuth2AuthenticationToken);
+      sessionRegistry.registerNewSession(
+          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+    } else {
+      // Store oauth2 token.
+      OAuth2AuthenticationToken oAuth2AuthenticationToken =
+          new OAuth2AuthenticationToken(
+              oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(oAuth2AuthenticationToken);
+      sessionRegistry.registerNewSession(
+          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      result = Result.ok(currentLoginUserId);
+    }
+    return result;
+  }
+
+  /**
+   * Register playlist master account using email and password.
    *
    * @param registerFormDTO Register form dto.
    * @return Registered user's id in pms if success.
@@ -76,18 +172,19 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public Result register(RegisterFormDTO registerFormDTO)
       throws MessagingException, UnsupportedEncodingException {
-    boolean isUsernameExists = userService.checkIfPMSUserNameExist(registerFormDTO.getName());
+    boolean isUsernameExists = userService.checkIfPMSUserNameExist(registerFormDTO.getName(), 0);
     if (isUsernameExists) {
       return Result.fail("Name already exists, please change username.");
     }
 
-    boolean isEmailAddressExists = userService.checkIfEmailAddressExist(registerFormDTO.getEmail());
+    boolean isEmailAddressExists =
+        userService.checkIfEmailAddressExist(registerFormDTO.getEmail(), 0);
     if (isEmailAddressExists) {
       return Result.fail("Email already exists, please login.");
     }
 
     boolean isPhoneNumberExists =
-        userService.checkIfPhoneNumberExist(registerFormDTO.getPhoneNumber());
+        userService.checkIfPhoneNumberExist(registerFormDTO.getPhoneNumber(), 0);
     if (isPhoneNumberExists) {
       return Result.fail("Phone number already exists, please change phone number.");
     }
@@ -198,7 +295,7 @@ public class LoginServiceImpl implements LoginService {
   public Result sendVerifyToken(String email, Integer type)
       throws MessagingException, UnsupportedEncodingException {
     if (type == 2) {
-      boolean userExisted = userService.identifyUserByEmail(email);
+      boolean userExisted = userService.identifyUserByEmail(email, 0);
       if (!userExisted) {
         return Result.fail("No user found binds this email");
       }
@@ -316,7 +413,7 @@ public class LoginServiceImpl implements LoginService {
 
     redisTemplate.delete(tokenKey);
 
-    Long currentUserId = userService.getUserIdByEmail(email);
+    Long currentUserId = userService.getUserIdByEmail(email, 0);
     return userService.updatePassword(currentUserId, newPass);
   }
 
@@ -348,6 +445,7 @@ public class LoginServiceImpl implements LoginService {
     userDTO.setPass(encodedPassword);
     userDTO.setRole("ROLE_" + UserRole.USER);
     userDTO.setEnabled(true);
+    userDTO.setLoginType(0);
     userDTO.setEmail(signUpNologinDTO.getEmail());
     userDTO.setPhone(signUpNologinDTO.getPhoneNumber());
     return userService.addUser(userDTO);

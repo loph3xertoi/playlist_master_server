@@ -51,12 +51,18 @@ public class WebSecurityConfig {
             "/verify/nologin/resetPassword")
         .permitAll()
         .antMatchers(
-            HttpMethod.GET, "/hello", "/logout/success", "/error", "/sendcode", "/cors/bili/splash")
+            HttpMethod.GET,
+            "/login/oauth2/github",
+            "/hello",
+            "/logout/success",
+            "/error",
+            "/sendcode",
+            "/cors/bili/splash")
         .permitAll()
         .antMatchers(HttpMethod.POST, "/verify/resetPassword", "/verify/bindEmail")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
-        .antMatchers(HttpMethod.GET, "/users")
-        .hasRole(String.valueOf(UserRole.ADMIN))
+        //        .antMatchers(HttpMethod.GET, "/users")
+        //        .hasRole(String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.GET)
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.POST)
@@ -82,12 +88,46 @@ public class WebSecurityConfig {
             customizer ->
                 customizer.authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+    //        .oauth2Login()
+    //        .clientRegistrationRepository(clientRegistrationRepository)
+    //        .authorizedClientService(
+    //            new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository))
+    //        //        .loginPage("/login/oauth2")
+    //        .authorizationEndpoint()
+    //        .baseUri("/hello")
+    //        //      .authorizationRequestRepository()
+    //        .and()
+    //        .redirectionEndpoint()
+    //        .baseUri("/hello")
+    //        .and()
+    //        .tokenEndpoint()
+    //        .accessTokenResponseClient(new DefaultAuthorizationCodeTokenResponseClient())
+    //        .and()
+    //        .userInfoEndpoint()
+    //        //        .userAuthoritiesMapper(this.userAuthoritiesMapper())
+    //        .userService(oauth2UserService())
+    //        //        .oidcUserService(this.oidcUserService())
+    //        //        .baseUri("/login/oauth2")
+    //        .and()
+    //        .successHandler(oAuth2AuthenticationSuccessHandler);
     return http.build();
   }
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().antMatchers(HttpMethod.GET, "/images/**", "/xml/**", "/mpd/**");
+    return (web) ->
+        web.ignoring()
+            .antMatchers(
+                HttpMethod.GET,
+                "/",
+                "/users",
+                "/index.html",
+                "/favicon.ico",
+                "/css/**",
+                "/js/**",
+                "/images/**",
+                "/xml/**",
+                "/mpd/**");
   }
 
   @Bean

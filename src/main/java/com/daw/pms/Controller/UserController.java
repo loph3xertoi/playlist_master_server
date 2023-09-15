@@ -5,8 +5,6 @@ import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.PMSUserDetailsUtil;
 import javax.validation.Valid;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
  * @since 6/27/23
  */
 @RestController
-@CacheConfig(cacheNames = "user-cache")
-@Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
+// @CacheConfig(cacheNames = "user-cache")
+// @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class UserController {
   private final UserService userService;
 

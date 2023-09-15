@@ -9,9 +9,14 @@ public class UserSqlProvider {
         new SQL()
             .INSERT_INTO("tb_pms_user")
             .VALUES("name", "#{name}")
-            .VALUES("pass", "#{pass}")
             .VALUES("role", "#{role}")
-            .VALUES("enabled", "#{enabled}");
+            .VALUES("enabled", "#{enabled}")
+            .VALUES("login_type", "#{loginType}");
+    String pass = userDTO.getPass();
+    if (pass != null && !pass.isEmpty()) {
+      sql.VALUES("pass", "#{pass}");
+    }
+
     String email = userDTO.getEmail();
     if (email != null && !email.isEmpty()) {
       sql.VALUES("email", "#{email}");

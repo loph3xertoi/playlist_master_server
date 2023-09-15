@@ -13,6 +13,7 @@ public class UserDTO implements Serializable {
   private String email;
   private String phone;
   @NotBlank private Boolean enabled;
+  @NotBlank private Integer loginType;
   private String intro;
   private String avatar;
   private String bgPic;

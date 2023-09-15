@@ -9,16 +9,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class NamePasswordUserDetailsServiceImpl implements UserDetailsService {
   private final UserMapper userMapper;
 
-  public UserDetailsServiceImpl(UserMapper userMapper) {
+  public NamePasswordUserDetailsServiceImpl(UserMapper userMapper) {
     this.userMapper = userMapper;
   }
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    UserDTO user = userMapper.getUserByEmail(email);
+    UserDTO user = userMapper.getUserByEmail(email, 0);
     if (user == null) {
       throw new UsernameNotFoundException("Could not find user");
     }

@@ -23,6 +23,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,7 +68,8 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     String signedUri =
         WbiBiliBili.wbiSignRequestParam(params, wbiKey.get("img_key"), wbiKey.get("sub_key"));
     String url = BilibiliAPI.GET_DETAIL_RESOURCE + "?" + signedUri;
-    String rawDetailResource = httpTools.requestGetAPIByFinalUrl(url, Optional.of(cookie));
+    String rawDetailResource =
+        httpTools.requestGetAPIByFinalUrl(url, new HttpHeaders(), Optional.of(cookie));
     Result result = extractDetailResource(rawDetailResource);
     if (result.getSuccess()) {
       BiliDetailResource resource = (BiliDetailResource) result.getData();
@@ -436,7 +438,8 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     String signedUri =
         WbiBiliBili.wbiSignRequestParam(params, wbiKey.get("img_key"), wbiKey.get("sub_key"));
     String url = BilibiliAPI.SEARCH_RESOURCES + "?" + signedUri;
-    String rawSearchedResources = httpTools.requestGetAPIByFinalUrl(url, Optional.of(cookie));
+    String rawSearchedResources =
+        httpTools.requestGetAPIByFinalUrl(url, new HttpHeaders(), Optional.of(cookie));
     return extractSearchedResources(rawSearchedResources);
   }
 

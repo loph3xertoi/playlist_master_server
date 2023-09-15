@@ -1,7 +1,10 @@
 package com.daw.pms.Config;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -9,8 +12,24 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfig {
+  @Value("${server.proxy.host}")
+  private String proxyHost;
+
+  @Value("${server.proxy.port}")
+  private String proxyPort;
+
+  @Bean
+  public RestTemplate restTemplateWithProxy() {
+    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    Proxy proxy =
+        new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
+    requestFactory.setProxy(proxy);
+    return new RestTemplate(requestFactory);
+  }
+
   @Bean
   public RestTemplate restTemplate() {
+    return new RestTemplate();
     // Proxy for 127.0.0.1:8089 with mitmproxy.
     //    // Create a SimpleClientHttpRequestFactory instance
     //    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -31,8 +50,6 @@ public class RestTemplateConfig {
     //    return new RestTemplate(requestFactory);
 
     //    return new RestTemplate(new FiddlerClientHttpRequestFactory());
-
-    return new RestTemplate();
   }
 
   private void disableCertificateVerification(SimpleClientHttpRequestFactory requestFactory)

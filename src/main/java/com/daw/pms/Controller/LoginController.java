@@ -40,6 +40,18 @@ public class LoginController {
   }
 
   /**
+   * Login by GitHub.
+   *
+   * @param code Authorization code.
+   * @param request Http servlet request.
+   * @return Result whose data is user's id in pms.
+   */
+  @GetMapping("/login/oauth2/github")
+  public Result loginByGitHub(@RequestParam String code, HttpServletRequest request) {
+    return loginService.loginByGitHub(code, request);
+  }
+
+  /**
    * Register account in pms.
    *
    * @param registerFormDTO Register form data.

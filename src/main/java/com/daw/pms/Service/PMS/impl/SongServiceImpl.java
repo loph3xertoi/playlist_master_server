@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -230,7 +231,9 @@ public class SongServiceImpl implements SongService, Serializable {
         String aid = String.valueOf(biliResource.get("aid"));
         String bvid = String.valueOf(biliResource.get("bvid"));
         String url = "https://api.bilibili.com/x/player/pagelist?bvid=" + bvid;
-        String response = httpTools.requestGetAPIByFinalUrl(url, Optional.ofNullable(biliCookie));
+        String response =
+            httpTools.requestGetAPIByFinalUrl(
+                url, new HttpHeaders(), Optional.ofNullable(biliCookie));
         Long cid = extractCid(response);
         Result rawResourcesResult = biliResourceService.getResourceDashLink(bvid, cid, biliCookie);
         Map<String, String> audiosMap = ((BiliLinksDTO) rawResourcesResult.getData()).getAudio();

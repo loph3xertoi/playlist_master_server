@@ -80,33 +80,36 @@ public class UserServiceImpl implements UserService, Serializable {
    * Check if the pms user with username already exists.
    *
    * @param username User name.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the username already exists, false otherwise.
    */
   @Override
-  public boolean checkIfPMSUserNameExist(String username) {
-    return userMapper.checkIfUserNameExist(username) == 1;
+  public boolean checkIfPMSUserNameExist(String username, Integer loginType) {
+    return userMapper.checkIfUserNameExist(username, loginType) == 1;
   }
 
   /**
    * Check if the pms user binds this email already exists.
    *
    * @param email User email.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the email has already been bound, false otherwise.
    */
   @Override
-  public boolean checkIfEmailAddressExist(String email) {
-    return userMapper.checkIfEmailAddressExist(email) == 1;
+  public boolean checkIfEmailAddressExist(String email, Integer loginType) {
+    return userMapper.checkIfEmailAddressExist(email, loginType) == 1;
   }
 
   /**
    * Check if the phone number exists.
    *
    * @param phoneNumber Phone number to bind.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
    * @return True if the phone number has already been bound, false otherwise.
    */
   @Override
-  public boolean checkIfPhoneNumberExist(String phoneNumber) {
-    return userMapper.checkIfPhoneNumberExist(phoneNumber) == 1;
+  public boolean checkIfPhoneNumberExist(String phoneNumber, Integer loginType) {
+    return userMapper.checkIfPhoneNumberExist(phoneNumber, loginType) == 1;
   }
 
   /**
@@ -181,14 +184,28 @@ public class UserServiceImpl implements UserService, Serializable {
     } else return Result.fail("Add user failed");
   }
 
+  /**
+   * Check if this email has already bound to user in this login type.
+   *
+   * @param email User's email.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @return True if this email has already bound in this login type, false otherwise.
+   */
   @Override
-  public boolean identifyUserByEmail(String email) {
-    return userMapper.identifyUserByEmail(email) == 1;
+  public boolean identifyUserByEmail(String email, Integer loginType) {
+    return userMapper.identifyUserByEmail(email, loginType) == 1;
   }
 
+  /**
+   * Get user id by email in specific login type.
+   *
+   * @param email User's email.
+   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @return User id.
+   */
   @Override
-  public Long getUserIdByEmail(String email) {
-    return userMapper.getUserIdByEmail(email);
+  public Long getUserIdByEmail(String email, Integer loginType) {
+    return userMapper.getUserIdByEmail(email, loginType);
   }
 
   /**

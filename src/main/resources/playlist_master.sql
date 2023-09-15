@@ -146,11 +146,12 @@ CREATE TABLE `tb_pms_user`
 (
     `id`             int(11)     NOT NULL AUTO_INCREMENT COMMENT 'User id and primary key in pms user table.',
     `name`           varchar(50) NOT NULL COMMENT 'User name.',
-    `pass`           char(96)    NOT NULL COMMENT 'The encoded password with argon2.',
+    `pass`           char(96) COMMENT 'The encoded password with argon2.',
     `role`           varchar(20) NOT NULL COMMENT 'The role of this user.',
     `email`          varchar(40) COMMENT 'The email of user.',
     `phone`          varchar(20) COMMENT 'The phone number of user.',
     `enabled`        bool        NOT NULL COMMENT 'Whether this user is enabled or not.',
+    `login_type`     int(11)     NOT NULL COMMENT 'Login type, 0 for email & password, 1 for github, 2 for google.',
     `intro`          varchar(300)                       DEFAULT '',
     `avatar`         varchar(500) CHARACTER SET latin1  DEFAULT NULL,
     `bg_pic`         varchar(500) CHARACTER SET latin1  DEFAULT NULL,

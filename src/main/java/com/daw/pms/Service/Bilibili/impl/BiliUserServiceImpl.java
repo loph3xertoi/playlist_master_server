@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,7 +42,8 @@ public class BiliUserServiceImpl implements BiliUserService {
     String signedUri =
         WbiBiliBili.wbiSignRequestParam(params, wbiKey.get("img_key"), wbiKey.get("sub_key"));
     String userSpaceUrl = BilibiliAPI.GET_USER_SPACE + "?" + signedUri;
-    String rawUserSpace = httpTools.requestGetAPIByFinalUrl(userSpaceUrl, Optional.of(cookie));
+    String rawUserSpace =
+        httpTools.requestGetAPIByFinalUrl(userSpaceUrl, new HttpHeaders(), Optional.of(cookie));
     assignUserSpace(user, rawUserSpace);
     String rawUserState =
         httpTools.requestGetAPI(BilibiliAPI.GET_USER_STATE, null, Optional.of(cookie));
