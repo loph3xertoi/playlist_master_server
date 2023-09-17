@@ -93,4 +93,8 @@ public interface UserMapper {
 
   @Update("update tb_pms_user set email = #{email} where id = #{pmsUserId}")
   int updateUserEmail(Long pmsUserId, String email);
+
+  @Update(
+      "update tb_pms_user set name = #{name}, email = #{email}, avatar = #{avatar} where id = #{pmsUserId}")
+  int updateBasicPMSUserInfo(Long pmsUserId, String name, String email, String avatar);
 }

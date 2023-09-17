@@ -214,6 +214,23 @@ public class LoginServiceImpl implements LoginService {
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
       Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+
+      // Update the oauth2 user info if changed.
+      Result basicPMSUserInfo = userService.getBasicPMSUserInfo(currentLoginUserId);
+      BasicPMSUserInfoDTO storedUserInfo = (BasicPMSUserInfoDTO) basicPMSUserInfo.getData();
+      String newUserName = oAuth2User.getName();
+      String newUserEmail = oAuth2User.getEmail();
+      String newUserAvatar = oAuth2User.getAvatar();
+      if (!(newUserName.equals(storedUserInfo.getName())
+          && newUserEmail.equals(storedUserInfo.getEmail())
+          && newUserAvatar.equals(storedUserInfo.getAvatar()))) {
+        Result updateBasicPMSUserInfoResult =
+            userService.updateBasicPMSUserInfo(
+                currentLoginUserId, newUserName, newUserEmail, newUserAvatar);
+        if (!updateBasicPMSUserInfoResult.getSuccess()) {
+          throw new RuntimeException(updateBasicPMSUserInfoResult.getMessage());
+        }
+      }
       result = Result.ok(currentLoginUserId);
     }
     return result;
@@ -294,6 +311,23 @@ public class LoginServiceImpl implements LoginService {
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
       Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+
+      // Update the oauth2 user info if changed.
+      Result basicPMSUserInfo = userService.getBasicPMSUserInfo(currentLoginUserId);
+      BasicPMSUserInfoDTO storedUserInfo = (BasicPMSUserInfoDTO) basicPMSUserInfo.getData();
+      String newUserName = oAuth2User.getName();
+      String newUserEmail = oAuth2User.getEmail();
+      String newUserAvatar = oAuth2User.getAvatar();
+      if (!(newUserName.equals(storedUserInfo.getName())
+          && newUserEmail.equals(storedUserInfo.getEmail())
+          && newUserAvatar.equals(storedUserInfo.getAvatar()))) {
+        Result updateBasicPMSUserInfoResult =
+            userService.updateBasicPMSUserInfo(
+                currentLoginUserId, newUserName, newUserEmail, newUserAvatar);
+        if (!updateBasicPMSUserInfoResult.getSuccess()) {
+          throw new RuntimeException(updateBasicPMSUserInfoResult.getMessage());
+        }
+      }
       result = Result.ok(currentLoginUserId);
     }
     return result;

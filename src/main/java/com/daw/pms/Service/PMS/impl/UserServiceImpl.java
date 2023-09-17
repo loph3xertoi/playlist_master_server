@@ -183,6 +183,25 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
+   * Update basic pms user info.
+   *
+   * @param pmsUserId The pms user's id.
+   * @param name New name of pms user.
+   * @param email New email of pms user.
+   * @param avatar New avatar of pms user.
+   * @return Common result.
+   */
+  @Override
+  public Result updateBasicPMSUserInfo(Long pmsUserId, String name, String email, String avatar) {
+    int rows = userMapper.updateBasicPMSUserInfo(pmsUserId, name, email, avatar);
+    if (rows == 1) {
+      return Result.ok();
+    } else {
+      return Result.fail("Failed to update pms user's basic info");
+    }
+  }
+
+  /**
    * Add new pms user.
    *
    * @param userDTO User dto.
