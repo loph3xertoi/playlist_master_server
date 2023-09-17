@@ -26,6 +26,12 @@ public class UserSqlProvider {
     if (phone != null && !phone.isEmpty()) {
       sql.VALUES("phone", "#{phone}");
     }
+
+    String avatar = userDTO.getAvatar();
+    if (avatar != null && !avatar.isEmpty()) {
+      sql.VALUES("avatar", "#{avatar}");
+    }
+
     return sql.toString();
   }
 }

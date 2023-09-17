@@ -27,6 +27,9 @@ public class BasicPMSUserInfoDTO implements Serializable {
   /** User's phone number. */
   private String phone;
 
+  /** User's avatar. */
+  private String avatar;
+
   /** Login type: 0 for email & password, 1 for GitHub, 2 for Google. */
   private Integer loginType;
 }

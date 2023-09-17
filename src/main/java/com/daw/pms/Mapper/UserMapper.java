@@ -65,7 +65,8 @@ public interface UserMapper {
   @Select("select id from tb_pms_user where name = #{name} and login_type = #{loginType}")
   Long getUserIdByName(String name, Integer loginType);
 
-  @Select("select id, name, role, email, phone, login_type from tb_pms_user where id = #{id}")
+  @Select(
+      "select id, name, role, email, phone, avatar, login_type from tb_pms_user where id = #{id}")
   @Results({
     @Result(property = "loginType", column = "login_type"),
   })

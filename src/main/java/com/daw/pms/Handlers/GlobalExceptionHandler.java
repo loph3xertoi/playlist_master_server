@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AuthenticationException.class)
   @ResponseBody
   public Result handleException(AuthenticationException e) {
-    return Result.fail("Login failed, please check your username and password.");
+    return Result.fail("Login failed, please check your username and password: " + e.getMessage());
   }
   //  @ExceptionHandler(Exception.class)
   //  public ResponseEntity<String> handleException(Exception ex) {
