@@ -3,18 +3,20 @@ package com.daw.pms.Service.PMS.impl;
 import cn.hutool.captcha.generator.RandomGenerator;
 import com.daw.pms.Config.UserRole;
 import com.daw.pms.DTO.*;
-import com.daw.pms.Entity.OAuth2.CustomOAuth2User;
+import com.daw.pms.Entity.OAuth2.GitHubOAuth2User;
+import com.daw.pms.Entity.OAuth2.GoogleOAuth2User;
 import com.daw.pms.Entity.PMS.PMSUserDetails;
 import com.daw.pms.Service.PMS.LoginService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.EmailUtil;
 import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -98,7 +100,7 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result loginByGitHub(String code, HttpServletRequest request) {
-    System.out.println("Authorization code: " + code);
+    //    System.out.println("Authorization code: " + code);
     ClientRegistration github = clientRegistrationRepository.findByRegistrationId("github");
     String access_token_url = github.getProviderDetails().getTokenUri();
     access_token_url += "?client_id=" + github.getClientId();
@@ -113,9 +115,65 @@ public class LoginServiceImpl implements LoginService {
                 Collectors.toMap(
                     s -> s.split("=")[0], s -> s.split("=").length == 1 ? "" : s.split("=")[1]));
     String accessToken = tokenResponseMap.get("access_token");
-    System.out.println("Access token: " + accessToken);
+    String refreshToken = tokenResponseMap.get("refresh_token");
+    //    System.out.println("Access token: " + accessToken);
     Instant issuedAt = Instant.now();
-    Instant expiresAt = issuedAt.plusSeconds(Integer.parseInt(tokenResponseMap.get("expires_in")));
+    int expiresIn = Integer.parseInt(tokenResponseMap.get("expires_in"));
+    Instant expiresAt = issuedAt.plusSeconds(expiresIn);
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    //    System.out.println("Issued at: " + issuedAt);
+    //    System.out.println("Expires at: " + expiresAt);
+    //    CompletableFuture<String> refreshTokenResponseFuture =
+    //        CompletableFuture.supplyAsync(
+    //            () -> {
+    //              int delay = expiresIn - 180;
+    //              try {
+    //                String refresh_token_url = github.getProviderDetails().getTokenUri();
+    //                refresh_token_url += "?client_id=" + github.getClientId();
+    //                refresh_token_url += "&client_secret=" + github.getClientSecret();
+    //                refresh_token_url += "&grant_type=" + "refresh_token";
+    //                refresh_token_url += "&refresh_token=" + refreshToken;
+    //                //                TimeUnit.SECONDS.sleep(10);
+    //                TimeUnit.SECONDS.sleep(delay);
+    //                return httpTools.requestPostAPIByFinalUrlWithProxy(
+    //                    refresh_token_url, new HttpHeaders(), Optional.empty());
+    //              } catch (InterruptedException e) {
+    //                throw new RuntimeException(e);
+    //              }
+    //            });
+    //
+    //    // if success:
+    //    refreshTokenResponseFuture.thenAccept(
+    //        (result) -> {
+    //          Map<String, String> refreshTokenResponseMap =
+    //              Arrays.stream(result.split("&"))
+    //                  .collect(
+    //                      Collectors.toMap(
+    //                          s -> s.split("=")[0],
+    //                          s -> s.split("=").length == 1 ? "" : s.split("=")[1]));
+    //          String newAccessToken = refreshTokenResponseMap.get("access_token");
+    //          Instant newIssuedAt = Instant.now();
+    //          int newExpiresIn = Integer.parseInt(refreshTokenResponseMap.get("expires_in"));
+    //          Instant newExpiresAt = newIssuedAt.plusSeconds(newExpiresIn);
+    //          OAuth2AccessToken newOAuth2AccessToken =
+    //              new OAuth2AccessToken(
+    //                  OAuth2AccessToken.TokenType.BEARER,
+    //                  newAccessToken,
+    //                  newIssuedAt,
+    //                  newExpiresAt,
+    //                  github.getScopes());
+    //          Authentication authentication = securityContext.getAuthentication();
+    //          GitHubOAuth2User oAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+    //          oAuth2User.setOauth2AccessToken(newOAuth2AccessToken);
+    //        });
+    //
+    //    // if fail
+    //    refreshTokenResponseFuture.exceptionally(
+    //        (e) -> {
+    //          e.printStackTrace();
+    //          return null;
+    //        });
+
     OAuth2AccessToken oAuth2AccessToken =
         new OAuth2AccessToken(
             OAuth2AccessToken.TokenType.BEARER,
@@ -125,8 +183,8 @@ public class LoginServiceImpl implements LoginService {
             github.getScopes());
 
     OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(github, oAuth2AccessToken);
-    CustomOAuth2User oAuth2User =
-        (CustomOAuth2User) OAuth2UserDetailsServiceImpl.loadUser(oAuth2UserRequest);
+    GitHubOAuth2User oAuth2User =
+        (GitHubOAuth2User) OAuth2UserDetailsServiceImpl.loadUser(oAuth2UserRequest);
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(oAuth2User.getName(), 1);
     Result result;
     if (!isUsernameExists) {
@@ -144,7 +202,6 @@ public class LoginServiceImpl implements LoginService {
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(
               oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
-      SecurityContext securityContext = SecurityContextHolder.getContext();
       securityContext.setAuthentication(oAuth2AuthenticationToken);
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
@@ -153,7 +210,86 @@ public class LoginServiceImpl implements LoginService {
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(
               oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
-      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(oAuth2AuthenticationToken);
+      sessionRegistry.registerNewSession(
+          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      result = Result.ok(currentLoginUserId);
+    }
+    return result;
+  }
+
+  /**
+   * Login to playlist master by Google.
+   *
+   * @param code Authorization code.
+   * @param request Http servlet request.
+   * @return Result whose data is user's id in pms.
+   */
+  @Override
+  public Result loginByGoogle(String code, HttpServletRequest request) {
+    //    System.out.println("Authorization code: " + code);
+    ClientRegistration google = clientRegistrationRepository.findByRegistrationId("google");
+    String access_token_url = google.getProviderDetails().getTokenUri();
+    access_token_url += "?client_id=" + google.getClientId();
+    access_token_url += "&client_secret=" + google.getClientSecret();
+    access_token_url += "&grant_type=authorization_code";
+    access_token_url += "&code=" + code;
+    access_token_url += "&redirect_uri=http://playlistmaster.com:8080/login/oauth2/google";
+    String tokenResponse =
+        httpTools.requestPostAPIByFinalUrlWithProxy(
+            access_token_url, new HttpHeaders(), Optional.empty());
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode;
+    try {
+      jsonNode = objectMapper.readTree(tokenResponse);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    String accessToken = jsonNode.get("access_token").textValue();
+    //    System.out.println("Access token: " + accessToken);
+    int expiresIn = jsonNode.get("expires_in").intValue();
+    //    String refreshToken = jsonNode.get("refresh_token").textValue();
+    Set<String> scopes = new HashSet<>(Arrays.asList(jsonNode.get("scope").textValue().split(" ")));
+    String tokenType = jsonNode.get("token_type").textValue();
+    String idToken = jsonNode.get("id_token").textValue();
+    Instant issuedAt = Instant.now();
+    Instant expiresAt = issuedAt.plusSeconds(expiresIn);
+    //    System.out.println("Issued at: " + issuedAt);
+    //    System.out.println("Expires at: " + expiresAt);
+
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    OAuth2AccessToken oAuth2AccessToken =
+        new OAuth2AccessToken(
+            OAuth2AccessToken.TokenType.BEARER, accessToken, issuedAt, expiresAt, scopes);
+
+    OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(google, oAuth2AccessToken);
+    GoogleOAuth2User oAuth2User =
+        (GoogleOAuth2User) OAuth2UserDetailsServiceImpl.loadUser(oAuth2UserRequest);
+    boolean isUsernameExists = userService.checkIfPMSUserNameExist(oAuth2User.getName(), 2);
+    Result result;
+    if (!isUsernameExists) {
+      UserDTO userDTO = new UserDTO();
+      userDTO.setName(oAuth2User.getName());
+      userDTO.setRole("ROLE_" + UserRole.USER);
+      userDTO.setEnabled(true);
+      userDTO.setLoginType(2);
+      userDTO.setEmail(oAuth2User.getEmail());
+      userDTO.setAvatar(oAuth2User.getAvatar());
+      result = userService.addUser(userDTO);
+      oAuth2User.setId(Long.valueOf(result.getData().toString()));
+      // Store oauth2 token.
+      OAuth2AuthenticationToken oAuth2AuthenticationToken =
+          new OAuth2AuthenticationToken(
+              oAuth2User, oAuth2User.getAuthorities(), google.getRegistrationId());
+      securityContext.setAuthentication(oAuth2AuthenticationToken);
+      sessionRegistry.registerNewSession(
+          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+    } else {
+      // Store oauth2 token.
+      OAuth2AuthenticationToken oAuth2AuthenticationToken =
+          new OAuth2AuthenticationToken(
+              oAuth2User, oAuth2User.getAuthorities(), google.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());

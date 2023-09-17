@@ -12,13 +12,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomOAuth2User implements OAuth2User {
+public class GitHubOAuth2User implements OAuth2User {
   private Long id;
   private OAuth2User oauth2User;
   private OAuth2AccessToken oauth2AccessToken;
   private String email;
 
-  public CustomOAuth2User(OAuth2User oauth2User) {
+  public GitHubOAuth2User(OAuth2User oauth2User) {
     this.oauth2User = oauth2User;
   }
 

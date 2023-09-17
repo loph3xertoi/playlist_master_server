@@ -53,6 +53,7 @@ public class WebSecurityConfig {
         .antMatchers(
             HttpMethod.GET,
             "/login/oauth2/github",
+            "/login/oauth2/google",
             "/hello",
             "/logout/success",
             "/error",
@@ -88,28 +89,6 @@ public class WebSecurityConfig {
             customizer ->
                 customizer.authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-    //        .oauth2Login()
-    //        .clientRegistrationRepository(clientRegistrationRepository)
-    //        .authorizedClientService(
-    //            new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository))
-    //        //        .loginPage("/login/oauth2")
-    //        .authorizationEndpoint()
-    //        .baseUri("/hello")
-    //        //      .authorizationRequestRepository()
-    //        .and()
-    //        .redirectionEndpoint()
-    //        .baseUri("/hello")
-    //        .and()
-    //        .tokenEndpoint()
-    //        .accessTokenResponseClient(new DefaultAuthorizationCodeTokenResponseClient())
-    //        .and()
-    //        .userInfoEndpoint()
-    //        //        .userAuthoritiesMapper(this.userAuthoritiesMapper())
-    //        .userService(oauth2UserService())
-    //        //        .oidcUserService(this.oidcUserService())
-    //        //        .baseUri("/login/oauth2")
-    //        .and()
-    //        .successHandler(oAuth2AuthenticationSuccessHandler);
     return http.build();
   }
 

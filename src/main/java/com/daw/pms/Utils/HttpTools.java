@@ -147,6 +147,28 @@ public class HttpTools {
   }
 
   /**
+   * Send http request to {@code api} by proxy with parameters {@code params} and {@code cookie}.
+   *
+   * @param url Remote url you want to call.
+   * @param cookie Your cookie for corresponding platform.
+   * @return Result in string form.
+   */
+  public String requestPostAPIByFinalUrlWithProxy(
+      String url, HttpHeaders headers, Optional<String> cookie) {
+    headers.set(
+        "Accept",
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7;application/json");
+    headers.set(
+        "User-Agent",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
+    cookie.ifPresent(s -> headers.set("Cookie", s));
+    HttpEntity<?> entity = new HttpEntity<>(headers);
+    ResponseEntity<String> response =
+        restTemplateWithProxy.exchange(url, HttpMethod.POST, entity, String.class);
+    return response.getBody();
+  }
+
+  /**
    * Send http request to {@code api} with parameters {@code params} and {@code cookie}.
    *
    * @param url Remote url you want to call.

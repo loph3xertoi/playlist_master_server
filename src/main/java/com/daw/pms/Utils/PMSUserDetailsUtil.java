@@ -1,6 +1,7 @@
 package com.daw.pms.Utils;
 
-import com.daw.pms.Entity.OAuth2.CustomOAuth2User;
+import com.daw.pms.Entity.OAuth2.GitHubOAuth2User;
+import com.daw.pms.Entity.OAuth2.GoogleOAuth2User;
 import com.daw.pms.Entity.PMS.PMSUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -14,9 +15,12 @@ public class PMSUserDetailsUtil {
     if (principal.getClass().equals(PMSUserDetails.class)) {
       PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
       return pmsUserDetails.getUser().getId();
-    } else if (principal.getClass().equals(CustomOAuth2User.class)) {
-      CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-      return customOAuth2User.getId();
+    } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+      GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+      return gitHubOAuth2User.getId();
+    } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+      GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+      return googleOAuth2User.getId();
     } else {
       throw new RuntimeException("Invalid login type");
     }
