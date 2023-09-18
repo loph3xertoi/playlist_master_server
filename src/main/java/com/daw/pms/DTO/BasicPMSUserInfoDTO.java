@@ -32,4 +32,22 @@ public class BasicPMSUserInfoDTO implements Serializable {
 
   /** Login type: 0 for email & password, 1 for GitHub, 2 for Google. */
   private Integer loginType;
+
+  /** User id in qqmusic. */
+  private String qqMusicId;
+
+  /** User cookie in qqmusic. */
+  private String qqMusicCookie;
+
+  /** User id in ncm. */
+  private String ncmId;
+
+  /** User cookie in ncm. */
+  private String ncmCookie;
+
+  /** User id in bilibili. */
+  private String biliId;
+
+  /** User cookie in bilibili. */
+  private String biliCookie;
 }

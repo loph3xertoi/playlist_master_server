@@ -73,32 +73,31 @@ public class BiliFavListServiceImpl implements BiliFavListService {
       throw new RuntimeException(e);
     }
     int code = jsonNode.get("code").intValue();
-    if (code == 0) {
-      JsonNode dataNode = jsonNode.get("data");
-      JsonNode listNode = dataNode.get("list");
-      PagedDataDTO<BiliFavList> data = new PagedDataDTO<>();
-      List<BiliFavList> favLists = new ArrayList<>();
-      listNode.forEach(
-          favListNode -> {
-            BiliFavList favList = new BiliFavList();
-            favList.setId(favListNode.get("id").longValue());
-            favList.setFid(favListNode.get("fid").longValue());
-            favList.setMid(favListNode.get("mid").longValue());
-            favList.setUpperName(favListNode.get("upper").get("name").textValue());
-            favList.setViewCount(favListNode.get("view_count").longValue());
-            favList.setName(favListNode.get("title").textValue());
-            favList.setCover(favListNode.get("cover").textValue());
-            favList.setItemCount(favListNode.get("media_count").intValue());
-            favList.setType(type);
-            favLists.add(favList);
-          });
-      data.setCount(dataNode.get("count").intValue());
-      data.setList(favLists);
-      data.setHasMore(dataNode.get("has_more").booleanValue());
-      return Result.ok(data);
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    JsonNode dataNode = jsonNode.get("data");
+    JsonNode listNode = dataNode.get("list");
+    PagedDataDTO<BiliFavList> data = new PagedDataDTO<>();
+    List<BiliFavList> favLists = new ArrayList<>();
+    listNode.forEach(
+        favListNode -> {
+          BiliFavList favList = new BiliFavList();
+          favList.setId(favListNode.get("id").longValue());
+          favList.setFid(favListNode.get("fid").longValue());
+          favList.setMid(favListNode.get("mid").longValue());
+          favList.setUpperName(favListNode.get("upper").get("name").textValue());
+          favList.setViewCount(favListNode.get("view_count").longValue());
+          favList.setName(favListNode.get("title").textValue());
+          favList.setCover(favListNode.get("cover").textValue());
+          favList.setItemCount(favListNode.get("media_count").intValue());
+          favList.setType(type);
+          favLists.add(favList);
+        });
+    data.setCount(dataNode.get("count").intValue());
+    data.setList(favLists);
+    data.setHasMore(dataNode.get("has_more").booleanValue());
+    return Result.ok(data);
   }
 
   /**
@@ -161,74 +160,73 @@ public class BiliFavListServiceImpl implements BiliFavListService {
       throw new RuntimeException(e);
     }
     int code = jsonNode.get("code").intValue();
-    if (code == 0) {
-      JsonNode dataNode = jsonNode.get("data");
-      if (dataNode.isNull()) {
-        throw new RuntimeException("Invalid library");
-      }
-      JsonNode infoNode = dataNode.get("info");
-      JsonNode mediasNode = dataNode.get("medias");
-      JsonNode cntInfoNode = infoNode.get("cnt_info");
-      BiliDetailFavList biliDetailFavList = new BiliDetailFavList();
-      List<BiliResource> resourceList = new ArrayList<>();
-      biliDetailFavList.setId(infoNode.get("id").longValue());
-      biliDetailFavList.setType(type);
-      biliDetailFavList.setName(infoNode.get("title").textValue());
-      biliDetailFavList.setCover(infoNode.get("cover").textValue());
-      biliDetailFavList.setItemCount(infoNode.get("media_count").intValue());
-      biliDetailFavList.setUpperName(infoNode.get("upper").get("name").textValue());
-      biliDetailFavList.setCollectedCount(cntInfoNode.get("collect").longValue());
-      biliDetailFavList.setViewCount(cntInfoNode.get("play").longValue());
-      biliDetailFavList.setIntro(infoNode.get("intro").textValue());
-      if (type == 0) {
-        biliDetailFavList.setFid(infoNode.get("fid").longValue());
-        biliDetailFavList.setMid(infoNode.get("mid").longValue());
-        biliDetailFavList.setUpperHeadPic(infoNode.get("upper").get("face").textValue());
-        biliDetailFavList.setLikeCount(cntInfoNode.get("thumb_up").longValue());
-        biliDetailFavList.setShareCount(cntInfoNode.get("share").longValue());
-        biliDetailFavList.setCreatedTime(infoNode.get("ctime").longValue());
-        biliDetailFavList.setModifiedTime(infoNode.get("mtime").longValue());
-        biliDetailFavList.setHasMore(dataNode.get("has_more").booleanValue());
-        mediasNode.forEach(
-            mediaNode -> {
-              BiliResource resource = new BiliResource();
-              resource.setId(mediaNode.get("id").longValue());
-              resource.setBvid(mediaNode.get("bvid").textValue());
-              resource.setType(mediaNode.get("type").intValue());
-              resource.setTitle(mediaNode.get("title").textValue());
-              resource.setCover(mediaNode.get("cover").textValue());
-              resource.setPage(mediaNode.get("page").intValue());
-              resource.setDuration(mediaNode.get("duration").intValue());
-              resource.setUpperName(mediaNode.get("upper").get("name").textValue());
-              resource.setPlayCount(mediaNode.get("cnt_info").get("play").longValue());
-              resource.setDanmakuCount(mediaNode.get("cnt_info").get("danmaku").longValue());
-              resourceList.add(resource);
-            });
-        biliDetailFavList.setResources(resourceList);
-      } else if (type == 1) {
-        biliDetailFavList.setMid(infoNode.get("upper").get("mid").longValue());
-        biliDetailFavList.setDanmakuCount(cntInfoNode.get("danmaku").longValue());
-        mediasNode.forEach(
-            mediaNode -> {
-              BiliResource resource = new BiliResource();
-              resource.setId(mediaNode.get("id").longValue());
-              resource.setBvid(mediaNode.get("bvid").textValue());
-              resource.setTitle(mediaNode.get("title").textValue());
-              resource.setCover(mediaNode.get("cover").textValue());
-              resource.setDuration(mediaNode.get("duration").intValue());
-              resource.setUpperName(mediaNode.get("upper").get("name").textValue());
-              resource.setPlayCount(mediaNode.get("cnt_info").get("play").longValue());
-              resource.setDanmakuCount(mediaNode.get("cnt_info").get("danmaku").longValue());
-              resourceList.add(resource);
-            });
-        biliDetailFavList.setResources(resourceList);
-      } else {
-        throw new RuntimeException("type must be 0 or 1");
-      }
-      return Result.ok(biliDetailFavList);
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    JsonNode dataNode = jsonNode.get("data");
+    if (dataNode.isNull()) {
+      throw new RuntimeException("Invalid library");
+    }
+    JsonNode infoNode = dataNode.get("info");
+    JsonNode mediasNode = dataNode.get("medias");
+    JsonNode cntInfoNode = infoNode.get("cnt_info");
+    BiliDetailFavList biliDetailFavList = new BiliDetailFavList();
+    List<BiliResource> resourceList = new ArrayList<>();
+    biliDetailFavList.setId(infoNode.get("id").longValue());
+    biliDetailFavList.setType(type);
+    biliDetailFavList.setName(infoNode.get("title").textValue());
+    biliDetailFavList.setCover(infoNode.get("cover").textValue());
+    biliDetailFavList.setItemCount(infoNode.get("media_count").intValue());
+    biliDetailFavList.setUpperName(infoNode.get("upper").get("name").textValue());
+    biliDetailFavList.setCollectedCount(cntInfoNode.get("collect").longValue());
+    biliDetailFavList.setViewCount(cntInfoNode.get("play").longValue());
+    biliDetailFavList.setIntro(infoNode.get("intro").textValue());
+    if (type == 0) {
+      biliDetailFavList.setFid(infoNode.get("fid").longValue());
+      biliDetailFavList.setMid(infoNode.get("mid").longValue());
+      biliDetailFavList.setUpperHeadPic(infoNode.get("upper").get("face").textValue());
+      biliDetailFavList.setLikeCount(cntInfoNode.get("thumb_up").longValue());
+      biliDetailFavList.setShareCount(cntInfoNode.get("share").longValue());
+      biliDetailFavList.setCreatedTime(infoNode.get("ctime").longValue());
+      biliDetailFavList.setModifiedTime(infoNode.get("mtime").longValue());
+      biliDetailFavList.setHasMore(dataNode.get("has_more").booleanValue());
+      mediasNode.forEach(
+          mediaNode -> {
+            BiliResource resource = new BiliResource();
+            resource.setId(mediaNode.get("id").longValue());
+            resource.setBvid(mediaNode.get("bvid").textValue());
+            resource.setType(mediaNode.get("type").intValue());
+            resource.setTitle(mediaNode.get("title").textValue());
+            resource.setCover(mediaNode.get("cover").textValue());
+            resource.setPage(mediaNode.get("page").intValue());
+            resource.setDuration(mediaNode.get("duration").intValue());
+            resource.setUpperName(mediaNode.get("upper").get("name").textValue());
+            resource.setPlayCount(mediaNode.get("cnt_info").get("play").longValue());
+            resource.setDanmakuCount(mediaNode.get("cnt_info").get("danmaku").longValue());
+            resourceList.add(resource);
+          });
+      biliDetailFavList.setResources(resourceList);
+    } else if (type == 1) {
+      biliDetailFavList.setMid(infoNode.get("upper").get("mid").longValue());
+      biliDetailFavList.setDanmakuCount(cntInfoNode.get("danmaku").longValue());
+      mediasNode.forEach(
+          mediaNode -> {
+            BiliResource resource = new BiliResource();
+            resource.setId(mediaNode.get("id").longValue());
+            resource.setBvid(mediaNode.get("bvid").textValue());
+            resource.setTitle(mediaNode.get("title").textValue());
+            resource.setCover(mediaNode.get("cover").textValue());
+            resource.setDuration(mediaNode.get("duration").intValue());
+            resource.setUpperName(mediaNode.get("upper").get("name").textValue());
+            resource.setPlayCount(mediaNode.get("cnt_info").get("play").longValue());
+            resource.setDanmakuCount(mediaNode.get("cnt_info").get("danmaku").longValue());
+            resourceList.add(resource);
+          });
+      biliDetailFavList.setResources(resourceList);
+    } else {
+      throw new RuntimeException("type must be 0 or 1");
+    }
+    return Result.ok(biliDetailFavList);
   }
 
   /**
@@ -272,13 +270,12 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int resultCode = jsonNode.get("code").intValue();
-    if (resultCode == 0) {
-      Long id = jsonNode.get("data").get("id").longValue();
-      return Result.ok(id);
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    Long id = jsonNode.get("data").get("id").longValue();
+    return Result.ok(id);
   }
 
   /**
@@ -309,12 +306,11 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int resultCode = jsonNode.get("code").intValue();
-    if (resultCode == 0) {
-      return Result.ok();
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    return Result.ok();
   }
 
   /**
@@ -355,12 +351,11 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int resultCode = jsonNode.get("code").intValue();
-    if (resultCode == 0) {
-      return Result.ok();
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    return Result.ok();
   }
 
   /**
@@ -411,12 +406,11 @@ public class BiliFavListServiceImpl implements BiliFavListService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int resultCode = jsonNode.get("code").intValue();
-    if (resultCode == 0) {
-      return Result.ok();
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    return Result.ok();
   }
 
   /**

@@ -27,6 +27,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
@@ -100,7 +102,6 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result loginByGitHub(String code, HttpServletRequest request) {
-    //    System.out.println("Authorization code: " + code);
     ClientRegistration github = clientRegistrationRepository.findByRegistrationId("github");
     String access_token_url = github.getProviderDetails().getTokenUri();
     access_token_url += "?client_id=" + github.getClientId();
@@ -116,63 +117,10 @@ public class LoginServiceImpl implements LoginService {
                     s -> s.split("=")[0], s -> s.split("=").length == 1 ? "" : s.split("=")[1]));
     String accessToken = tokenResponseMap.get("access_token");
     String refreshToken = tokenResponseMap.get("refresh_token");
-    //    System.out.println("Access token: " + accessToken);
     Instant issuedAt = Instant.now();
     int expiresIn = Integer.parseInt(tokenResponseMap.get("expires_in"));
     Instant expiresAt = issuedAt.plusSeconds(expiresIn);
     SecurityContext securityContext = SecurityContextHolder.getContext();
-    //    System.out.println("Issued at: " + issuedAt);
-    //    System.out.println("Expires at: " + expiresAt);
-    //    CompletableFuture<String> refreshTokenResponseFuture =
-    //        CompletableFuture.supplyAsync(
-    //            () -> {
-    //              int delay = expiresIn - 180;
-    //              try {
-    //                String refresh_token_url = github.getProviderDetails().getTokenUri();
-    //                refresh_token_url += "?client_id=" + github.getClientId();
-    //                refresh_token_url += "&client_secret=" + github.getClientSecret();
-    //                refresh_token_url += "&grant_type=" + "refresh_token";
-    //                refresh_token_url += "&refresh_token=" + refreshToken;
-    //                //                TimeUnit.SECONDS.sleep(10);
-    //                TimeUnit.SECONDS.sleep(delay);
-    //                return httpTools.requestPostAPIByFinalUrlWithProxy(
-    //                    refresh_token_url, new HttpHeaders(), Optional.empty());
-    //              } catch (InterruptedException e) {
-    //                throw new RuntimeException(e);
-    //              }
-    //            });
-    //
-    //    // if success:
-    //    refreshTokenResponseFuture.thenAccept(
-    //        (result) -> {
-    //          Map<String, String> refreshTokenResponseMap =
-    //              Arrays.stream(result.split("&"))
-    //                  .collect(
-    //                      Collectors.toMap(
-    //                          s -> s.split("=")[0],
-    //                          s -> s.split("=").length == 1 ? "" : s.split("=")[1]));
-    //          String newAccessToken = refreshTokenResponseMap.get("access_token");
-    //          Instant newIssuedAt = Instant.now();
-    //          int newExpiresIn = Integer.parseInt(refreshTokenResponseMap.get("expires_in"));
-    //          Instant newExpiresAt = newIssuedAt.plusSeconds(newExpiresIn);
-    //          OAuth2AccessToken newOAuth2AccessToken =
-    //              new OAuth2AccessToken(
-    //                  OAuth2AccessToken.TokenType.BEARER,
-    //                  newAccessToken,
-    //                  newIssuedAt,
-    //                  newExpiresAt,
-    //                  github.getScopes());
-    //          Authentication authentication = securityContext.getAuthentication();
-    //          GitHubOAuth2User oAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
-    //          oAuth2User.setOauth2AccessToken(newOAuth2AccessToken);
-    //        });
-    //
-    //    // if fail
-    //    refreshTokenResponseFuture.exceptionally(
-    //        (e) -> {
-    //          e.printStackTrace();
-    //          return null;
-    //        });
 
     OAuth2AccessToken oAuth2AccessToken =
         new OAuth2AccessToken(
@@ -206,18 +154,26 @@ public class LoginServiceImpl implements LoginService {
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
     } else {
+      Long userId = oAuth2User.getId();
+      HashSet<GrantedAuthority> authorities = new HashSet<>(oAuth2User.getAuthorities());
+      Result basicPMSUserInfo = userService.getBasicPMSUserInfo(userId);
+      BasicPMSUserInfoDTO storedUserInfo = (BasicPMSUserInfoDTO) basicPMSUserInfo.getData();
+
+      // Add additional role for user from database.
+      String storedUserInfoRole = storedUserInfo.getRole();
+      if (!("ROLE_" + UserRole.USER).equals(storedUserInfoRole)) {
+        SimpleGrantedAuthority storedUserRoleAuthority =
+            new SimpleGrantedAuthority(storedUserInfoRole);
+        authorities.add(storedUserRoleAuthority);
+      }
+
       // Store oauth2 token.
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
-          new OAuth2AuthenticationToken(
-              oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
+          new OAuth2AuthenticationToken(oAuth2User, authorities, github.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
-      Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
-
       // Update the oauth2 user info if changed.
-      Result basicPMSUserInfo = userService.getBasicPMSUserInfo(currentLoginUserId);
-      BasicPMSUserInfoDTO storedUserInfo = (BasicPMSUserInfoDTO) basicPMSUserInfo.getData();
       String newUserName = oAuth2User.getName();
       String newUserEmail = oAuth2User.getEmail();
       String newUserAvatar = oAuth2User.getAvatar();
@@ -225,13 +181,12 @@ public class LoginServiceImpl implements LoginService {
           && newUserEmail.equals(storedUserInfo.getEmail())
           && newUserAvatar.equals(storedUserInfo.getAvatar()))) {
         Result updateBasicPMSUserInfoResult =
-            userService.updateBasicPMSUserInfo(
-                currentLoginUserId, newUserName, newUserEmail, newUserAvatar);
+            userService.updateBasicPMSUserInfo(userId, newUserName, newUserEmail, newUserAvatar);
         if (!updateBasicPMSUserInfoResult.getSuccess()) {
           throw new RuntimeException(updateBasicPMSUserInfoResult.getMessage());
         }
       }
-      result = Result.ok(currentLoginUserId);
+      result = Result.ok(userId);
     }
     return result;
   }

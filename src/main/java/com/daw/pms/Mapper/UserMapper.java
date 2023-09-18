@@ -66,9 +66,15 @@ public interface UserMapper {
   Long getUserIdByName(String name, Integer loginType);
 
   @Select(
-      "select id, name, role, email, phone, avatar, login_type from tb_pms_user where id = #{id}")
+      "select id, name, role, email, phone, avatar, login_type, qqmusic_id, qqmusic_cookie, ncm_id, ncm_cookie, bilibili_id, bili_cookie from tb_pms_user where id = #{id}")
   @Results({
     @Result(property = "loginType", column = "login_type"),
+    @Result(property = "qqMusicId", column = "qqmusic_id"),
+    @Result(property = "qqMusicCookie", column = "qqmusic_cookie"),
+    @Result(property = "ncmId", column = "ncm_id"),
+    @Result(property = "ncmCookie", column = "ncm_cookie"),
+    @Result(property = "biliId", column = "bilibili_id"),
+    @Result(property = "biliCookie", column = "bili_cookie"),
   })
   BasicPMSUserInfoDTO getBasicPMSUserInfo(Long id);
 

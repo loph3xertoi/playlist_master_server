@@ -136,6 +136,10 @@ public class BiliUserServiceImpl implements BiliUserService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
+    }
     JsonNode dataNode = jsonNode.get("data");
     JsonNode levelNode = dataNode.get("level_info");
     user.setName(dataNode.get("uname").textValue());

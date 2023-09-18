@@ -93,7 +93,7 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     }
     int code = jsonNode.get("code").intValue();
     if (code != 0) {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
     JsonNode dataNode = jsonNode.get("data");
     // The ugcSeasonNode exists only in episodes resource.
@@ -237,35 +237,34 @@ public class BiliResourceServiceImpl implements BiliResourceService {
       throw new RuntimeException(e);
     }
     int code = jsonNode.get("code").intValue();
-    if (code == 0) {
-      JsonNode dataNode = jsonNode.get("data");
-      JsonNode dashNode = dataNode.get("dash");
-      JsonNode videosNode = dashNode.get("video");
-      JsonNode audiosNode = dashNode.get("audio");
-      BiliLinksDTO biliLinksDTO = new BiliLinksDTO();
-      Map<String, String> videoLinks = new HashMap<>();
-      Map<String, String> audioLinks = new HashMap<>();
-      videosNode.forEach(
-          videoNode ->
-              videoLinks.put(videoNode.get("id").asText(), videoNode.get("baseUrl").textValue()));
-      audiosNode.forEach(
-          audioNode ->
-              audioLinks.put(audioNode.get("id").asText(), audioNode.get("baseUrl").textValue()));
-      biliLinksDTO.setVideo(videoLinks);
-      biliLinksDTO.setAudio(audioLinks);
-      String mpdName;
-      try {
-        mpdName = bvid + "_" + cid + ".mpd";
-        generateAndCacheMpd(jsonNode, mpdName);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      String mpdLink = "/mpd/" + mpdName;
-      biliLinksDTO.setMpd(mpdLink);
-      return Result.ok(biliLinksDTO);
-    } else {
-      throw new RuntimeException(jsonNode.get("message").textValue());
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
+    JsonNode dataNode = jsonNode.get("data");
+    JsonNode dashNode = dataNode.get("dash");
+    JsonNode videosNode = dashNode.get("video");
+    JsonNode audiosNode = dashNode.get("audio");
+    BiliLinksDTO biliLinksDTO = new BiliLinksDTO();
+    Map<String, String> videoLinks = new HashMap<>();
+    Map<String, String> audioLinks = new HashMap<>();
+    videosNode.forEach(
+        videoNode ->
+            videoLinks.put(videoNode.get("id").asText(), videoNode.get("baseUrl").textValue()));
+    audiosNode.forEach(
+        audioNode ->
+            audioLinks.put(audioNode.get("id").asText(), audioNode.get("baseUrl").textValue()));
+    biliLinksDTO.setVideo(videoLinks);
+    biliLinksDTO.setAudio(audioLinks);
+    String mpdName;
+    try {
+      mpdName = bvid + "_" + cid + ".mpd";
+      generateAndCacheMpd(jsonNode, mpdName);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    String mpdLink = "/mpd/" + mpdName;
+    biliLinksDTO.setMpd(mpdLink);
+    return Result.ok(biliLinksDTO);
   }
 
   /** Generate Mpd file according to dash json. */
@@ -452,10 +451,9 @@ public class BiliResourceServiceImpl implements BiliResourceService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-    int resultCode = jsonNode.get("code").intValue();
-    if (resultCode != 0) {
-      String errorMsg = jsonNode.get("message").textValue();
-      throw new RuntimeException(errorMsg);
+    int code = jsonNode.get("code").intValue();
+    if (code != 0) {
+      throw new RuntimeException("BiliBili error: " + jsonNode.get("message").textValue());
     }
     JsonNode dataNode = jsonNode.get("data");
     int totalCount = dataNode.get("numResults").intValue();
