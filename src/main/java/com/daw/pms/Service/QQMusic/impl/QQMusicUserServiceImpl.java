@@ -3,10 +3,10 @@ package com.daw.pms.Service.QQMusic.impl;
 import com.daw.pms.Config.QQMusicAPI;
 import com.daw.pms.Entity.QQMusic.QQMusicUser;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
+import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,15 @@ import org.springframework.stereotype.Service;
  * @since 6/1/23
  */
 @Service
-public class QQMusicUserServiceImpl extends QQMusicBase
-    implements QQMusicUserService, Serializable {
+public class QQMusicUserServiceImpl implements QQMusicUserService {
+  private final HttpTools httpTools;
+  private final String baseUrl;
+
+  public QQMusicUserServiceImpl(HttpTools httpTools) {
+    this.httpTools = httpTools;
+    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+  }
+
   /**
    * Return the user info for your qq music.
    *
@@ -33,8 +40,8 @@ public class QQMusicUserServiceImpl extends QQMusicBase
   public QQMusicUser getUserInfo(Long qid, String cookie) {
     QQMusicUser qqMusicUser =
         extractQQMusicUser(
-            requestGetAPI(
-                QQMusicAPI.GET_USERINFO,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_USERINFO,
                 new HashMap<String, String>() {
                   {
                     put("id", qid.toString());

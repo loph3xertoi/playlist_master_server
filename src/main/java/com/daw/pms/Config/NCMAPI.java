@@ -1,5 +1,12 @@
 package com.daw.pms.Config;
 
+/**
+ * API for ncm.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class NCMAPI {
   public static final String USER_DETAIL = "/user/detail";
   public static final String VIP_INFO = "/vip/info";

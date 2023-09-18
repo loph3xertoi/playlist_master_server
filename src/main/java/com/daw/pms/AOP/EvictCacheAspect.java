@@ -17,6 +17,13 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
 
+/**
+ * Evict cache aspect.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Aspect
 @Component
 public class EvictCacheAspect {

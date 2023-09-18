@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Class for send http requests.
+ * Util for sending http requests.
  *
  * @author Daw Loph
  * @version 1.0
@@ -36,7 +36,10 @@ public class HttpTools {
   @Value("${ncm.proxy.port}")
   public String ncmPort;
 
+  /** Rest template for sending http requests. */
   private final RestTemplate restTemplate;
+
+  /** Rest template for sending http requests with proxy. */
   private final RestTemplate restTemplateWithProxy;
 
   public HttpTools(RestTemplate restTemplate, RestTemplate restTemplateWithProxy) {

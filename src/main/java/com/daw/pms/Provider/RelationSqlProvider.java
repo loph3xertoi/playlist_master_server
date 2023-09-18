@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.jdbc.SQL;
 
+/**
+ * Relation sql provider.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class RelationSqlProvider {
   public String addRelationSongSinger(List<Map<String, Long>> params) {
     StringBuilder sql = new StringBuilder();

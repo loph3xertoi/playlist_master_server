@@ -1,9 +1,9 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
 import com.daw.pms.Entity.Bilibili.BiliUser;
-import com.daw.pms.Service.Bilibili.BiliCookieService;
-import com.daw.pms.Service.Bilibili.BiliUserService;
+import com.daw.pms.Service.BiliBili.BiliCookieService;
+import com.daw.pms.Service.BiliBili.BiliUserService;
 import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.WbiBiliBili;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +13,13 @@ import java.util.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle user info in bilibili platform.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/30/23
+ */
 @Service
 public class BiliUserServiceImpl implements BiliUserService {
 

@@ -10,7 +10,7 @@ import com.daw.pms.Entity.NeteaseCloudMusic.NCMUser;
 import com.daw.pms.Entity.PMS.PMSUser;
 import com.daw.pms.Entity.QQMusic.QQMusicUser;
 import com.daw.pms.Mapper.UserMapper;
-import com.daw.pms.Service.Bilibili.BiliUserService;
+import com.daw.pms.Service.BiliBili.BiliUserService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;

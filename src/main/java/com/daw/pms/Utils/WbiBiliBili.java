@@ -5,6 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
+/**
+ * Util for deal with wbi in bilibili.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class WbiBiliBili {
   private static final int[] mixinKeyEncTab =
       new int[] {
@@ -22,17 +29,14 @@ public class WbiBiliBili {
     return key.toString();
   }
 
-  /*
-  Wbi sign the request params.
+  /**
+   * Sign the request for wbi.
+   *
+   * @param params Original request params.
+   * @param imgKey Img key.
+   * @param subKey Sub key.
+   * @return Signed request params with wbi.
    */
-  // imgKey = "653657f524a547ac981ded72ea172057";
-  // subKey = "6e4909c702f846728e64f6007736a338";
-  // mixinKey= "72136226c6a73669787ee4fd02a74c27";
-  // {
-  //     foo: 'one one four',
-  //     bar: '五一四',
-  //     baz: 1919810
-  // }
   public static String wbiSignRequestParam(
       Map<String, Object> params, String imgKey, String subKey) {
     String mixinKey = getMixinKey(imgKey, subKey);

@@ -1,5 +1,12 @@
 package com.daw.pms.Config;
 
+/**
+ * API for bilibili.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class BilibiliAPI {
   public static final String GET_WBI_KEY = "https://api.bilibili.com/x/web-interface/nav";
   public static final String GET_LOGIN_INFO = "https://api.bilibili.com/x/web-interface/nav";

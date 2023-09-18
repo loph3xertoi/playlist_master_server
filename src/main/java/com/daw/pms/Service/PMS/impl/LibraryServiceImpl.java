@@ -13,7 +13,7 @@ import com.daw.pms.Mapper.PlaylistMapper;
 import com.daw.pms.Mapper.RelationMapper;
 import com.daw.pms.Mapper.SingerMapper;
 import com.daw.pms.Mapper.SongMapper;
-import com.daw.pms.Service.Bilibili.BiliFavListService;
+import com.daw.pms.Service.BiliBili.BiliFavListService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
@@ -32,6 +32,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Service for handle playlists or favorites.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/11/23
+ */
 @Service
 public class LibraryServiceImpl implements LibraryService, Serializable {
   @Value("${qqmusic.id}")
@@ -100,13 +107,13 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     if (platform == 0) {
       Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
       PagedDataDTO<PMSLibrary> pagedDataDTO = new PagedDataDTO<>();
-      int playlistCount = playlistMapper.getCountOfUserPlaylists(pmsUserId);
+      int playlistCount = playlistMapper.getCountOfPlaylistsWithCreatorId(pmsUserId);
       pagedDataDTO.setCount(playlistCount);
       if (pn == null || ps == null) {
         throw new RuntimeException("Must specify pn and ps");
       }
       pagedDataDTO.setHasMore(pn * ps < playlistCount);
-      List<PMSLibrary> playlists = playlistMapper.getPlaylistByCreatorId(id, ps * (pn - 1), ps);
+      List<PMSLibrary> playlists = playlistMapper.getPlaylistsByCreatorId(id, ps * (pn - 1), ps);
       for (PMSLibrary playlist : playlists) {
         String cover = playlist.getCover();
         try {
@@ -425,9 +432,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
             }
           });
     }
-    int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int oldRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     relationMapper.addRelationPlaylistSong(params);
-    int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int newRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     int newAddedSongsCount = newRowCount - oldRowCount;
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
@@ -600,9 +607,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       }
       relationMapper.addRelationSongSinger(singerIds);
     }
-    int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int oldRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     relationMapper.addRelationPlaylistSong(songIds);
-    int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int newRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     int newAddedSongsCount = newRowCount - oldRowCount;
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
@@ -692,9 +699,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       }
       relationMapper.addRelationSongSinger(singerIds);
     }
-    int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int oldRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     relationMapper.addRelationPlaylistSong(songIds);
-    int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int newRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     int newAddedSongsCount = newRowCount - oldRowCount;
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
@@ -781,9 +788,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
           });
       relationMapper.addRelationSongSinger(singers);
     }
-    int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int oldRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     relationMapper.addRelationPlaylistSong(songIds);
-    int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+    int newRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
     int newAddedSongsCount = newRowCount - oldRowCount;
     int itemCount = detailPlaylist.getItemCount();
     detailPlaylist.setItemCount(itemCount + newAddedSongsCount);
@@ -824,7 +831,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       params.put("libraryId", fromLibrary);
       params.put("songsIds", songsIds);
       relationMapper.deleteRelationPlaylistSong(params);
-      int oldRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      int oldRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
       List<Long> idsInToLibrary = relationMapper.getAllSongsIdByPlaylistId(Long.valueOf(toLibrary));
       for (String songId : songsIds) {
         if (!idsInToLibrary.contains(Long.valueOf(songId))) {
@@ -840,7 +847,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       if (!addedParams.isEmpty()) {
         relationMapper.addRelationPlaylistSong(addedParams);
       }
-      int newRowCount = relationMapper.getRowCountOfRelationPlaylistSong();
+      int newRowCount = relationMapper.getCountOfRelationsOfPlaylistSong();
       int addedSongsCount = newRowCount - oldRowCount;
       detailToPlaylist.setItemCount(detailToPlaylist.getItemCount() + addedSongsCount);
       playlistMapper.updatePlaylist(detailToPlaylist);

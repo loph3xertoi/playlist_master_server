@@ -10,10 +10,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * Implement for UserDetails in pms, used for spring security.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Data
 @ToString(callSuper = true)
 public class PMSUserDetails implements UserDetails {
-
   private final UserDTO user;
 
   public PMSUserDetails(UserDTO user) {

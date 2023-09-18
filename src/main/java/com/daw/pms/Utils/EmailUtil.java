@@ -8,10 +8,18 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+/**
+ * Email util.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Component
 public class EmailUtil {
   private final JavaMailSender mailSender;
 
+  /** Email for sending token in pms. */
   @Value("${spring.mail.username}")
   private String tokenSenderEmail;
 
@@ -19,6 +27,14 @@ public class EmailUtil {
     this.mailSender = mailSender;
   }
 
+  /**
+   * Send email with token for resetting password.
+   *
+   * @param recipientEmail The recipient email.
+   * @param token Verification token for resetting password.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws MessagingException MessagingException.
+   */
   public void sendResetPassEmail(String recipientEmail, String token)
       throws UnsupportedEncodingException, MessagingException {
     MimeMessage message = mailSender.createMimeMessage();
@@ -48,6 +64,14 @@ public class EmailUtil {
     mailSender.send(message);
   }
 
+  /**
+   * Send email with token for signing up.
+   *
+   * @param recipientEmail The recipient email.
+   * @param token Verification token for signing up.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws MessagingException MessagingException.
+   */
   public void sendSignUpEmail(String recipientEmail, String token)
       throws UnsupportedEncodingException, MessagingException {
     MimeMessage message = mailSender.createMimeMessage();

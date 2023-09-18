@@ -8,6 +8,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implement for UserDetailsService, used for login by name and password in spring security.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Component
 public class NamePasswordUserDetailsServiceImpl implements UserDetailsService {
   private final UserMapper userMapper;

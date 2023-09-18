@@ -1,5 +1,12 @@
 package com.daw.pms.Config;
 
+/**
+ * API for qqmusic.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class QQMusicAPI {
   public static final String GET_COOKIE = "/user/getCookie";
   public static final String SET_COOKIE = "/user/setCookie";

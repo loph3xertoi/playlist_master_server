@@ -6,6 +6,13 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.passay.*;
 
+/**
+ * Validator for password.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
   @Override

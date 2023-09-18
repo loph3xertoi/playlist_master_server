@@ -5,61 +5,60 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.jdbc.SQL;
 
+/**
+ * Song sql provider.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class SongSqlProvider {
   public String getSongs(List<Long> ids) {
-    String sql =
-        new SQL() {
-          {
-            SELECT("*");
-            FROM("tb_pms_song");
-            if (ids != null) {
-              WHERE(getSqlConditionCollection("id", ids));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      {
+        SELECT("*");
+        FROM("tb_pms_song");
+        if (ids != null) {
+          WHERE(getSqlConditionCollection("id", ids));
+        }
+      }
+    }.toString();
   }
 
   public String getExistedIdsAndSongIdsList(List<Long> songIds) {
-    String sql =
-        new SQL() {
-          {
-            SELECT("pms_song_id, song_id");
-            FROM("tb_qqmusic_song");
-            if (songIds != null) {
-              WHERE(getSqlConditionCollection("song_id", songIds));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      {
+        SELECT("pms_song_id, song_id");
+        FROM("tb_qqmusic_song");
+        if (songIds != null) {
+          WHERE(getSqlConditionCollection("song_id", songIds));
+        }
+      }
+    }.toString();
   }
 
   public String getExistedIdsAndNCMIdsList(List<Long> ncmIds) {
-    String sql =
-        new SQL() {
-          { // @Select("select pms_song_id, ncm_id from tb_ncm_song where ncm_id in #{ncmIds}")
-            SELECT("pms_song_id, ncm_id");
-            FROM("tb_ncm_song");
-            if (ncmIds != null) {
-              WHERE(getSqlConditionCollection("ncm_id", ncmIds));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      { // @Select("select pms_song_id, ncm_id from tb_ncm_song where ncm_id in #{ncmIds}")
+        SELECT("pms_song_id, ncm_id");
+        FROM("tb_ncm_song");
+        if (ncmIds != null) {
+          WHERE(getSqlConditionCollection("ncm_id", ncmIds));
+        }
+      }
+    }.toString();
   }
 
   public String getExistedIdsAndAidsList(List<Long> aids) {
-    String sql =
-        new SQL() {
-          { //   @Select("select pms_song_id, aid from tb_bilibili_resource where aid in #{aids}")
-            SELECT("pms_song_id, aid");
-            FROM("tb_bilibili_resource");
-            if (aids != null) {
-              WHERE(getSqlConditionCollection("aid", aids));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      { //   @Select("select pms_song_id, aid from tb_bilibili_resource where aid in #{aids}")
+        SELECT("pms_song_id, aid");
+        FROM("tb_bilibili_resource");
+        if (aids != null) {
+          WHERE(getSqlConditionCollection("aid", aids));
+        }
+      }
+    }.toString();
   }
 
   private String getSqlConditionCollection(String columnName, List<Long> ids) {

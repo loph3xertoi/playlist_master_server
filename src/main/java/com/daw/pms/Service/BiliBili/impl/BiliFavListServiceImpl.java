@@ -1,4 +1,4 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
 import com.daw.pms.DTO.PagedDataDTO;
@@ -6,7 +6,7 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Bilibili.BiliDetailFavList;
 import com.daw.pms.Entity.Bilibili.BiliFavList;
 import com.daw.pms.Entity.Bilibili.BiliResource;
-import com.daw.pms.Service.Bilibili.BiliFavListService;
+import com.daw.pms.Service.BiliBili.BiliFavListService;
 import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+/**
+ * Service for handling fav lists of bilibili.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 8/2/23
+ */
 @Service
 public class BiliFavListServiceImpl implements BiliFavListService {
 

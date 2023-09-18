@@ -1,4 +1,4 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
 import com.daw.pms.DTO.BiliLinksDTO;
@@ -7,8 +7,8 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Bilibili.BiliDetailResource;
 import com.daw.pms.Entity.Bilibili.BiliResource;
 import com.daw.pms.Entity.Bilibili.BiliSubpageOfResource;
-import com.daw.pms.Service.Bilibili.BiliCookieService;
-import com.daw.pms.Service.Bilibili.BiliResourceService;
+import com.daw.pms.Service.BiliBili.BiliCookieService;
+import com.daw.pms.Service.BiliBili.BiliResourceService;
 import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.WbiBiliBili;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,19 +21,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handling resources in bilibili.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 8/2/23
+ */
 @Service
 public class BiliResourceServiceImpl implements BiliResourceService {
-  @Value("${pms.host}")
-  private String pmsHost;
-
-  @Value("${pms.port}")
-  private int pmsPort;
-
   private final HttpTools httpTools;
 
   private final BiliCookieService biliCookieService;

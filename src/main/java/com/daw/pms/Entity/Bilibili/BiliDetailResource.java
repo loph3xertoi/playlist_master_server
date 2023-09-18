@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * The basic resource of bilibili, such as video, music, videos and official resources.
+ * Detail resource in BiliBili platform.
  *
  * @author Daw Loph
  * @version 1.0

@@ -5,6 +5,13 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.passay.*;
 
+/**
+ * Constraint validator for phone number.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PhoneNumberConstraintValidator
     implements ConstraintValidator<ValidPhoneNumber, String> {
 

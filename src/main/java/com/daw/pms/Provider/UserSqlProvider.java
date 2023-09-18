@@ -3,6 +3,13 @@ package com.daw.pms.Provider;
 import com.daw.pms.DTO.UserDTO;
 import org.apache.ibatis.jdbc.SQL;
 
+/**
+ * User sql provider.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class UserSqlProvider {
   public String addUser(UserDTO userDTO) {
     SQL sql =

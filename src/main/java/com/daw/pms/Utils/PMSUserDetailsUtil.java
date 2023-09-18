@@ -7,7 +7,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * Util for get current user's info.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PMSUserDetailsUtil {
+  /**
+   * Get current logged user's id.
+   *
+   * @return Current logged user's id.
+   */
   public static Long getCurrentLoginUserId() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
@@ -26,6 +38,11 @@ public class PMSUserDetailsUtil {
     }
   }
 
+  /**
+   * Get current logged user's email.
+   *
+   * @return Current logged user's email.
+   */
   public static String getCurrentLoginUserEmail() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();

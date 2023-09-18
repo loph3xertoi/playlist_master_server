@@ -4,8 +4,6 @@ import com.daw.pms.Utils.HttpTools;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -27,6 +25,11 @@ public class CorsController {
     this.httpTools = httpTools;
   }
 
+  /**
+   * Get bilibili splash screen image, modify cors header.
+   *
+   * @return splash screen image.
+   */
   @GetMapping("/bili/splash")
   public String getSplashScreen() {
     String url =
@@ -35,6 +38,12 @@ public class CorsController {
         url, new HttpHeaders(), Optional.ofNullable(biliCookie));
   }
 
+  /**
+   * Get search suggestions in bilibili.
+   *
+   * @param keyword The keyword to search.
+   * @return The search suggestions.
+   */
   @GetMapping("/bili/suggestions/{keyword}")
   public String getSearchSuggestions(@PathVariable String keyword) {
     String url =
@@ -43,10 +52,10 @@ public class CorsController {
         url, new HttpHeaders(), Optional.ofNullable(biliCookie));
   }
 
-  @GetMapping(value = "/image", produces = MediaType.IMAGE_PNG_VALUE)
-  public byte[] getImage(@RequestParam String imageUrl) {
-    ResponseEntity<byte[]> image =
-        httpTools.requestGetImageByFinalUrl(imageUrl, Optional.ofNullable(biliCookie));
-    return image.getBody();
-  }
+  //  @GetMapping(value = "/image", produces = MediaType.IMAGE_PNG_VALUE)
+  //  public byte[] getImage(@RequestParam String imageUrl) {
+  //    ResponseEntity<byte[]> image =
+  //        httpTools.requestGetImageByFinalUrl(imageUrl, Optional.ofNullable(biliCookie));
+  //    return image.getBody();
+  //  }
 }

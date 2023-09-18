@@ -1,8 +1,6 @@
 package com.daw.pms.Controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -16,6 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for handling mpd file.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @RestController
 @RequestMapping("/mpd")
 public class MpdController {
@@ -25,6 +30,12 @@ public class MpdController {
     this.redisTemplate = redisTemplate;
   }
 
+  /**
+   * Get mpd file.
+   *
+   * @param fileName The mpd file name.
+   * @return The mpd file.
+   */
   @GetMapping(value = "/{fileName:.+\\.mpd}")
   public ResponseEntity<byte[]> getMpdFile(@PathVariable String fileName) {
     String mpdXml = redisTemplate.opsForValue().get("bili-mpd::" + fileName);
@@ -34,22 +45,22 @@ public class MpdController {
     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(mpdXml.getBytes());
   }
 
-  @GetMapping(value = "/xml")
-  public ResponseEntity<String> testXML() throws XMLStreamException {
-    HttpHeaders headers = new HttpHeaders();
-    //    headers.setContentType(MediaType.parseMediaType("application/dash+xml"));
-    headers.setContentType(MediaType.APPLICATION_XML);
-    headers.setAccessControlAllowOrigin("*");
-    headers.setAccessControlAllowHeaders(
-        new ArrayList<String>() {
-          {
-            add("*");
-          }
-        });
-    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(generateMPD(null));
-  }
+  //  @GetMapping(value = "/xml")
+  //  public ResponseEntity<String> testXML() throws XMLStreamException {
+  //    HttpHeaders headers = new HttpHeaders();
+  //    //    headers.setContentType(MediaType.parseMediaType("application/dash+xml"));
+  //    headers.setContentType(MediaType.APPLICATION_XML);
+  //    headers.setAccessControlAllowOrigin("*");
+  //    headers.setAccessControlAllowHeaders(
+  //        new ArrayList<String>() {
+  //          {
+  //            add("*");
+  //          }
+  //        });
+  //    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(generateMPD(null));
+  //  }
 
-  private String generateMPD(JsonNode jsonNode) throws XMLStreamException {
+  private String generateMPD() throws XMLStreamException {
     XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
     StringWriter stringWriter = new StringWriter();
     XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);

@@ -4,6 +4,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Pepper password encoder.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PepperedPasswordEncoder implements PasswordEncoder {
   @Value("${pms.pepper}")
   private String pepper;

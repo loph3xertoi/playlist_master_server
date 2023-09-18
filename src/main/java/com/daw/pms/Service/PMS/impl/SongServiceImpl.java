@@ -12,7 +12,7 @@ import com.daw.pms.Entity.PMS.PMSSong;
 import com.daw.pms.Entity.QQMusic.QQMusicDetailSong;
 import com.daw.pms.Mapper.SingerMapper;
 import com.daw.pms.Mapper.SongMapper;
-import com.daw.pms.Service.Bilibili.BiliResourceService;
+import com.daw.pms.Service.BiliBili.BiliResourceService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import com.daw.pms.Service.PMS.SongService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
@@ -26,6 +26,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for songs in pms.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 6/3/23
+ */
 @Service
 public class SongServiceImpl implements SongService, Serializable {
   @Value("${qqmusic.cookie}")

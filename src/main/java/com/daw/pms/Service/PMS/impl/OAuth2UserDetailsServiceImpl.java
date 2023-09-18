@@ -19,8 +19,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Implement for DefaultOAuth2UserService, used for login by oauth2 in spring security.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Service
 public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
+  /** Endpoint for get user email in GitHub. */
   @Value("${pms.github-email-endpoint}")
   private String githubEmailEndpoint;
 

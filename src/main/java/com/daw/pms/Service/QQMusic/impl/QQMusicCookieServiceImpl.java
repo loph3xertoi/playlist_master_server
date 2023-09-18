@@ -2,15 +2,12 @@ package com.daw.pms.Service.QQMusic.impl;
 
 import com.daw.pms.Config.QQMusicAPI;
 import com.daw.pms.Service.QQMusic.QQMusicCookieService;
-import java.io.Serializable;
+import com.daw.pms.Utils.HttpTools;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Service for handling cookie for qq music.
@@ -20,8 +17,14 @@ import org.springframework.stereotype.Service;
  * @since 5/31/23
  */
 @Service
-public class QQMusicCookieServiceImpl extends QQMusicBase
-    implements QQMusicCookieService, Serializable {
+public class QQMusicCookieServiceImpl implements QQMusicCookieService {
+  private final HttpTools httpTools;
+  private final String baseUrl;
+
+  public QQMusicCookieServiceImpl(HttpTools httpTools) {
+    this.httpTools = httpTools;
+    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+  }
 
   /**
    * Store your qq music cookie to QQMusicAPI server.
@@ -32,18 +35,10 @@ public class QQMusicCookieServiceImpl extends QQMusicBase
    */
   @Override
   public String setCookie(String cookie) {
-    String url = host + ":" + port + QQMusicAPI.SET_COOKIE;
-
-    HttpHeaders headers = new HttpHeaders();
-    //    headers.set("Authorization", "Bearer " + accessToken);
-    Map<String, String> request = new HashMap<>();
-    request.put("data", cookie);
-
-    HttpEntity<?> entity = new HttpEntity<>(request, headers);
-
-    ResponseEntity<String> response =
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-    return response.getBody();
+    MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
+    requestBody.add("data", cookie);
+    return httpTools.requestPostAPI(
+        baseUrl + QQMusicAPI.SET_COOKIE, requestBody, Optional.empty(), Optional.empty());
   }
 
   /**
@@ -55,8 +50,8 @@ public class QQMusicCookieServiceImpl extends QQMusicBase
    */
   @Override
   public String applyCookie(String id) {
-    return requestGetAPI(
-        QQMusicAPI.APPLY_COOKIE,
+    return httpTools.requestGetAPI(
+        baseUrl + QQMusicAPI.APPLY_COOKIE,
         new HashMap<String, String>() {
           {
             put("id", id);
@@ -74,8 +69,8 @@ public class QQMusicCookieServiceImpl extends QQMusicBase
    */
   @Override
   public String getCookie(Integer raw) {
-    return requestGetAPI(
-        QQMusicAPI.GET_COOKIE,
+    return httpTools.requestGetAPI(
+        baseUrl + QQMusicAPI.GET_COOKIE,
         new HashMap<String, Integer>() {
           {
             put("raw", raw);

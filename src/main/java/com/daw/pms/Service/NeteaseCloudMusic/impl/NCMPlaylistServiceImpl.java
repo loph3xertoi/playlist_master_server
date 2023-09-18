@@ -15,14 +15,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Playlist service for netease cloud music.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/22/23
+ */
 @Service
 public class NCMPlaylistServiceImpl implements NCMPlaylistService {
 
   private final HttpTools httpTools;
+  private final String baseUrl;
   private final NCMSongService ncmSongService;
 
   public NCMPlaylistServiceImpl(HttpTools httpTools, NCMSongService ncmSongService) {
     this.httpTools = httpTools;
+    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     this.ncmSongService = ncmSongService;
   }
 
@@ -40,7 +49,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
   @Override
   public Result getPlaylists(Long uid, Integer offset, Integer limit, String cookie) {
     PagedDataDTO<NCMPlaylist> data = new PagedDataDTO<>();
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     List<NCMPlaylist> playlists =
         extractNCMPlaylists(
             httpTools.requestGetAPI(
@@ -97,7 +105,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   @Override
   public Result getDetailPlaylist(Long id, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailPlaylist playlist =
         extractDetailNCMPlaylist(
             httpTools.requestGetAPI(
@@ -125,7 +132,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
   @Override
   public List<NCMSong> getAllSongsFromPlaylist(
       Long id, Optional<Integer> offset, Optional<Integer> limit, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     List<NCMSong> songs =
         extractAllSongs(
             httpTools.requestGetAPI(
@@ -228,7 +234,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   @Override
   public Result createPlaylist(String name, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractCreatingPlaylistResult(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.CREATE_PLAYLIST,
@@ -267,7 +272,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   @Override
   public Result deletePlaylist(String ids, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractDeletingPlaylistResult(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.DELETE_PLAYLIST,
@@ -308,7 +312,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   @Override
   public Result addSongsToPlaylist(Long pid, String tracks, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractAddingSongsToPlaylistResult(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,
@@ -383,7 +386,6 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   @Override
   public Result removeSongsFromPlaylist(Long pid, String tracks, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractRemovingSongsFromPlaylistResult(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.OPERATE_SONGS_IN_PLAYLIST,

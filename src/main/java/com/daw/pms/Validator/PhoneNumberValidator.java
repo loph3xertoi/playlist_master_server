@@ -3,6 +3,13 @@ package com.daw.pms.Validator;
 import java.util.HashMap;
 import org.passay.*;
 
+/**
+ * Validator for phone number.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PhoneNumberValidator implements Rule {
   private static final String PHONE_NUMBER_REGEX = "^[+]?\\d{1,3}[-\\s]?\\d{1,14}$";
 

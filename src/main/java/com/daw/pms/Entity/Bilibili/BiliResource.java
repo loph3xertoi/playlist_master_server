@@ -3,6 +3,13 @@ package com.daw.pms.Entity.Bilibili;
 import java.io.Serializable;
 import lombok.Data;
 
+/**
+ * The basic resource of bilibili, such as video, music, videos and official resources.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Data
 public class BiliResource implements Serializable {
   /** The id of this resource. */

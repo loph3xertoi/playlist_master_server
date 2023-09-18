@@ -11,6 +11,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+/**
+ * Annotation for validating password.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Documented
 @Constraint(validatedBy = PasswordConstraintValidator.class)
 @Target({FIELD, ANNOTATION_TYPE})

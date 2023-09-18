@@ -34,10 +34,10 @@ class QQMusicSongServiceImplTest {
   }
 
   // Only for album, the song cover can obtain by albummid directly.
-  @Test
-  void getSongCoverUri() {
-    System.out.println(qqMusicSongService.getSongCoverUri("0012vTYD3iRdKJ", qqMusicCookie));
-  }
+  //  @Test
+  //  void getSongCoverUri() {
+  //    System.out.println(qqMusicSongService.getSongCoverUri("0012vTYD3iRdKJ", qqMusicCookie));
+  //  }
 
   @Test
   void getSongLink() {

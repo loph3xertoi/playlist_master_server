@@ -1,7 +1,7 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.Config.BilibiliAPI;
-import com.daw.pms.Service.Bilibili.BiliCookieService;
+import com.daw.pms.Service.BiliBili.BiliCookieService;
 import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,6 +14,13 @@ import java.util.regex.Pattern;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle cookie in bilibili.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/30/23
+ */
 @Service
 public class BiliCookieServiceImpl implements BiliCookieService {
   private final HttpTools httpTools;

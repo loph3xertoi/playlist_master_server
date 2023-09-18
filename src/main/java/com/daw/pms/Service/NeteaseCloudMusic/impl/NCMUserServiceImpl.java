@@ -11,12 +11,21 @@ import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle user info of netease cloud music.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/21/23
+ */
 @Service
 public class NCMUserServiceImpl implements NCMUserService {
   private final HttpTools httpTools;
+  private final String baseUrl;
 
   public NCMUserServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
+    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
@@ -28,7 +37,6 @@ public class NCMUserServiceImpl implements NCMUserService {
    */
   @Override
   public NCMUser getUserInfo(Long uid, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMUser ncmUser =
         extractNCMUser(
             httpTools.requestGetAPI(

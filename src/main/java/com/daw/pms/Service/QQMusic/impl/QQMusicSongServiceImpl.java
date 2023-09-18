@@ -6,10 +6,10 @@ import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSinger;
 import com.daw.pms.Entity.QQMusic.*;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
+import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +21,15 @@ import org.springframework.stereotype.Service;
  * @since 6/3/23
  */
 @Service
-public class QQMusicSongServiceImpl extends QQMusicBase
-    implements QQMusicSongService, Serializable {
+public class QQMusicSongServiceImpl implements QQMusicSongService {
+  private final HttpTools httpTools;
+  private final String baseUrl;
+
+  public QQMusicSongServiceImpl(HttpTools httpTools) {
+    this.httpTools = httpTools;
+    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+  }
+
   /**
    * Get songs id from playlist {@code dirId}.
    *
@@ -34,8 +41,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   @Override
   public List<String> getSongsIdFromPlaylist(int dirId, String cookie) {
     return extractSongsIdFromPlaylist(
-        requestGetAPI(
-            QQMusicAPI.GET_SONGS_ID_FROM_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_SONGS_ID_FROM_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("dirid", String.valueOf(dirId));
@@ -80,8 +87,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
     QQMusicLyrics qqMusicLyrics = getLyrics(songMid, cookie);
     QQMusicDetailSong qqMusicSong =
         extractDetailSong(
-            requestGetAPI(
-                QQMusicAPI.GET_SONG_DETAIL,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_SONG_DETAIL,
                 new HashMap<String, String>() {
                   {
                     put("songmid", songMid);
@@ -178,8 +185,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   public List<QQMusicSong> getSimilarSongs(String songId, String cookie) {
     List<QQMusicSong> similarSongs =
         extractSimilarSongs(
-            requestGetAPI(
-                QQMusicAPI.GET_SIMILAR_SONGS,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_SIMILAR_SONGS,
                 new HashMap<String, String>() {
                   {
                     put("id", songId);
@@ -266,8 +273,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   @Override
   public QQMusicLyrics getLyrics(String songMid, String cookie) {
     return extractLyrics(
-        requestGetAPI(
-            QQMusicAPI.GET_LYRICS,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_LYRICS,
             new HashMap<String, String>() {
               {
                 put("songmid", songMid);
@@ -307,8 +314,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   @Override
   public String getSongCoverUri(String albumMid, String cookie) {
     return extractCoverUri(
-        requestGetAPI(
-            QQMusicAPI.GET_ALBUM_INFO,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_ALBUM_INFO,
             new HashMap<String, String>() {
               {
                 put("albummid", albumMid);
@@ -348,8 +355,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   @Override
   public String getSongLink(String songMid, String type, String mediaMid, String cookie) {
     return extractSongLink(
-        requestGetAPI(
-            QQMusicAPI.GET_SONG_LINK,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_SONG_LINK,
             new HashMap<String, String>() {
               {
                 put("id", songMid);
@@ -395,8 +402,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   public Result getSongsLink(String songMids, String cookie) {
     Map<String, String> links =
         extractSongLinks(
-            requestGetAPI(
-                QQMusicAPI.GET_SONGS_LINK,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_SONGS_LINK,
                 new HashMap<String, String>() {
                   {
                     put("id", songMids);
@@ -451,8 +458,8 @@ public class QQMusicSongServiceImpl extends QQMusicBase
   public Result searchSongsByKeyword(String name, int pageNo, int pageSize, String cookie) {
     Result result =
         extractSearchedSongs(
-            requestGetAPI(
-                QQMusicAPI.SEARCH_SONGS,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.SEARCH_SONGS,
                 new HashMap<String, String>() {
                   {
                     put("key", name);

@@ -1,7 +1,7 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.Entity.Bilibili.BiliUser;
-import com.daw.pms.Service.Bilibili.BiliUserService;
+import com.daw.pms.Service.BiliBili.BiliUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

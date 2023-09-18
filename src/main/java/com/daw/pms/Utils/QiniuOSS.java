@@ -17,6 +17,13 @@ import java.net.URLEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Util for Qiniu Oss.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Component
 public class QiniuOSS {
   @Value("${qiniu.access-key}")
@@ -31,6 +38,16 @@ public class QiniuOSS {
   @Value("${qiniu.domain}")
   private String domain;
 
+  /**
+   * Upload file.
+   *
+   * @param fileInputStream File input stream.
+   * @param fileName The file name.
+   * @return The final key.
+   * @throws QiniuException QiniuException.
+   * @throws JsonProcessingException JsonProcessingException.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   */
   public String uploadFileByInputStream(InputStream fileInputStream, String fileName)
       throws QiniuException, JsonProcessingException, UnsupportedEncodingException {
     Configuration cfg = new Configuration(Region.huanan());
@@ -59,6 +76,14 @@ public class QiniuOSS {
     return finalKey;
   }
 
+  /**
+   * Reflect key to final Oss link.
+   *
+   * @param key The original key.
+   * @return Final Oss link.
+   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws QiniuException QiniuException.
+   */
   public String reflectKeyToFinalOSSLink(String key)
       throws UnsupportedEncodingException, QiniuException {
     String encodedFileName = URLEncoder.encode(key, "utf-8").replace("+", "%20") + ".jpg";

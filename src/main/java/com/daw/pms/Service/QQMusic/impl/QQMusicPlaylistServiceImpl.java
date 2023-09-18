@@ -10,10 +10,10 @@ import com.daw.pms.Entity.QQMusic.QQMusicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
+import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +25,15 @@ import org.springframework.stereotype.Service;
  * @since 6/1/23
  */
 @Service
-public class QQMusicPlaylistServiceImpl extends QQMusicBase
-    implements QQMusicPlaylistService, Serializable {
+public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   private final QQMusicSongService qqMusicSongService;
+  private final HttpTools httpTools;
+  private final String baseUrl;
 
-  public QQMusicPlaylistServiceImpl(QQMusicSongService qqMusicSongService) {
+  public QQMusicPlaylistServiceImpl(QQMusicSongService qqMusicSongService, HttpTools httpTools) {
     this.qqMusicSongService = qqMusicSongService;
+    this.httpTools = httpTools;
+    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
@@ -47,8 +50,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
     PagedDataDTO<QQMusicPlaylist> data = new PagedDataDTO<>();
     List<QQMusicPlaylist> playlists =
         extractQQMusicPlaylists(
-            requestGetAPI(
-                QQMusicAPI.GET_PLAYLIST,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_PLAYLIST,
                 new HashMap<String, String>() {
                   {
                     put("id", qid);
@@ -104,8 +107,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   public Result getDetailPlaylist(String tid, String cookie) {
     QQMusicDetailPlaylist qqMusicDetailPlaylist =
         extractDetailPlaylist(
-            requestGetAPI(
-                QQMusicAPI.GET_DETAIL_PLAYLIST,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_DETAIL_PLAYLIST,
                 new HashMap<String, String>() {
                   {
                     put("id", tid);
@@ -219,8 +222,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   @Override
   public Result createPlaylist(String name, String cookie) {
     return extractCreatingPlaylistResult(
-        requestGetAPI(
-            QQMusicAPI.CREATE_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.CREATE_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("name", name);
@@ -261,8 +264,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   @Override
   public Result deletePlaylist(String dirIds, String cookie) {
     return extractDeletingPlaylistResult(
-        requestGetAPI(
-            QQMusicAPI.DELETE_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.DELETE_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("dirid", dirIds);
@@ -303,8 +306,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   @Override
   public Result addSongsToPlaylist(int dirId, String songsMid, String cookie) {
     return extractAddingSongsToPlaylistResult(
-        requestGetAPI(
-            QQMusicAPI.ADD_SONGS_TO_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.ADD_SONGS_TO_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("dirid", String.valueOf(dirId));
@@ -349,8 +352,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   public Result moveSongsToOtherPlaylist(
       String songsId, int fromDirId, int toDirId, String cookie) {
     return extractMovingSongsToOtherPlaylist(
-        requestGetAPI(
-            QQMusicAPI.MOVE_SONGS_TO_OTHER_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.MOVE_SONGS_TO_OTHER_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("id", songsId);
@@ -393,8 +396,8 @@ public class QQMusicPlaylistServiceImpl extends QQMusicBase
   @Override
   public Result removeSongsFromPlaylist(int dirId, String songsId, String cookie) {
     return extractRemovingPlaylistResult(
-        requestGetAPI(
-            QQMusicAPI.REMOVE_SONGS_FROM_PLAYLIST,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.REMOVE_SONGS_FROM_PLAYLIST,
             new HashMap<String, String>() {
               {
                 put("dirid", String.valueOf(dirId));

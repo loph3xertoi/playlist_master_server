@@ -16,12 +16,21 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle mv in ncm.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/24/23
+ */
 @Service
 public class NCMMVServiceImpl implements NCMMVService {
   private final HttpTools httpTools;
+  private final String baseUrl;
 
   public NCMMVServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
+    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
@@ -34,7 +43,6 @@ public class NCMMVServiceImpl implements NCMMVService {
    */
   @Override
   public NCMDetailVideo getDetailMV(String id, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     Boolean isMLog = Pattern.matches(".*[a-zA-Z].*", id);
     String url = isMLog ? baseUrl + NCMAPI.VIDEO_DETAIL : baseUrl + NCMAPI.MV_DETAIL;
     Map<String, String> parameters = new HashMap<>();
@@ -145,7 +153,6 @@ public class NCMMVServiceImpl implements NCMMVService {
    */
   @Override
   public String getMVLink(String mvId, Integer rate, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractMVLink(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.MV_URL,
@@ -179,7 +186,6 @@ public class NCMMVServiceImpl implements NCMMVService {
    */
   @Override
   public Map<String, String> getMLogLinks(String mLogId, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractMLogLinks(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.MLOG_URL,
@@ -220,7 +226,6 @@ public class NCMMVServiceImpl implements NCMMVService {
    */
   @Override
   public List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractRelatedVideos(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.RELATED_VIDEOS,
@@ -294,7 +299,6 @@ public class NCMMVServiceImpl implements NCMMVService {
    * @return The vid of the mlog.
    */
   public String convertMLogIdToVid(String mLogId, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     String rawVid =
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.MLOG_TO_VIDEO,

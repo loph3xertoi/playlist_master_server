@@ -1,7 +1,7 @@
-package com.daw.pms.Service.Bilibili.impl;
+package com.daw.pms.Service.BiliBili.impl;
 
 import com.daw.pms.DTO.Result;
-import com.daw.pms.Service.Bilibili.BiliFavListService;
+import com.daw.pms.Service.BiliBili.BiliFavListService;
 import java.util.HashMap;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

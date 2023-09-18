@@ -13,14 +13,33 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * Handle all global exceptions.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+  /**
+   * Handle common exceptions.
+   *
+   * @param e Common exception.
+   * @return Common Result with error message and first stack trace.
+   */
   @ExceptionHandler(Exception.class)
   @ResponseBody
   public Result handleException(Exception e) {
     return Result.fail(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
   }
 
+  /**
+   * Handle MethodArgumentNotValidException.
+   *
+   * @param e MethodArgumentNotValidException.
+   * @return Result with error message.
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseBody
   public Result handleException(MethodArgumentNotValidException e) {
@@ -29,6 +48,12 @@ public class GlobalExceptionHandler {
     return Result.fail(fieldError.getDefaultMessage());
   }
 
+  /**
+   * Handle ConstraintViolationException.
+   *
+   * @param e ConstraintViolationException
+   * @return Common result with error message.
+   */
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseBody
   public Result handleException(ConstraintViolationException e) {
@@ -41,6 +66,12 @@ public class GlobalExceptionHandler {
     return Result.fail("Something bad happened");
   }
 
+  /**
+   * Handle AuthenticationException.
+   *
+   * @param e AuthenticationException.
+   * @return Common result with error message.
+   */
   @ExceptionHandler(AuthenticationException.class)
   @ResponseBody
   public Result handleException(AuthenticationException e) {

@@ -4,6 +4,13 @@ import com.daw.pms.Entity.PMS.PMSSinger;
 import java.util.List;
 import org.apache.ibatis.jdbc.SQL;
 
+/**
+ * Singer sql provider.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class SingerSqlProvider {
   public String updateSinger(PMSSinger singer) {
     String name = singer.getName();
@@ -32,7 +39,6 @@ public class SingerSqlProvider {
 
   public String addSinger(PMSSinger singer) {
     String name = singer.getName();
-    String avatar = singer.getHeadPic();
     Integer type = singer.getType();
 
     if (name == null) {
@@ -40,9 +46,6 @@ public class SingerSqlProvider {
     }
     if (type == null) {
       throw new RuntimeException("Singer type mustn't be null");
-    }
-    if (avatar == null) {
-      avatar = "";
     }
 
     return new SQL()
@@ -54,17 +57,15 @@ public class SingerSqlProvider {
   }
 
   public String getSingersByIds(List<Long> ids) {
-    String sql =
-        new SQL() {
-          { // @Select("select * from tb_pms_singer where id in (#{ids})")
-            SELECT("*");
-            FROM("tb_pms_singer");
-            if (ids != null) {
-              WHERE(getSqlConditionCollection("id", ids));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      { // @Select("select * from tb_pms_singer where id in (#{ids})")
+        SELECT("*");
+        FROM("tb_pms_singer");
+        if (ids != null) {
+          WHERE(getSqlConditionCollection("id", ids));
+        }
+      }
+    }.toString();
   }
 
   private String getSqlConditionCollection(String columnName, List<Long> ids) {

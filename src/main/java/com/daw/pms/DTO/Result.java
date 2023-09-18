@@ -6,13 +6,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Common result DTO returned by controller.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Result implements Serializable {
+  /** Indicating the success or not of this request, true of false. */
   private Boolean success;
+
+  /** Error message if success is failed. */
   private String message;
+
+  /** Real data if success. */
   private Object data;
+
+  /** The data's length if it is list. */
   private Long total;
 
   public static Result ok() {

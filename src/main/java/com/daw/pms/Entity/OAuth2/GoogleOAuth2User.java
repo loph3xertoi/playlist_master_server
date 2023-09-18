@@ -9,34 +9,68 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+/**
+ * Custom OAuth2User for Google.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoogleOAuth2User implements OAuth2User {
+  /** User's id in pms. */
   private Long id;
+
+  /** Original OAuth2User for Google. */
   private OAuth2User oauth2User;
+
+  /** Access token. */
   private OAuth2AccessToken oauth2AccessToken;
+
+  /** Bound email in Google. */
   private String email;
 
   public GoogleOAuth2User(OAuth2User oauth2User) {
     this.oauth2User = oauth2User;
   }
 
+  /**
+   * Get all attributes of original OAuth2User in Google.
+   *
+   * @return All attributes of original OAuth2User in Google.
+   */
   @Override
   public Map<String, Object> getAttributes() {
     return oauth2User.getAttributes();
   }
 
+  /**
+   * Get all authorities of original OAuth2User in Google.
+   *
+   * @return All authorities of original OAuth2User in Google.
+   */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return oauth2User.getAuthorities();
   }
 
+  /**
+   * Get your name in Google.
+   *
+   * @return Your name in Google.
+   */
   @Override
   public String getName() {
     return oauth2User.getAttribute("name");
   }
 
+  /**
+   * Get your avatar in Google.
+   *
+   * @return Your avatar in Google.
+   */
   public String getAvatar() {
     return oauth2User.getAttribute("picture");
   }

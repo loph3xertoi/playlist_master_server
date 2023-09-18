@@ -7,11 +7,11 @@ import com.daw.pms.Entity.QQMusic.QQMusicDetailVideo;
 import com.daw.pms.Entity.QQMusic.QQMusicSinger;
 import com.daw.pms.Entity.QQMusic.QQMusicVideo;
 import com.daw.pms.Service.QQMusic.QQMusicMVService;
+import com.daw.pms.Utils.HttpTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,15 @@ import org.springframework.stereotype.Service;
  * @since 6/2/23
  */
 @Service
-public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVService, Serializable {
+public class QQMusicMVServiceImpl implements QQMusicMVService {
+  private final HttpTools httpTools;
+  private final String baseUrl;
+
+  public QQMusicMVServiceImpl(HttpTools httpTools) {
+    this.httpTools = httpTools;
+    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+  }
+
   /**
    * Get detail video information according to its {@code vid}.
    *
@@ -36,8 +44,8 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
   public QQMusicDetailVideo getDetailMV(String vid, String cookie) {
     QQMusicDetailVideo qqMusicDetailVideo =
         extractQQMusicMV(
-            requestGetAPI(
-                QQMusicAPI.GET_MV_INFO,
+            httpTools.requestGetAPI(
+                baseUrl + QQMusicAPI.GET_MV_INFO,
                 new HashMap<String, String>() {
                   {
                     put("id", vid);
@@ -60,8 +68,8 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
   @Override
   public Map<String, List<String>> getMVsLink(String vids, String cookie) {
     return extractQQMusicMVLinks(
-        requestGetAPI(
-            QQMusicAPI.GET_MV_LINK,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_MV_LINK,
             new HashMap<String, String>() {
               {
                 put("id", vids);
@@ -141,8 +149,8 @@ public class QQMusicMVServiceImpl extends QQMusicBase implements QQMusicMVServic
   @Override
   public List<BasicVideo> getRelatedVideos(Integer songId, String cookie) {
     return extractRelatedMV(
-        requestGetAPI(
-            QQMusicAPI.GET_RELATED_MV,
+        httpTools.requestGetAPI(
+            baseUrl + QQMusicAPI.GET_RELATED_MV,
             new HashMap<String, Integer>() {
               {
                 put("id", songId);

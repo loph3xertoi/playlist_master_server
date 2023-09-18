@@ -4,6 +4,13 @@ import com.daw.pms.Entity.PMS.PMSDetailLibrary;
 import java.util.List;
 import org.apache.ibatis.jdbc.SQL;
 
+/**
+ * Playlist sql provider.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/18/23
+ */
 public class PlaylistSqlProvider {
   public String updatePlaylist(PMSDetailLibrary library) {
     String name = library.getName();
@@ -49,16 +56,14 @@ public class PlaylistSqlProvider {
   }
 
   public String deletePlaylists(List<Long> ids) {
-    String sql =
-        new SQL() {
-          {
-            DELETE_FROM("tb_pms_playlist");
-            if (ids != null) {
-              WHERE(getSqlConditionCollection("id", ids));
-            }
-          }
-        }.toString();
-    return sql;
+    return new SQL() {
+      {
+        DELETE_FROM("tb_pms_playlist");
+        if (ids != null) {
+          WHERE(getSqlConditionCollection("id", ids));
+        }
+      }
+    }.toString();
   }
 
   private String getSqlConditionCollection(String columnName, List<Long> ids) {
@@ -78,7 +83,7 @@ public class PlaylistSqlProvider {
     }
   }
 
-  public String createPlaylist(PMSDetailLibrary library) {
+  public String createPlaylist() {
     String createPlaylist =
         new SQL()
             .INSERT_INTO("tb_pms_playlist")

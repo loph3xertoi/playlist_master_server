@@ -1,4 +1,4 @@
-package com.daw.pms.Service.Bilibili;
+package com.daw.pms.Service.BiliBili;
 
 import java.util.Map;
 

@@ -14,13 +14,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle songs of netease cloud music.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 7/21/23
+ */
 @Service
 public class NCMSongServiceImpl implements NCMSongService {
 
   private final HttpTools httpTools;
+  private final String baseUrl;
 
   public NCMSongServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
+    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
@@ -33,7 +42,6 @@ public class NCMSongServiceImpl implements NCMSongService {
    */
   @Override
   public Result getDetailSong(String ids, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     NCMDetailSong detailSong =
         extractDetailSong(
             httpTools.requestGetAPI(
@@ -139,7 +147,6 @@ public class NCMSongServiceImpl implements NCMSongService {
    */
   @Override
   public List<NCMSong> getSimilarSongs(Long id, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     List<NCMSong> songs =
         extractSimilarSongs(
             httpTools.requestGetAPI(
@@ -210,7 +217,6 @@ public class NCMSongServiceImpl implements NCMSongService {
    */
   @Override
   public NCMLyrics getLyrics(Long id, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     return extractNCMLyrics(
         httpTools.requestGetAPI(
             baseUrl + NCMAPI.LYRIC_NEW,
@@ -278,7 +284,6 @@ public class NCMSongServiceImpl implements NCMSongService {
    */
   @Override
   public Result getSongsLink(String ids, String level, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     Map<String, String> links =
         extractSongsLinks(
             httpTools.requestGetAPI(
@@ -326,7 +331,6 @@ public class NCMSongServiceImpl implements NCMSongService {
   @Override
   public Result searchResourcesByKeyword(
       String keyword, Integer pageNo, Integer pageSize, Integer type, String cookie) {
-    String baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
     String offset = String.valueOf((pageNo - 1) * pageSize);
     String limit = String.valueOf(pageSize);
     Result result =

@@ -11,6 +11,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle MV.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 6/28/23
+ */
 @Service
 public class MVServiceImpl implements MVService, Serializable {
   @Value("${qqmusic.cookie}")

@@ -40,6 +40,13 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handle register, login and logout.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/6/23
+ */
 @Service
 public class LoginServiceImpl implements LoginService {
   private final HttpTools httpTools;
@@ -453,9 +460,10 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Verify token for resetting user's password.
+   * Verify token for resetting user's password, need to log in first.
    *
-   * @param resetPassDTO@return Common result.
+   * @param resetPassDTO DTO for resetting password.
+   * @return Common result.
    */
   @Override
   public Result verifyResetPassToken(ResetPassDTO resetPassDTO) {
@@ -515,6 +523,12 @@ public class LoginServiceImpl implements LoginService {
     return userService.updateEmail(currentUserId, email);
   }
 
+  /**
+   * Verify token for resetting user's password, don't need to log in first.
+   *
+   * @param resetPassNologinDTO Reset pass dto.
+   * @return Common result.
+   */
   @Override
   public Result verifyResetPassTokenWithoutLogin(ResetPassNologinDTO resetPassNologinDTO) {
     String email = resetPassNologinDTO.getEmail();
