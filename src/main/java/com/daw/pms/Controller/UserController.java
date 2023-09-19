@@ -3,7 +3,7 @@ package com.daw.pms.Controller;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.ThirdAppCredentialDTO;
 import com.daw.pms.Service.PMS.UserService;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 // @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
 public class UserController {
   private final UserService userService;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
-  public UserController(UserService userService) {
+  public UserController(UserService userService, PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.userService = userService;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
   /**
@@ -35,7 +37,7 @@ public class UserController {
    */
   @GetMapping("/user/{id}")
   public Result getUser(@PathVariable String id, @RequestParam int platform) {
-    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     return userService.getUserInfo(pmsUserId, platform);
   }
 
@@ -59,7 +61,7 @@ public class UserController {
    */
   @GetMapping("/user/basic")
   public Result getBasicPMSUserInfo() {
-    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     return userService.getBasicPMSUserInfo(pmsUserId);
   }
 }

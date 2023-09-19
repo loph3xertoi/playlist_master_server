@@ -10,7 +10,7 @@ import com.daw.pms.Service.PMS.LoginService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.EmailUtil;
 import com.daw.pms.Utils.HttpTools;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginServiceImpl implements LoginService {
   private final HttpTools httpTools;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
   private final RedisTemplate<String, Object> redisTemplate;
   private final PasswordEncoder passwordEncoder;
   private final EmailUtil emailUtil;
@@ -61,6 +62,7 @@ public class LoginServiceImpl implements LoginService {
 
   public LoginServiceImpl(
       HttpTools httpTools,
+      PmsUserDetailsUtil pmsUserDetailsUtil,
       RedisTemplate<String, Object> redisTemplate,
       PasswordEncoder passwordEncoder,
       EmailUtil emailUtil,
@@ -70,6 +72,7 @@ public class LoginServiceImpl implements LoginService {
       SessionRegistry sessionRegistry,
       ClientRegistrationRepository clientRegistrationRepository) {
     this.httpTools = httpTools;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
     this.redisTemplate = redisTemplate;
     this.passwordEncoder = passwordEncoder;
     this.emailUtil = emailUtil;
@@ -272,7 +275,7 @@ public class LoginServiceImpl implements LoginService {
       securityContext.setAuthentication(oAuth2AuthenticationToken);
       sessionRegistry.registerNewSession(
           request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
-      Long currentLoginUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      Long currentLoginUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
 
       // Update the oauth2 user info if changed.
       Result basicPMSUserInfo = userService.getBasicPMSUserInfo(currentLoginUserId);
@@ -364,8 +367,8 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result forgotPassword() throws MessagingException, UnsupportedEncodingException {
-    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
-    String currentUserEmail = PMSUserDetailsUtil.getCurrentLoginUserEmail();
+    Long currentUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
+    String currentUserEmail = pmsUserDetailsUtil.getCurrentLoginUserEmail();
     if (currentUserEmail == null || currentUserEmail.isEmpty()) {
       return Result.fail("Need to bind email first");
     }
@@ -395,7 +398,7 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result bindEmail(String email) throws MessagingException, UnsupportedEncodingException {
-    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long currentUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
 
     // Generate verify token.
     RandomGenerator randomGenerator =
@@ -474,7 +477,7 @@ public class LoginServiceImpl implements LoginService {
       return Result.fail("Passwords don't match, please check your password");
     }
 
-    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long currentUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     String tokenKey = "reset_pass_token::" + currentUserId;
     Object realToken = redisTemplate.opsForValue().get(tokenKey);
     if (realToken == null) {
@@ -501,7 +504,7 @@ public class LoginServiceImpl implements LoginService {
     String email = bindEmailDTO.getEmail();
     String token = bindEmailDTO.getToken();
 
-    Long currentUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long currentUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
 
     //    boolean emailAddressExist = userService.checkIfEmailAddressExist(email);
     //    if (emailAddressExist) {

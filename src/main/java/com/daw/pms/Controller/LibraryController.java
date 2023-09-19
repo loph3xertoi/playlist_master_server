@@ -8,7 +8,7 @@ import com.daw.pms.Entity.NeteaseCloudMusic.NCMSong;
 import com.daw.pms.Entity.PMS.PMSSong;
 import com.daw.pms.Entity.QQMusic.QQMusicSong;
 import com.daw.pms.Service.PMS.LibraryService;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -28,9 +28,11 @@ import org.springframework.web.bind.annotation.*;
 @CacheConfig(cacheNames = "library-cache")
 public class LibraryController {
   private final LibraryService libraryService;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
-  public LibraryController(LibraryService libraryService) {
+  public LibraryController(LibraryService libraryService, PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.libraryService = libraryService;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
   /**
@@ -56,7 +58,7 @@ public class LibraryController {
       @RequestParam(required = false) String biliPlatform,
       @RequestParam(required = false) Integer type,
       @RequestParam int platform) {
-    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     return libraryService.getLibraries(pmsUserId, pn, ps, biliPlatform, type, platform);
   }
 

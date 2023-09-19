@@ -11,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Implement for UserDetails in pms, used for spring security.
+ * User entity, used for login with username and password in spring security.
  *
  * @author Daw Loph
  * @version 1.0

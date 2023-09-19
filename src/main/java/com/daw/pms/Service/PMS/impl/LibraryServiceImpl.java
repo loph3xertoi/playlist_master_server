@@ -17,7 +17,7 @@ import com.daw.pms.Service.BiliBili.BiliFavListService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService;
 import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Service.QQMusic.QQMusicPlaylistService;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import com.daw.pms.Utils.QiniuOSS;
 import com.qiniu.common.QiniuException;
 import java.io.InputStream;
@@ -27,7 +27,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import lombok.Synchronized;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,25 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class LibraryServiceImpl implements LibraryService, Serializable {
-  @Value("${qqmusic.id}")
-  private Long qqMusicId;
-
-  @Value("${qqmusic.cookie}")
-  private String qqMusicCookie;
-
-  @Value("${ncm.id}")
-  private Long ncmId;
-
-  @Value("${ncm.cookie}")
-  private String ncmCookie;
-
-  @Value("${bilibili.id}")
-  private Long biliId;
-
-  @Value("${bilibili.cookie}")
-  private String biliCookie;
-
   private final QiniuOSS qiniuOSS;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
   private final QQMusicPlaylistService qqMusicPlaylistService;
   private final NCMPlaylistService ncmPlaylistService;
   private final BiliFavListService biliFavListService;
@@ -70,6 +52,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
 
   public LibraryServiceImpl(
       QiniuOSS qiniuOSS,
+      PmsUserDetailsUtil pmsUserDetailsUtil,
       QQMusicPlaylistService qqMusicPlaylistService,
       NCMPlaylistService ncmPlaylistService,
       BiliFavListService biliFavListService,
@@ -78,6 +61,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       SongMapper songMapper,
       SingerMapper singerMapper) {
     this.qiniuOSS = qiniuOSS;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
     this.qqMusicPlaylistService = qqMusicPlaylistService;
     this.ncmPlaylistService = ncmPlaylistService;
     this.biliFavListService = biliFavListService;
@@ -105,7 +89,7 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       Long id, Integer pn, Integer ps, String biliPlatform, Integer type, Integer platform) {
     Result result;
     if (platform == 0) {
-      Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
       PagedDataDTO<PMSLibrary> pagedDataDTO = new PagedDataDTO<>();
       int playlistCount = playlistMapper.getCountOfPlaylistsWithCreatorId(pmsUserId);
       pagedDataDTO.setCount(playlistCount);
@@ -128,12 +112,27 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       result = Result.ok(pagedDataDTO);
     } else if (platform == 1) {
       // TODO: need to implement pagination for qqmusic.
-      result = qqMusicPlaylistService.getPlaylists(qqMusicId.toString(), qqMusicCookie);
+      result =
+          qqMusicPlaylistService.getPlaylists(
+              pmsUserDetailsUtil.getCurrentLoginUserQqMusicId().toString(),
+              pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
       // TODO: need to implement pagination for ncm.
-      result = ncmPlaylistService.getPlaylists(ncmId, 0, 1000, ncmCookie);
+      result =
+          ncmPlaylistService.getPlaylists(
+              pmsUserDetailsUtil.getCurrentLoginUserNcmId(),
+              0,
+              1000,
+              pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
-      result = biliFavListService.getFavLists(pn, ps, biliId, biliPlatform, type, biliCookie);
+      result =
+          biliFavListService.getFavLists(
+              pn,
+              ps,
+              pmsUserDetailsUtil.getCurrentLoginUserBilibiliId(),
+              biliPlatform,
+              type,
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -189,13 +188,24 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       detailPlaylist.setSongs(songs);
       result = Result.ok(detailPlaylist);
     } else if (platform == 1) {
-      result = qqMusicPlaylistService.getDetailPlaylist(libraryId, qqMusicCookie);
+      result =
+          qqMusicPlaylistService.getDetailPlaylist(
+              libraryId, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmPlaylistService.getDetailPlaylist(Long.valueOf(libraryId), ncmCookie);
+      result =
+          ncmPlaylistService.getDetailPlaylist(
+              Long.valueOf(libraryId), pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       result =
           biliFavListService.getDetailFavList(
-              Long.valueOf(libraryId), pn, ps, keyword, order, range, type, biliCookie);
+              Long.valueOf(libraryId),
+              pn,
+              ps,
+              keyword,
+              order,
+              range,
+              type,
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -239,11 +249,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
         result = Result.fail("Fail to create playlist");
       }
     } else if (platform == 1) {
-      result = qqMusicPlaylistService.createPlaylist(library.get("name"), qqMusicCookie);
+      result =
+          qqMusicPlaylistService.createPlaylist(
+              library.get("name"), pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmPlaylistService.createPlaylist(library.get("name"), ncmCookie);
+      result =
+          ncmPlaylistService.createPlaylist(
+              library.get("name"), pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
-      result = biliFavListService.createFavList(library, biliCookie);
+      result =
+          biliFavListService.createFavList(
+              library, pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -337,11 +353,17 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
         result = Result.fail("Fail to delete library");
       }
     } else if (platform == 1) {
-      result = qqMusicPlaylistService.deletePlaylist(libraryId, qqMusicCookie);
+      result =
+          qqMusicPlaylistService.deletePlaylist(
+              libraryId, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmPlaylistService.deletePlaylist(libraryId, ncmCookie);
+      result =
+          ncmPlaylistService.deletePlaylist(
+              libraryId, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
-      result = biliFavListService.deleteFavList(libraryId, biliCookie);
+      result =
+          biliFavListService.deleteFavList(
+              libraryId, pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -381,14 +403,19 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
       } else {
         result =
             qqMusicPlaylistService.addSongsToPlaylist(
-                Integer.parseInt(libraryId), songsIds, qqMusicCookie);
+                Integer.parseInt(libraryId),
+                songsIds,
+                pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
       }
     } else if (platform == 2) {
       if (isAddToPMSLibrary) {
         result = addNCMSongsToPMSLibrary(libraryId, songs);
       } else {
         result =
-            ncmPlaylistService.addSongsToPlaylist(Long.valueOf(libraryId), songsIds, ncmCookie);
+            ncmPlaylistService.addSongsToPlaylist(
+                Long.valueOf(libraryId),
+                songsIds,
+                pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
       }
     } else if (platform == 3) {
       if (isAddToPMSLibrary) {
@@ -397,11 +424,19 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
         if (isFavoriteSearchedResource) {
           result =
               biliFavListService.favoriteResourceToFavLists(
-                  Long.valueOf(songsIds), 2, libraryId, biliCookie);
+                  Long.valueOf(songsIds),
+                  2,
+                  libraryId,
+                  pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
         } else {
           result =
               biliFavListService.multipleAddResources(
-                  biliSourceFavListId, libraryId, biliId, songsIds, "web", biliCookie);
+                  biliSourceFavListId,
+                  libraryId,
+                  pmsUserDetailsUtil.getCurrentLoginUserBilibiliId(),
+                  songsIds,
+                  "web",
+                  pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
         }
       }
     } else {
@@ -855,20 +890,26 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 1) {
       result =
           qqMusicPlaylistService.moveSongsToOtherPlaylist(
-              songsId, Integer.parseInt(fromLibrary), Integer.parseInt(toLibrary), qqMusicCookie);
+              songsId,
+              Integer.parseInt(fromLibrary),
+              Integer.parseInt(toLibrary),
+              pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
       result =
           ncmPlaylistService.moveSongsToOtherPlaylist(
-              songsId, Long.valueOf(fromLibrary), Long.valueOf(toLibrary), ncmCookie);
+              songsId,
+              Long.valueOf(fromLibrary),
+              Long.valueOf(toLibrary),
+              pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       result =
           biliFavListService.multipleMoveResources(
               Long.valueOf(fromLibrary),
               Long.valueOf(toLibrary),
-              biliId,
+              pmsUserDetailsUtil.getCurrentLoginUserBilibiliId(),
               songsId,
               "web",
-              biliCookie);
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -901,14 +942,20 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
     } else if (platform == 1) {
       result =
           qqMusicPlaylistService.removeSongsFromPlaylist(
-              Integer.parseInt(libraryId), songsId, qqMusicCookie);
+              Integer.parseInt(libraryId),
+              songsId,
+              pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
       result =
-          ncmPlaylistService.removeSongsFromPlaylist(Long.valueOf(libraryId), songsId, ncmCookie);
+          ncmPlaylistService.removeSongsFromPlaylist(
+              Long.valueOf(libraryId), songsId, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       result =
           biliFavListService.multipleDeleteResources(
-              songsId, Long.valueOf(libraryId), "web", biliCookie);
+              songsId,
+              Long.valueOf(libraryId),
+              "web",
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }

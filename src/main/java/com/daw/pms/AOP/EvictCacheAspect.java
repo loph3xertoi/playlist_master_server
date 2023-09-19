@@ -2,7 +2,7 @@ package com.daw.pms.AOP;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.DTO.UpdateLibraryDTO;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import java.util.Map;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -29,11 +29,15 @@ import org.springframework.stereotype.Component;
 public class EvictCacheAspect {
   private final CacheManager cacheManager;
   private final RedisConnectionFactory redisConnectionFactory;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
   public EvictCacheAspect(
-      CacheManager cacheManager, RedisConnectionFactory redisConnectionFactory) {
+      CacheManager cacheManager,
+      RedisConnectionFactory redisConnectionFactory,
+      PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.cacheManager = cacheManager;
     this.redisConnectionFactory = redisConnectionFactory;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
   @Pointcut(
@@ -58,7 +62,7 @@ public class EvictCacheAspect {
       Signature signature = joinPoint.getSignature();
       String methodName = signature.getName();
       int platform = (int) args[args.length - 1];
-      Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+      Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
       //      String keyStr = "getLibraries(1,1,20,web,0," + platform + ")";
       RedisConnection redisConnection = redisConnectionFactory.getConnection();
       try (Cursor<byte[]> cursor =

@@ -17,12 +17,12 @@ import com.daw.pms.Service.NeteaseCloudMusic.NCMSongService;
 import com.daw.pms.Service.PMS.SongService;
 import com.daw.pms.Service.QQMusic.QQMusicSongService;
 import com.daw.pms.Utils.HttpTools;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.util.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -35,16 +35,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SongServiceImpl implements SongService, Serializable {
-  @Value("${qqmusic.cookie}")
-  private String qqMusicCookie;
-
-  @Value("${ncm.cookie}")
-  private String ncmCookie;
-
-  @Value("${bilibili.cookie}")
-  private String biliCookie;
-
   private final HttpTools httpTools;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
   private final QQMusicSongService qqMusicSongService;
   private final NCMSongService ncmSongService;
   private final BiliResourceService biliResourceService;
@@ -53,12 +45,14 @@ public class SongServiceImpl implements SongService, Serializable {
 
   public SongServiceImpl(
       HttpTools httpTools,
+      PmsUserDetailsUtil pmsUserDetailsUtil,
       QQMusicSongService qqMusicSongService,
       NCMSongService ncmSongService,
       BiliResourceService biliResourceService,
       SongMapper songMapper,
       SingerMapper singerMapper) {
     this.httpTools = httpTools;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
     this.qqMusicSongService = qqMusicSongService;
     this.ncmSongService = ncmSongService;
     this.biliResourceService = biliResourceService;
@@ -114,11 +108,15 @@ public class SongServiceImpl implements SongService, Serializable {
       }
       result = Result.ok(detailSong);
     } else if (platform == 1) {
-      result = qqMusicSongService.getDetailSong(ids, qqMusicCookie);
+      result =
+          qqMusicSongService.getDetailSong(
+              ids, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmSongService.getDetailSong(ids, ncmCookie);
+      result = ncmSongService.getDetailSong(ids, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
-      result = biliResourceService.getDetailResource(ids, biliCookie);
+      result =
+          biliResourceService.getDetailResource(
+              ids, pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -142,19 +140,29 @@ public class SongServiceImpl implements SongService, Serializable {
         Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(Long.valueOf(songId));
         String qqmusicSongId = qqMusicSong.get("songId").toString();
         similarSongs =
-            new ArrayList<>(qqMusicSongService.getSimilarSongs(qqmusicSongId, qqMusicCookie));
+            new ArrayList<>(
+                qqMusicSongService.getSimilarSongs(
+                    qqmusicSongId, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie()));
       } else if (songType == 2) {
         Map<String, Object> ncmSong = songMapper.getNCMSong(Long.valueOf(songId));
         Long ncmId = Long.valueOf(ncmSong.get("ncmId").toString());
-        similarSongs = new ArrayList<>(ncmSongService.getSimilarSongs(ncmId, ncmCookie));
+        similarSongs =
+            new ArrayList<>(
+                ncmSongService.getSimilarSongs(
+                    ncmId, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie()));
       } else {
         throw new RuntimeException("Invalid song type");
       }
     } else if (platform == 1) {
-      similarSongs = new ArrayList<>(qqMusicSongService.getSimilarSongs(songId, qqMusicCookie));
+      similarSongs =
+          new ArrayList<>(
+              qqMusicSongService.getSimilarSongs(
+                  songId, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie()));
     } else if (platform == 2) {
       similarSongs =
-          new ArrayList<>(ncmSongService.getSimilarSongs(Long.valueOf(songId), ncmCookie));
+          new ArrayList<>(
+              ncmSongService.getSimilarSongs(
+                  Long.valueOf(songId), pmsUserDetailsUtil.getCurrentLoginUserNcmCookie()));
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
@@ -176,9 +184,11 @@ public class SongServiceImpl implements SongService, Serializable {
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      lyrics = qqMusicSongService.getLyrics(id.toString(), qqMusicCookie);
+      lyrics =
+          qqMusicSongService.getLyrics(
+              id.toString(), pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      lyrics = ncmSongService.getLyrics(id, ncmCookie);
+      lyrics = ncmSongService.getLyrics(id, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       throw new RuntimeException("Not yet implement bilibili platform.");
     } else {
@@ -214,7 +224,9 @@ public class SongServiceImpl implements SongService, Serializable {
       if (type == 1) {
         Map<String, Object> qqMusicSong = songMapper.getQQMusicSong(songId);
         String songMid = String.valueOf(qqMusicSong.get("songMid"));
-        Result rawSongsResult = qqMusicSongService.getSongsLink(songMid, qqMusicCookie);
+        Result rawSongsResult =
+            qqMusicSongService.getSongsLink(
+                songMid, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
         HashMap<String, String> songLinksMap = (HashMap<String, String>) rawSongsResult.getData();
         String songLink = songLinksMap.get(songMid);
         if (songLink != null) {
@@ -225,7 +237,9 @@ public class SongServiceImpl implements SongService, Serializable {
       } else if (type == 2) {
         Map<String, Object> ncmSong = songMapper.getNCMSong(songId);
         String originalSongId = String.valueOf(ncmSong.get("ncmId"));
-        Result rawSongsResult = ncmSongService.getSongsLink(originalSongId, level, ncmCookie);
+        Result rawSongsResult =
+            ncmSongService.getSongsLink(
+                originalSongId, level, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
         String songLink = rawSongsResult.getData().toString().split("=")[1];
         if (songLink != null) {
           songLink = songLink.substring(0, songLink.length() - 1);
@@ -240,9 +254,13 @@ public class SongServiceImpl implements SongService, Serializable {
         String url = "https://api.bilibili.com/x/player/pagelist?bvid=" + bvid;
         String response =
             httpTools.requestGetAPIByFinalUrl(
-                url, new HttpHeaders(), Optional.ofNullable(biliCookie));
+                url,
+                new HttpHeaders(),
+                Optional.ofNullable(pmsUserDetailsUtil.getCurrentLoginUserBiliCookie()));
         Long cid = extractCid(response);
-        Result rawResourcesResult = biliResourceService.getResourceDashLink(bvid, cid, biliCookie);
+        Result rawResourcesResult =
+            biliResourceService.getResourceDashLink(
+                bvid, cid, pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
         Map<String, String> audiosMap = ((BiliLinksDTO) rawResourcesResult.getData()).getAudio();
         int maxKey = Integer.MIN_VALUE;
         for (String str : audiosMap.keySet()) {
@@ -262,15 +280,19 @@ public class SongServiceImpl implements SongService, Serializable {
       }
 
     } else if (platform == 1) {
-      result = qqMusicSongService.getSongsLink(ids, qqMusicCookie);
+      result =
+          qqMusicSongService.getSongsLink(
+              ids, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmSongService.getSongsLink(ids, level, ncmCookie);
+      result =
+          ncmSongService.getSongsLink(
+              ids, level, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       result =
           biliResourceService.getResourceDashLink(
               ids.split(":")[0],
               ids.split(":")[1] != null ? Long.valueOf(ids.split(":")[1]) : null,
-              biliCookie);
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }
@@ -311,13 +333,23 @@ public class SongServiceImpl implements SongService, Serializable {
     if (platform == 0) {
       throw new RuntimeException("Not yet implement pms platform.");
     } else if (platform == 1) {
-      result = qqMusicSongService.searchSongsByKeyword(keyword, pageNo, pageSize, qqMusicCookie);
+      result =
+          qqMusicSongService.searchSongsByKeyword(
+              keyword, pageNo, pageSize, pmsUserDetailsUtil.getCurrentLoginUserQqMusicCookie());
     } else if (platform == 2) {
-      result = ncmSongService.searchResourcesByKeyword(keyword, pageNo, pageSize, type, ncmCookie);
+      result =
+          ncmSongService.searchResourcesByKeyword(
+              keyword, pageNo, pageSize, type, pmsUserDetailsUtil.getCurrentLoginUserNcmCookie());
     } else if (platform == 3) {
       result =
           biliResourceService.searchResources(
-              "video", keyword, "totalrank", 0, 0, pageNo, biliCookie);
+              "video",
+              keyword,
+              "totalrank",
+              0,
+              0,
+              pageNo,
+              pmsUserDetailsUtil.getCurrentLoginUserBiliCookie());
     } else {
       throw new RuntimeException("Invalid platform");
     }

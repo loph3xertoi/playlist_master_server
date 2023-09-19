@@ -1,5 +1,6 @@
 package com.daw.pms.Service.PMS.impl;
 
+import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.OAuth2.GitHubOAuth2User;
 import com.daw.pms.Entity.OAuth2.GoogleOAuth2User;
 import com.daw.pms.Mapper.UserMapper;
@@ -52,18 +53,16 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
     if ("GitHub".equals(clientName)) {
       loginType = 1;
       userEmail = getUserEmail(accessToken.getTokenValue(), clientName);
-      GitHubOAuth2User gitHubOAuth2User = new GitHubOAuth2User(user);
-      Long userId = userMapper.getUserIdByName(user.getName(), loginType);
-      if (userId != null) {
-        gitHubOAuth2User.setId(userId);
-      }
+      UserDTO userDTO = userMapper.getUserByName(user.getName(), loginType);
+      GitHubOAuth2User gitHubOAuth2User = new GitHubOAuth2User(user, userDTO);
       gitHubOAuth2User.setEmail(userEmail);
       gitHubOAuth2User.setOauth2AccessToken(accessToken);
       return gitHubOAuth2User;
     } else if ("Google".equals(clientName)) {
       loginType = 2;
       userEmail = user.getAttribute("email");
-      GoogleOAuth2User googleOAuth2User = new GoogleOAuth2User(user);
+      UserDTO userDTO = userMapper.getUserByName(user.getName(), loginType);
+      GoogleOAuth2User googleOAuth2User = new GoogleOAuth2User(user, userDTO);
       Long userId = userMapper.getUserIdByName(user.getName(), loginType);
       if (userId != null) {
         googleOAuth2User.setId(userId);

@@ -14,7 +14,7 @@ import com.daw.pms.Service.BiliBili.BiliUserService;
 import com.daw.pms.Service.NeteaseCloudMusic.NCMUserService;
 import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Service.QQMusic.QQMusicUserService;
-import com.daw.pms.Utils.PMSUserDetailsUtil;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,18 +35,21 @@ public class UserServiceImpl implements UserService, Serializable {
   private final BiliUserService biliUserService;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
   public UserServiceImpl(
       QQMusicUserService qqMusicUserService,
       NCMUserService ncmUserService,
       BiliUserService biliUserService,
       UserMapper userMapper,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.qqMusicUserService = qqMusicUserService;
     this.ncmUserService = ncmUserService;
     this.biliUserService = biliUserService;
     this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
   /**
@@ -133,7 +136,7 @@ public class UserServiceImpl implements UserService, Serializable {
    */
   @Override
   public Result updateThirdAppCredential(ThirdAppCredentialDTO credentialDTO, Integer platform) {
-    Long pmsUserId = PMSUserDetailsUtil.getCurrentLoginUserId();
+    Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     String thirdId = credentialDTO.getThirdId();
     String thirdCookie = credentialDTO.getThirdCookie();
     if (platform == 1) {

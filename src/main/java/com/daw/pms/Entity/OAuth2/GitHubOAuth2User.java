@@ -1,5 +1,6 @@
 package com.daw.pms.Entity.OAuth2;
 
+import com.daw.pms.DTO.UserDTO;
 import java.util.Collection;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 /**
- * Custom OAuth2User for GitHub.
+ * User entity, used for login with GitHub in spring security.
  *
  * @author Daw Loph
  * @version 1.0
@@ -32,8 +33,36 @@ public class GitHubOAuth2User implements OAuth2User {
   /** Bound email in GitHub. */
   private String email;
 
-  public GitHubOAuth2User(OAuth2User oauth2User) {
+  /** User's id in QQ Music platform. */
+  private Long qqmusicId;
+
+  /** User's cookie in QQ Music platform. */
+  private String qqmusicCookie;
+
+  /** User's id in Netease Cloud Music platform. */
+  private Long ncmId;
+
+  /** User's cookie in Netease Cloud Music platform. */
+  private String ncmCookie;
+
+  /** User's id in BiliBili platform. */
+  private Long bilibiliId;
+
+  /** User's cookie in BiliBili platform. */
+  private String biliCookie;
+
+  public GitHubOAuth2User(OAuth2User oauth2User, UserDTO userDTO) {
     this.oauth2User = oauth2User;
+    Long userId = userDTO.getId();
+    if (userId != null) {
+      this.id = userId;
+    }
+    this.qqmusicId = userDTO.getQqmusicId();
+    this.qqmusicCookie = userDTO.getQqmusicCookie();
+    this.ncmId = userDTO.getNcmId();
+    this.ncmCookie = userDTO.getNcmCookie();
+    this.bilibiliId = userDTO.getBilibiliId();
+    this.biliCookie = userDTO.getBiliCookie();
   }
 
   /**
