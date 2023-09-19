@@ -21,16 +21,21 @@ public class QQMusicCookieServiceImpl implements QQMusicCookieService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for QQMusicCookieServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public QQMusicCookieServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
-   * Store your qq music cookie to QQMusicAPI server.
+   * {@inheritDoc}
    *
-   * @param cookie qq music cookie.
-   * @return Return result from QQMusicAPI server.
+   * <p>Store your qq music cookie to QQMusicAPI server.
+   *
    * @apiNote POST /user/setCookie {"data":"{@code cookie}"}
    */
   @Override
@@ -42,10 +47,10 @@ public class QQMusicCookieServiceImpl implements QQMusicCookieService {
   }
 
   /**
-   * Apply cookie for every request.
+   * {@inheritDoc}
    *
-   * @param id Your qq number.
-   * @return Return result from QQMusicAPI server.
+   * <p>Apply cookie for every request.
+   *
    * @apiNote GET /user/applyCookie?id={@code id}
    */
   @Override
@@ -61,10 +66,10 @@ public class QQMusicCookieServiceImpl implements QQMusicCookieService {
   }
 
   /**
-   * Return the cookie stored in QQMusicAPI server.
+   * {@inheritDoc}
    *
-   * @param raw Return raw cookie if raw equal to 1.
-   * @return Return cookie in json(raw=0) or in raw string(raw=1).
+   * <p>Return the cookie stored in QQMusicAPI server.
+   *
    * @apiNote GET /user/getCookie?raw={@code raw}
    */
   @Override

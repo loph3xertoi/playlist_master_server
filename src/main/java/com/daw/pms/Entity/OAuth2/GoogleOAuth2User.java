@@ -51,6 +51,12 @@ public class GoogleOAuth2User implements OAuth2User {
   /** User's cookie in BiliBili platform. */
   private String biliCookie;
 
+  /**
+   * Constructor for GoogleOAuth2User.
+   *
+   * @param oauth2User a {@link org.springframework.security.oauth2.core.user.OAuth2User} object.
+   * @param userDTO a {@link com.daw.pms.DTO.UserDTO} object.
+   */
   public GoogleOAuth2User(OAuth2User oauth2User, UserDTO userDTO) {
     this.oauth2User = oauth2User;
     Long userId = userDTO.getId();
@@ -66,9 +72,9 @@ public class GoogleOAuth2User implements OAuth2User {
   }
 
   /**
-   * Get all attributes of original OAuth2User in Google.
+   * {@inheritDoc}
    *
-   * @return All attributes of original OAuth2User in Google.
+   * <p>Get all attributes of original OAuth2User in Google.
    */
   @Override
   public Map<String, Object> getAttributes() {
@@ -76,9 +82,9 @@ public class GoogleOAuth2User implements OAuth2User {
   }
 
   /**
-   * Get all authorities of original OAuth2User in Google.
+   * {@inheritDoc}
    *
-   * @return All authorities of original OAuth2User in Google.
+   * <p>Get all authorities of original OAuth2User in Google.
    */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -86,9 +92,9 @@ public class GoogleOAuth2User implements OAuth2User {
   }
 
   /**
-   * Get your name in Google.
+   * {@inheritDoc}
    *
-   * @return Your name in Google.
+   * <p>Get your name in Google.
    */
   @Override
   public String getName() {

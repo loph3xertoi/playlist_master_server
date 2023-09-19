@@ -28,23 +28,19 @@ public class BiliFavListServiceImpl implements BiliFavListService {
 
   private final HttpTools httpTools;
 
+  /**
+   * Constructor for BiliFavListServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public BiliFavListServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
   }
 
   /**
-   * Get all fav lists of bilibili.
+   * {@inheritDoc}
    *
-   * @param pn Page number.
-   * @param ps Page size.
-   * @param mid Upper's mid.
-   * @param platform The platform, default is web.
-   * @param type 0 for created fav lists, 1 for collected fav lists.
-   * @param cookie Your cookie for bilibili.
-   * @return Paged bili fav list wrapped with Result DTO, data is PagedDataDTO<BiliFavList>.
-   * @apiNote type==0: GET GET_CREATED_FAV_LISTS?pn={@code pn}&ps={@code ps}&up_mid={@code mid},
-   *     type==1: GET GET_COLLECTED_FAV_LISTS?pn={@code pn}&ps={@code ps}&up_mid={@code
-   *     mid}&platform={@code platform}.
+   * <p>Get all fav lists of bilibili.
    */
   public Result getFavLists(
       Integer pn, Integer ps, Long mid, String platform, Integer type, String cookie) {
@@ -108,21 +104,9 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Get detail fav list.
+   * {@inheritDoc}
    *
-   * @param id The media id(full id) of the fav list.
-   * @param pn Page number.
-   * @param ps Page size.
-   * @param keyword The keyword of the fav list, for searching specific resources in this fav list.
-   * @param order The order of the resources, mtime: by favorited time, view: by view count,
-   *     pubtime: by published time, default is mtime.
-   * @param range The range of searching, 0: current fav list, 1: all fav lists, default is 0.
-   * @param type 0 for created fav lists, 1 for collected fav lists.
-   * @param cookie Your cookie for bilibili.
-   * @return Detail fav list wrapped with Result DTO, data is BiliDetailFavList.
-   * @apiNote type==0: GET GET_DETAIL_CREATED_FAV_LIST?media_id={@code id}&pn={@code pn}&ps={@code
-   *     ps}&keyword={@code keyword}&order={@code order}&type={@code range} type==1: GET
-   *     GET_DETAIL_COLLECTED_FAV_LIST?season_id={@code id}&pn={@code pn}&ps={@code ps}
+   * <p>Get detail fav list.
    */
   @Override
   public Result getDetailFavList(
@@ -237,11 +221,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Create fav list in bilibili.
+   * {@inheritDoc}
    *
-   * @param favList A map container the properties of the creating fav list.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of creating fav list.
+   * <p>Create fav list in bilibili.
+   *
    * @apiNote POST CREATE_FAV_LIST
    *     {"name":title,"intro":intro,"privacy":privacy,"cover":cover,"csrf":csrf}
    */
@@ -286,11 +269,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Delete fav list in bilibili.
+   * {@inheritDoc}
    *
-   * @param ids The id of deleted fav lists, multiple fav lists' id separated by comma.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of deleting fav list.
+   * <p>Delete fav list in bilibili.
+   *
    * @apiNote POST DELETE_FAV_LIST {"media_ids":{@code ids},"csrf":csrf}
    */
   @Override
@@ -321,15 +303,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Edit the existed fav list.
+   * {@inheritDoc}
    *
-   * @param id The id of the fav list.
-   * @param title The new title of the fav list.
-   * @param intro The new introduction of the fav list.
-   * @param privacy The new privacy of the fav list, 0 for public, 1 for private.
-   * @param cover The new cover of the fav list.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of editing fav list.
+   * <p>Edit the existed fav list.
+   *
    * @apiNote POST EDIT_FAV_LIST {"media_id":{@code id},"title":{@code title},"intro":{@code
    *     intro},"privacy":{@code privacy},"cover":{@code cover},"csrf":csrf}
    */
@@ -366,16 +343,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Add multiple resources to fav list.
+   * {@inheritDoc}
    *
-   * @param srcMediaId Source fav list's id.
-   * @param dstMediaId Target fav list's id.
-   * @param mid Upper's mid.
-   * @param resourcesIds The id and type of the resources, format is id:type, multiple resources
-   *     separated by comma, type may be 2: video, 12: audio, 21: videos.
-   * @param platform The platform, default is web.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of adding resources to fav list.
+   * <p>Add multiple resources to fav list.
+   *
    * @apiNote POST MULTI_ADD_RESOURCES {"src_media_id":{@code srcMediaId},"tar_media_id":{@code
    *     dstMediaId},"mid":{@code mid},"resources":{@code resourcesIds},"platform":{@code
    *     platform},"csrf":csrf}
@@ -421,16 +392,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Move multiple resources from one fav list to another.
+   * {@inheritDoc}
    *
-   * @param srcMediaId Source fav list's id.
-   * @param dstMediaId Target fav list's id.
-   * @param mid Upper's mid.
-   * @param resourcesIds The id and type of the resources, format is id:type, multiple resources
-   *     separated by comma, type may be 2: video, 12: audio, 21: videos.
-   * @param platform The platform, default is web.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of moving resources from one fav list to another.
+   * <p>Move multiple resources from one fav list to another.
+   *
    * @apiNote POST MULTI_MOVE_RESOURCES {"src_media_id":{@code srcMediaId},"tar_media_id":{@code
    *     dstMediaId},"mid":{@code mid},"resources":{@code resourcesIds},"platform":{@code
    *     platform},"csrf":csrf}
@@ -458,14 +423,10 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Delete multiple resources from fav list.
+   * {@inheritDoc}
    *
-   * @param resourcesIds The id and type of the resources, format is id:type, multiple resources
-   *     separated by comma, type may be 2: video, 12: audio, 21: videos.
-   * @param mediaId Fav list's id.
-   * @param platform The platform, default is web.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of deleting resources from fav list.
+   * <p>Delete multiple resources from fav list.
+   *
    * @apiNote POST MULTI_DELETE_RESOURCES {"resources":{@code resourcesIds},"media_id":{@code
    *     mediaId},"platform":{@code platform},"csrf":csrf}
    */
@@ -485,13 +446,9 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Add resource to fav lists.
+   * {@inheritDoc}
    *
-   * @param aid The aid of the resource.
-   * @param type The type of resource, must be 2.
-   * @param targetFavListsIds The id of target fav lists, multiple fav lists' id separated by comma.
-   * @param cookie Your cookie for bilibili.
-   * @return Result of adding resource to fav lists.
+   * <p>Add resource to fav lists.
    */
   @Override
   public Result favoriteResourceToFavLists(
@@ -512,10 +469,9 @@ public class BiliFavListServiceImpl implements BiliFavListService {
   }
 
   /**
-   * Get csrf according to bilibili cookie.
+   * {@inheritDoc}
    *
-   * @param biliCookie Your cookie for bilibili.
-   * @return The csrf string.
+   * <p>Get csrf according to bilibili cookie.
    */
   public String getCsrf(String biliCookie) {
     String[] pairs = biliCookie.split(";");

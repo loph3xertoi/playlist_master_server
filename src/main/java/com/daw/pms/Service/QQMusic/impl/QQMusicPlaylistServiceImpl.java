@@ -30,6 +30,12 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for QQMusicPlaylistServiceImpl.
+   *
+   * @param qqMusicSongService a {@link com.daw.pms.Service.QQMusic.QQMusicSongService} object.
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public QQMusicPlaylistServiceImpl(QQMusicSongService qqMusicSongService, HttpTools httpTools) {
     this.qqMusicSongService = qqMusicSongService;
     this.httpTools = httpTools;
@@ -37,12 +43,10 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Get all playlists of user {@code qid} in qq music platform.
+   * {@inheritDoc}
    *
-   * @param qid Your qq number.
-   * @param cookie Your cookie for qq music.
-   * @return All playlists created by {@code qid}, wrapped by Result DTO, the data is
-   *     PagedDataDTO<QQMusicPlaylist>
+   * <p>Get all playlists of user {@code qid} in qq music platform.
+   *
    * @apiNote GET /user/playlist?id={@code qid}
    */
   @Override
@@ -96,11 +100,10 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Get detail playlist with {@code tid}.
+   * {@inheritDoc}
    *
-   * @param tid The playlist's global tid.
-   * @param cookie Your qq music cookie.
-   * @return Detail playlist wrapped by Result DTO, the data is QQMusicDetailPlaylist.
+   * <p>Get detail playlist with {@code tid}.
+   *
    * @apiNote GET /playlist?id={@code tid}
    */
   @Override
@@ -212,11 +215,10 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Create playlist.
+   * {@inheritDoc}
    *
-   * @param name The name of playlist.
-   * @param cookie Your cookie for qq music.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Create playlist.
+   *
    * @apiNote GET /playlist/create?name={@code name}
    */
   @Override
@@ -254,11 +256,10 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Delete playlist with dirIds {@code dirIds}.
+   * {@inheritDoc}
    *
-   * @param dirIds The dirId of playlist you want to delete, multiple dirId separated with comma.
-   * @param cookie Your cookie for qq music.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Delete playlist with dirIds {@code dirIds}.
+   *
    * @apiNote GET /playlist/delete?dirid={@code dirIds}
    */
   @Override
@@ -295,13 +296,11 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Add songs with mids {@code songsMid} to playlist with dirId {@code dirId}
+   * {@inheritDoc}
    *
-   * @param dirId The dirId of the playlist.
-   * @param songsMid The mid of songs, multiple mid separated with comma.
-   * @param cookie Your qq music cookie.
-   * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
+   * <p>Add songs with mids {@code songsMid} to playlist with dirId {@code dirId}
+   *
+   * @apiNote GET /playlist/add?dirid={@code dirId}&amp;mid={@code songsMid}
    */
   @Override
   public Result addSongsToPlaylist(int dirId, String songsMid, String cookie) {
@@ -338,15 +337,12 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Move songs {@code songsId} from playlist with {@code fromDirId} to playlist with {@code
+   * {@inheritDoc}
+   *
+   * <p>Move songs {@code songsId} from playlist with {@code fromDirId} to playlist with {@code
    * toDirId}.
    *
-   * @param songsId Songs id to be moved, multiple songs id separated with comma.
-   * @param fromDirId DirId of from-playlist.
-   * @param toDirId DirId of to-playlist.
-   * @param cookie Your qq music cookie.
-   * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /move?id={@code songsId}&from_dir={@code fromDirId}&to_dir={@code toDirId}
+   * @apiNote GET /move?id={@code songsId}&amp;from_dir={@code fromDirId}&amp;to_dir={@code toDirId}
    */
   @Override
   public Result moveSongsToOtherPlaylist(
@@ -385,13 +381,11 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   }
 
   /**
-   * Remove songs with song id {@code songsId} from playlist with dirId {@code dirId}.
+   * {@inheritDoc}
    *
-   * @param dirId The dirId of playlist that you want to remove songs from.
-   * @param songsId The songs' id, multiple songs id separated with comma.
-   * @param cookie Your qq music cookie.
-   * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
+   * <p>Remove songs with song id {@code songsId} from playlist with dirId {@code dirId}.
+   *
+   * @apiNote GET /playlist/remove?dirid={@code dirId}&amp;id={@code songsId}
    */
   @Override
   public Result removeSongsFromPlaylist(int dirId, String songsId, String cookie) {

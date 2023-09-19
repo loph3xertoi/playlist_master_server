@@ -51,8 +51,8 @@ public interface NCMSongService {
    *     jymaster.
    * @param cookie Your cookie for netease cloud music.
    * @return A map which the key is the song's id and the value is the url of songs with {@code ids}
-   *     and quality {@code level}, wrapped with Result DTO, the data is Map<String,String>.
-   * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
+   *     and quality {@code level}, wrapped with Result DTO, the data is Map&lt;String,String&gt;.
+   * @apiNote GET /song/url/v1?id={@code ids}&amp;level={@code level}
    */
   Result getSongsLink(String ids, String level, String cookie);
 
@@ -66,8 +66,8 @@ public interface NCMSongService {
    *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
    *     2000 for voice.
    * @param cookie Your cookie for netease cloud music.
-   * @return Searched songs wrapped with Result DTO, the data is PagedDataDTO<NCMSong>.
-   * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
+   * @return Searched songs wrapped with Result DTO, the data is PagedDataDTO&lt;NCMSong&gt;.
+   * @apiNote GET /cloudsearch?keywords=as long as you love me&amp;offset=0&amp;limit=30&amp;type=1
    */
   Result searchResourcesByKeyword(
       String keyword, Integer pageNo, Integer pageSize, Integer type, String cookie);

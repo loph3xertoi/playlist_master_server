@@ -19,10 +19,16 @@ import org.springframework.stereotype.Component;
 public class NamePasswordUserDetailsServiceImpl implements UserDetailsService {
   private final UserMapper userMapper;
 
+  /**
+   * Constructor for NamePasswordUserDetailsServiceImpl.
+   *
+   * @param userMapper a {@link com.daw.pms.Mapper.UserMapper} object.
+   */
   public NamePasswordUserDetailsServiceImpl(UserMapper userMapper) {
     this.userMapper = userMapper;
   }
 
+  /** {@inheritDoc} */
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     UserDTO user = userMapper.getUserByEmail(email, 0);

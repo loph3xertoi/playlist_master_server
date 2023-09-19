@@ -29,22 +29,53 @@ public class Result implements Serializable {
   /** The data's length if it is list. */
   private Long total;
 
+  /**
+   * ok.
+   *
+   * @return a {@link com.daw.pms.DTO.Result} object.
+   */
   public static Result ok() {
     return new Result(true, null, null, null);
   }
 
+  /**
+   * ok.
+   *
+   * @param data a {@link java.lang.Object} object.
+   * @return a {@link com.daw.pms.DTO.Result} object.
+   */
   public static Result ok(Object data) {
     return new Result(true, null, data, null);
   }
 
+  /**
+   * ok.
+   *
+   * @param successMsg a {@link java.lang.String} object.
+   * @param data a {@link java.lang.Object} object.
+   * @return a {@link com.daw.pms.DTO.Result} object.
+   */
   public static Result ok(String successMsg, Object data) {
     return new Result(true, successMsg, data, null);
   }
 
+  /**
+   * ok.
+   *
+   * @param data a {@link java.util.List} object.
+   * @param total a {@link java.lang.Long} object.
+   * @return a {@link com.daw.pms.DTO.Result} object.
+   */
   public static Result ok(List<?> data, Long total) {
     return new Result(true, null, data, total);
   }
 
+  /**
+   * fail.
+   *
+   * @param errorMsg a {@link java.lang.String} object.
+   * @return a {@link com.daw.pms.DTO.Result} object.
+   */
   public static Result fail(String errorMsg) {
     return new Result(false, errorMsg, null, null);
   }

@@ -15,9 +15,11 @@ import org.passay.*;
 public class PhoneNumberConstraintValidator
     implements ConstraintValidator<ValidPhoneNumber, String> {
 
+  /** {@inheritDoc} */
   @Override
   public void initialize(ValidPhoneNumber arg0) {}
 
+  /** {@inheritDoc} */
   @Override
   public boolean isValid(String phoneNumber, ConstraintValidatorContext context) {
     PasswordValidator passwordValidator = new PasswordValidator(new PhoneNumberValidator());

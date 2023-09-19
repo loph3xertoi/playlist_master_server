@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class CorsController {
   private final HttpTools httpTools;
 
+  /**
+   * Constructor for CorsController.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public CorsController(HttpTools httpTools) {
     this.httpTools = httpTools;
   }

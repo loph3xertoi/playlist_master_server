@@ -37,6 +37,17 @@ public class UserServiceImpl implements UserService, Serializable {
   private final PasswordEncoder passwordEncoder;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
+  /**
+   * Constructor for UserServiceImpl.
+   *
+   * @param qqMusicUserService a {@link com.daw.pms.Service.QQMusic.QQMusicUserService} object.
+   * @param ncmUserService a {@link com.daw.pms.Service.NeteaseCloudMusic.NCMUserService} object.
+   * @param biliUserService a {@link com.daw.pms.Service.BiliBili.BiliUserService} object.
+   * @param userMapper a {@link com.daw.pms.Mapper.UserMapper} object.
+   * @param passwordEncoder a {@link org.springframework.security.crypto.password.PasswordEncoder}
+   *     object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   */
   public UserServiceImpl(
       QQMusicUserService qqMusicUserService,
       NCMUserService ncmUserService,
@@ -53,12 +64,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Return user information for specific platform.
+   * {@inheritDoc}
    *
-   * @param id Your user id in pms.
-   * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     represents netease cloud music, 3 represents bilibili.
-   * @return User information for specific platform.
+   * <p>Return user information for specific platform.
    */
   @Override
   public Result getUserInfo(Long id, Integer platform) {
@@ -92,11 +100,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Check if the pms user with username already exists.
+   * {@inheritDoc}
    *
-   * @param username User name.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
-   * @return True if the username already exists, false otherwise.
+   * <p>Check if the pms user with username already exists.
    */
   @Override
   public boolean checkIfPMSUserNameExist(String username, Integer loginType) {
@@ -104,11 +110,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Check if the pms user binds this email already exists.
+   * {@inheritDoc}
    *
-   * @param email User email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
-   * @return True if the email has already been bound, false otherwise.
+   * <p>Check if the pms user binds this email already exists.
    */
   @Override
   public boolean checkIfEmailAddressExist(String email, Integer loginType) {
@@ -116,11 +120,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Check if the phone number exists.
+   * {@inheritDoc}
    *
-   * @param phoneNumber Phone number to bind.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
-   * @return True if the phone number has already been bound, false otherwise.
+   * <p>Check if the phone number exists.
    */
   @Override
   public boolean checkIfPhoneNumberExist(String phoneNumber, Integer loginType) {
@@ -128,11 +130,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Update the third party app's credential of current user.
+   * {@inheritDoc}
    *
-   * @param credentialDTO Credential dto.
-   * @param platform 1 for qqmusic, 2 for ncm, 3 for bilibili.
-   * @return The result for updating credential.
+   * <p>Update the third party app's credential of current user.
    */
   @Override
   public Result updateThirdAppCredential(ThirdAppCredentialDTO credentialDTO, Integer platform) {
@@ -151,11 +151,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Update pms user's pass.
+   * {@inheritDoc}
    *
-   * @param pmsUserId The pms user's id.
-   * @param newPassword New plain password without encoded.
-   * @return Common result.
+   * <p>Update pms user's pass.
    */
   @Override
   public Result updatePassword(Long pmsUserId, String newPassword) {
@@ -169,11 +167,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Update pms user's email.
+   * {@inheritDoc}
    *
-   * @param pmsUserId The pms user's id.
-   * @param email Email to bind or update.
-   * @return Common result.
+   * <p>Update pms user's email.
    */
   @Override
   public Result updateEmail(Long pmsUserId, String email) {
@@ -186,13 +182,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Update basic pms user info.
+   * {@inheritDoc}
    *
-   * @param pmsUserId The pms user's id.
-   * @param name New name of pms user.
-   * @param email New email of pms user.
-   * @param avatar New avatar of pms user.
-   * @return Common result.
+   * <p>Update basic pms user info.
    */
   @Override
   public Result updateBasicPMSUserInfo(Long pmsUserId, String name, String email, String avatar) {
@@ -205,10 +197,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Add new pms user.
+   * {@inheritDoc}
    *
-   * @param userDTO User dto.
-   * @return Registered user's id in pms if success.
+   * <p>Add new pms user.
    */
   @Override
   public Result addUser(UserDTO userDTO) {
@@ -219,11 +210,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Check if this email has already bound to user in this login type.
+   * {@inheritDoc}
    *
-   * @param email User's email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
-   * @return True if this email has already bound in this login type, false otherwise.
+   * <p>Check if this email has already bound to user in this login type.
    */
   @Override
   public boolean identifyUserByEmail(String email, Integer loginType) {
@@ -231,11 +220,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Get user id by email in specific login type.
+   * {@inheritDoc}
    *
-   * @param email User's email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
-   * @return User id.
+   * <p>Get user id by email in specific login type.
    */
   @Override
   public Long getUserIdByEmail(String email, Integer loginType) {
@@ -243,10 +230,9 @@ public class UserServiceImpl implements UserService, Serializable {
   }
 
   /**
-   * Get basic pms user info.
+   * {@inheritDoc}
    *
-   * @param pmsUserId User id in pms.
-   * @return Basic pms user info.
+   * <p>Get basic pms user info.
    */
   @Override
   public Result getBasicPMSUserInfo(Long pmsUserId) {

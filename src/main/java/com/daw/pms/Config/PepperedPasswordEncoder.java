@@ -17,12 +17,14 @@ public class PepperedPasswordEncoder implements PasswordEncoder {
 
   private final PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
 
+  /** {@inheritDoc} */
   @Override
   public String encode(CharSequence rawPassword) {
     String passwordWithPepper = rawPassword + pepper;
     return argon2PasswordEncoder.encode(passwordWithPepper);
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean matches(CharSequence rawPassword, String encodedPassword) {
     String passwordWithPepper = rawPassword + pepper;

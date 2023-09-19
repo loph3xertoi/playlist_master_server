@@ -26,16 +26,22 @@ public class BiliUserServiceImpl implements BiliUserService {
   private final BiliCookieService biliCookieService;
   private final HttpTools httpTools;
 
+  /**
+   * Constructor for BiliUserServiceImpl.
+   *
+   * @param biliCookieService a {@link com.daw.pms.Service.BiliBili.BiliCookieService} object.
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public BiliUserServiceImpl(BiliCookieService biliCookieService, HttpTools httpTools) {
     this.biliCookieService = biliCookieService;
     this.httpTools = httpTools;
   }
 
   /**
-   * Return the user info for bilibili.
+   * {@inheritDoc}
    *
-   * @param cookie Your cookie for bilibili.
-   * @return Your user info in bilibili.
+   * <p>Return the user info for bilibili.
+   *
    * @apiNote GET GET_LOGIN_INFO?mid={@code biliMid}
    */
   @Override

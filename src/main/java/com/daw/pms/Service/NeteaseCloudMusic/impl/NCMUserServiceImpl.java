@@ -23,17 +23,20 @@ public class NCMUserServiceImpl implements NCMUserService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for NCMUserServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public NCMUserServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
-   * Return the user info of netease cloud music.
+   * {@inheritDoc}
    *
-   * @param uid Your user id in netease cloud music.
-   * @param cookie Your cookie for netease cloud music.
-   * @return Your user info for your netease cloud music wrapped in NCMUser.
+   * <p>Return the user info of netease cloud music.
    */
   @Override
   public NCMUser getUserInfo(Long uid, String cookie) {

@@ -42,11 +42,22 @@ public class HttpTools {
   /** Rest template for sending http requests with proxy. */
   private final RestTemplate restTemplateWithProxy;
 
+  /**
+   * Constructor for HttpTools.
+   *
+   * @param restTemplate a {@link org.springframework.web.client.RestTemplate} object.
+   * @param restTemplateWithProxy a {@link org.springframework.web.client.RestTemplate} object.
+   */
   public HttpTools(RestTemplate restTemplate, RestTemplate restTemplateWithProxy) {
     this.restTemplate = restTemplate;
     this.restTemplateWithProxy = restTemplateWithProxy;
   }
-
+  /**
+   * @param url
+   * @param params
+   * @param cookie
+   * @return
+   */
   /**
    * Send http get request to {@code api} with parameters {@code params} and {@code cookie}.
    *
@@ -54,6 +65,8 @@ public class HttpTools {
    * @param params Request parameters.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
+   * @param <K> Request param's name.
+   * @param <V> Request param's value.
    */
   public <K, V> String requestGetAPI(String url, Map<K, V> params, Optional<String> cookie) {
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
@@ -88,6 +101,8 @@ public class HttpTools {
    * @param referer The referer in header.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
+   * @param <K> Request param's name.
+   * @param <V> Request param's value.
    */
   public <K, V> String requestPostAPI(
       String url, Map<K, V> params, Optional<String> referer, Optional<String> cookie) {
@@ -110,6 +125,7 @@ public class HttpTools {
    * Send http request to {@code api} with parameters {@code params} and {@code cookie}.
    *
    * @param url Remote url you want to call.
+   * @param headers a {@link org.springframework.http.HttpHeaders} object.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
    */
@@ -133,6 +149,7 @@ public class HttpTools {
    * @param url Remote url you want to call.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
+   * @param headers a {@link org.springframework.http.HttpHeaders} object.
    */
   public String requestGetAPIByFinalUrlWithProxy(
       String url, HttpHeaders headers, Optional<String> cookie) {
@@ -155,6 +172,7 @@ public class HttpTools {
    * @param url Remote url you want to call.
    * @param cookie Your cookie for corresponding platform.
    * @return Result in string form.
+   * @param headers a {@link org.springframework.http.HttpHeaders} object.
    */
   public String requestPostAPIByFinalUrlWithProxy(
       String url, HttpHeaders headers, Optional<String> cookie) {

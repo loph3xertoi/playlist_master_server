@@ -13,6 +13,7 @@ import org.passay.*;
 public class PhoneNumberValidator implements Rule {
   private static final String PHONE_NUMBER_REGEX = "^[+]?\\d{1,3}[-\\s]?\\d{1,14}$";
 
+  /** {@inheritDoc} */
   @Override
   public RuleResult validate(final PasswordData passwordData) {
     final RuleResult result = new RuleResult();

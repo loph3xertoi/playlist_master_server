@@ -50,6 +50,21 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   private final SongMapper songMapper;
   private final SingerMapper singerMapper;
 
+  /**
+   * Constructor for LibraryServiceImpl.
+   *
+   * @param qiniuOSS a {@link com.daw.pms.Utils.QiniuOSS} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   * @param qqMusicPlaylistService a {@link com.daw.pms.Service.QQMusic.QQMusicPlaylistService}
+   *     object.
+   * @param ncmPlaylistService a {@link com.daw.pms.Service.NeteaseCloudMusic.NCMPlaylistService}
+   *     object.
+   * @param biliFavListService a {@link com.daw.pms.Service.BiliBili.BiliFavListService} object.
+   * @param playlistMapper a {@link com.daw.pms.Mapper.PlaylistMapper} object.
+   * @param relationMapper a {@link com.daw.pms.Mapper.RelationMapper} object.
+   * @param songMapper a {@link com.daw.pms.Mapper.SongMapper} object.
+   * @param singerMapper a {@link com.daw.pms.Mapper.SingerMapper} object.
+   */
   public LibraryServiceImpl(
       QiniuOSS qiniuOSS,
       PmsUserDetailsUtil pmsUserDetailsUtil,
@@ -72,17 +87,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Get all libraries for specific platform.
+   * {@inheritDoc}
    *
-   * @param id Your user id in pms.
-   * @param pn The page number, only used in bilibili and pms, start from 1.
-   * @param ps The page size, only used in bilibili and pms.
-   * @param biliPlatform The platform of bilibili, default is web, only used in bilibili.
-   * @param type The fav lists type of bilibili, 0 means get created fav lists, 1 means get
-   *     collected fav lists, only used in bilibili.
-   * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
-   *     represents netease cloud music, 3 represents bilibili.
-   * @return All libraries for specific platform, wrapped in Result DTO.
+   * <p>Get all libraries for specific platform.
    */
   @Override
   public Result getLibraries(
@@ -140,18 +147,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Get detail library with {@code libraryId} in {@code platform}.
+   * {@inheritDoc}
    *
-   * @param libraryId The library id.
-   * @param pn The page number, only used in bilibili.
-   * @param ps The page size, only used in bilibili.
-   * @param keyword The keyword to search, only used in bilibili.
-   * @param order The sorting order of resources of this fav list, mtime: by collected time, view:
-   *     by view time, pubtime: by published time, default is mtime.
-   * @param range The range of searching, 0: current fav list, 1: all fav lists, default is 0.
-   * @param type 0 for created fav list, 1 for collected fav list.
-   * @param platform Which platform the library belongs to.
-   * @return Detail library wrapped by Result DTO.
+   * <p>Get detail library with {@code libraryId} in {@code platform}.
    */
   @Override
   public Result getDetailLibrary(
@@ -213,12 +211,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Create new library.
+   * {@inheritDoc}
    *
-   * @param library A map that contains the name of library, {"name"(required): name, "intro":intro,
-   *     "privacy": privacy, "cover":cover}
-   * @param platform Which platform the library belongs to.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Create new library.
    */
   @Override
   @Transactional
@@ -267,12 +262,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Update library.
+   * {@inheritDoc}
    *
-   * @param library UpdateLibraryDTO that contains the name of library, {"name"(required):name,
-   *     "intro":intro, "cover":cover} (PMSDetailLibrary)
-   * @param platform Which platform this library belongs to.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Update library.
    */
   @Override
   @Transactional
@@ -333,11 +325,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Delete the library.
+   * {@inheritDoc}
    *
-   * @param libraryId The id of library, multiple libraries separated with comma.
-   * @param platform Which platform the library belongs to.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Delete the library.
    */
   @Override
   @Transactional
@@ -371,17 +361,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
+   * {@inheritDoc}
    *
-   * @param libraryId Target library id.
-   * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
-   * @param songsIds Songs' id, multiple songs id separated with comma.
-   * @param songs The songs list to be added to library in pms.
-   * @param resources The bilibili resources list to be added to library in pms.
-   * @param isAddToPMSLibrary Whether adding songs to pms library.
-   * @param isFavoriteSearchedResource Whether favorite searched resource.
-   * @param platform Which platform the library belongs to.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
    */
   @Override
   @Transactional
@@ -837,14 +819,10 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Move songs {@code songsId} from source library with {@code fromLibrary} to target library with
-   * {@code toLibrary}.
+   * {@inheritDoc}
    *
-   * @param songsId Songs id to be moved, multiple songs id separated with comma.
-   * @param fromLibrary Source library's id.
-   * @param toLibrary Target library's id.
-   * @param platform Which platform these libraries belongs to.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Move songs {@code songsId} from source library with {@code fromLibrary} to target library
+   * with {@code toLibrary}.
    */
   @Override
   @Transactional
@@ -917,11 +895,9 @@ public class LibraryServiceImpl implements LibraryService, Serializable {
   }
 
   /**
-   * Remove songs {@code songsId} from library {@code libraryId}.
+   * {@inheritDoc}
    *
-   * @param libraryId Library's id.
-   * @param songsId The songs' id, multiple songs id separated with comma.
-   * @return The response of request wrapped by Result DTO.
+   * <p>Remove songs {@code songsId} from library {@code libraryId}.
    */
   @Override
   @Transactional

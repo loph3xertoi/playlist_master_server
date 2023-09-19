@@ -21,10 +21,21 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
   private final SessionRegistry sessionRegistry;
 
+  /**
+   * Constructor for TestController.
+   *
+   * @param sessionRegistry a {@link org.springframework.security.core.session.SessionRegistry}
+   *     object.
+   */
   public TestController(SessionRegistry sessionRegistry) {
     this.sessionRegistry = sessionRegistry;
   }
 
+  /**
+   * test.
+   *
+   * @return a {@link java.util.Map} object.
+   */
   @GetMapping("/hello")
   public Map<String, Object> test() {
     Map<String, Object> map = new HashMap<>();

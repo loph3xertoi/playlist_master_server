@@ -30,6 +30,12 @@ public class LibraryController {
   private final LibraryService libraryService;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
+  /**
+   * Constructor for LibraryController.
+   *
+   * @param libraryService a {@link com.daw.pms.Service.PMS.LibraryService} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   */
   public LibraryController(LibraryService libraryService, PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.libraryService = libraryService;
     this.pmsUserDetailsUtil = pmsUserDetailsUtil;
@@ -47,7 +53,7 @@ public class LibraryController {
    * @param platform Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2
    *     represents netease cloud music, 3 represents bilibili.
    * @return All libraries for specific platform.
-   * @apiNote GET /libraries?id={@code id}&platform={@code platform}
+   * @apiNote GET /libraries?id={@code id}&amp;platform={@code platform}
    */
   @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
   @GetMapping("/libraries")
@@ -228,8 +234,8 @@ public class LibraryController {
    * @param platform Which platform the library belongs to.
    * @param tid The tid of library, used to evict cache.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote DELETE /removeSongsFromLibrary?libraryId={@code libraryId}&songsId={@code
-   *     songsId}&platform={@code platform}&tid={@code tid}
+   * @apiNote DELETE /removeSongsFromLibrary?libraryId={@code libraryId}&amp;songsId={@code
+   *     songsId}&amp;platform={@code platform}&amp;tid={@code tid}
    */
   @DeleteMapping("/removeSongsFromLibrary")
   public Result removeSongsFromLibrary(

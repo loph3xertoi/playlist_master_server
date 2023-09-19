@@ -45,6 +45,8 @@ public interface LoginService {
    *
    * @param registerFormDTO Register form dto.
    * @return Registered user's id in pms if success.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   Result register(RegisterFormDTO registerFormDTO)
       throws MessagingException, UnsupportedEncodingException;
@@ -61,6 +63,8 @@ public interface LoginService {
    * Forget user's password, send verifying code to user's email, only used when user have login.
    *
    * @return Common result.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   Result forgotPassword() throws MessagingException, UnsupportedEncodingException;
 
@@ -69,6 +73,8 @@ public interface LoginService {
    *
    * @param email Email to bind.
    * @return Common result.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   Result bindEmail(String email) throws MessagingException, UnsupportedEncodingException;
 
@@ -78,8 +84,8 @@ public interface LoginService {
    * @param email Email to receive token.
    * @param type Token type, 1 for sign up, 2 for reset password.
    * @return Common result.
-   * @throws MessagingException MessagingException.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws javax.mail.MessagingException javax.mail.MessagingException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
    */
   Result sendVerifyToken(String email, Integer type)
       throws MessagingException, UnsupportedEncodingException;

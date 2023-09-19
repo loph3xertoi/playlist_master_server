@@ -25,6 +25,14 @@ public class MVServiceImpl implements MVService, Serializable {
   private final NCMMVService ncmMVService;
   private final SongMapper songMapper;
 
+  /**
+   * Constructor for MVServiceImpl.
+   *
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   * @param qqMusicMVService a {@link com.daw.pms.Service.QQMusic.QQMusicMVService} object.
+   * @param ncmMVService a {@link com.daw.pms.Service.NeteaseCloudMusic.NCMMVService} object.
+   * @param songMapper a {@link com.daw.pms.Mapper.SongMapper} object.
+   */
   public MVServiceImpl(
       PmsUserDetailsUtil pmsUserDetailsUtil,
       QQMusicMVService qqMusicMVService,
@@ -36,11 +44,7 @@ public class MVServiceImpl implements MVService, Serializable {
     this.songMapper = songMapper;
   }
 
-  /**
-   * @param vid The vid/mvid/mlogId of the mv.
-   * @param platform The platform id.
-   * @return The detail information of the mv {@code vid}.
-   */
+  /** {@inheritDoc} */
   @Override
   public BasicVideo getDetailMV(String vid, Integer platform) {
     BasicVideo mvInfo;
@@ -59,12 +63,7 @@ public class MVServiceImpl implements MVService, Serializable {
     return mvInfo;
   }
 
-  /**
-   * @param vids The vids of the mv(s), multi vids separated by comma.
-   * @param platform The platform id.
-   * @return The urls for the mv(s).
-   * @deprecated Make a uniform result between different platforms.
-   */
+  /** {@inheritDoc} */
   @Override
   public Map<String, List<String>> getMVsLink(String vids, Integer platform) {
     Map<String, List<String>> mvLinks;
@@ -84,14 +83,9 @@ public class MVServiceImpl implements MVService, Serializable {
   }
 
   /**
-   * Get all related videos with the song.
+   * {@inheritDoc}
    *
-   * @param songId The song's id.
-   * @param mvId The mv's id, only in ncm platform.
-   * @param limit The limit of related videos, only used in ncm platform.
-   * @param songType The pms song's type, only used in pms platform.
-   * @param platform The platform id.
-   * @return All the related video about the song with {@code songId}.
+   * <p>Get all related videos with the song.
    */
   @Override
   public List<? extends BasicVideo> getRelatedVideos(

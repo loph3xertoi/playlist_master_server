@@ -44,9 +44,10 @@ public class QiniuOSS {
    * @param fileInputStream File input stream.
    * @param fileName The file name.
    * @return The final key.
-   * @throws QiniuException QiniuException.
-   * @throws JsonProcessingException JsonProcessingException.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws com.qiniu.common.QiniuException com.qiniu.common.QiniuException.
+   * @throws com.fasterxml.jackson.core.JsonProcessingException
+   *     com.fasterxml.jackson.core.JsonProcessingException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
    */
   public String uploadFileByInputStream(InputStream fileInputStream, String fileName)
       throws QiniuException, JsonProcessingException, UnsupportedEncodingException {
@@ -81,8 +82,8 @@ public class QiniuOSS {
    *
    * @param key The original key.
    * @return Final Oss link.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
-   * @throws QiniuException QiniuException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
+   * @throws com.qiniu.common.QiniuException com.qiniu.common.QiniuException.
    */
   public String reflectKeyToFinalOSSLink(String key)
       throws UnsupportedEncodingException, QiniuException {

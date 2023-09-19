@@ -21,8 +21,8 @@ public interface NCMPlaylistService {
    * @param limit The number of songs returned by this query.
    * @param cookie Your cookie for netease cloud music.
    * @return All playlists created by {@code uid}, wrapped with Result DTO, the data is
-   *     PagedDataDTO<BiliFavList>.
-   * @apiNote GET /user/playlist?uid={@code uid}&offset={@code offset}&limit={@code limit}
+   *     PagedDataDTO&lt;BiliFavList&gt;.
+   * @apiNote GET /user/playlist?uid={@code uid}&amp;offset={@code offset}&amp;limit={@code limit}
    */
   Result getPlaylists(Long uid, Integer offset, Integer limit, String cookie);
 
@@ -75,7 +75,7 @@ public interface NCMPlaylistService {
    * @param tracks The id of songs, multiple id separated with comma.
    * @param cookie Your cookie for netease cloud music.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/tracks?op=add&pid={@code pid}&tracks={@code tracks}
+   * @apiNote GET /playlist/tracks?op=add&amp;pid={@code pid}&amp;tracks={@code tracks}
    */
   Result addSongsToPlaylist(Long pid, String tracks, String cookie);
 
@@ -87,8 +87,8 @@ public interface NCMPlaylistService {
    * @param toPid Target playlist's pid.
    * @param cookie Your cookie for netease cloud music.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/tracks?op=mov&fromPid={@code fromPid}&toPid={@code toPid}&tracks={@code
-   *     tracks}
+   * @apiNote GET /playlist/tracks?op=mov&amp;fromPid={@code fromPid}&amp;toPid={@code
+   *     toPid}&amp;tracks={@code tracks}
    */
   Result moveSongsToOtherPlaylist(String tracks, Long fromPid, Long toPid, String cookie);
 
@@ -99,7 +99,7 @@ public interface NCMPlaylistService {
    * @param tracks The songs' id, multiple songs id separated with comma.
    * @param cookie Your cookie for netease cloud music.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/tracks?op=del&pid={@code pid}&tracks={@code tracks}
+   * @apiNote GET /playlist/tracks?op=del&amp;pid={@code pid}&amp;tracks={@code tracks}
    */
   Result removeSongsFromPlaylist(Long pid, String tracks, String cookie);
 }

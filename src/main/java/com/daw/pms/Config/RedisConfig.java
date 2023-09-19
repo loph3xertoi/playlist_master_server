@@ -17,6 +17,13 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
+/**
+ * Redis configuration.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/19/23
+ */
 @Configuration
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
@@ -29,6 +36,11 @@ public class RedisConfig extends CachingConfigurerSupport {
   @Value("${spring.redis.password}")
   private String redisPassword;
 
+  /**
+   * redisConnectionFactory.
+   *
+   * @return a {@link org.springframework.data.redis.connection.RedisConnectionFactory} object.
+   */
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
     RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -36,6 +48,13 @@ public class RedisConfig extends CachingConfigurerSupport {
     return new LettuceConnectionFactory(config);
   }
 
+  /**
+   * redisTemplate.
+   *
+   * @param redisConnectionFactory a {@link
+   *     org.springframework.data.redis.connection.RedisConnectionFactory} object.
+   * @return a {@link org.springframework.data.redis.core.RedisTemplate} object.
+   */
   @Bean
   public RedisTemplate<String, Object> redisTemplate(
       RedisConnectionFactory redisConnectionFactory) {
@@ -44,21 +63,37 @@ public class RedisConfig extends CachingConfigurerSupport {
     return template;
   }
 
+  /**
+   * defaultCacheConfiguration.
+   *
+   * @return a {@link org.springframework.data.redis.cache.RedisCacheConfiguration} object.
+   */
   @Bean
   public RedisCacheConfiguration defaultCacheConfiguration() {
     return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(25));
   }
 
+  /**
+   * bilibiliWbiKeyCacheConfiguration.
+   *
+   * @return a {@link org.springframework.data.redis.cache.RedisCacheConfiguration} object.
+   */
   @Bean
   public RedisCacheConfiguration bilibiliWbiKeyCacheConfiguration() {
     return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(1));
   }
 
+  /**
+   * bilibiliResourceDashLinksCacheConfiguration.
+   *
+   * @return a {@link org.springframework.data.redis.cache.RedisCacheConfiguration} object.
+   */
   @Bean
   public RedisCacheConfiguration bilibiliResourceDashLinksCacheConfiguration() {
     return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(2));
   }
 
+  /** {@inheritDoc} */
   @Bean
   @Override
   public CacheManager cacheManager() {

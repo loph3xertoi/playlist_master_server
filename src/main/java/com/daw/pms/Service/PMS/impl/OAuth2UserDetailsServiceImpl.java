@@ -36,6 +36,13 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
   private final HttpTools httpTools;
   private final UserMapper userMapper;
 
+  /**
+   * Constructor for OAuth2UserDetailsServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   * @param userMapper a {@link com.daw.pms.Mapper.UserMapper} object.
+   * @param restTemplateWithProxy a {@link org.springframework.web.client.RestTemplate} object.
+   */
   public OAuth2UserDetailsServiceImpl(
       HttpTools httpTools, UserMapper userMapper, RestTemplate restTemplateWithProxy) {
     this.httpTools = httpTools;
@@ -43,6 +50,7 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
     setRestOperations(restTemplateWithProxy);
   }
 
+  /** {@inheritDoc} */
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2User user = super.loadUser(userRequest);

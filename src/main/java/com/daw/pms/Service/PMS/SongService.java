@@ -49,8 +49,8 @@ public interface SongService {
    *     jymaster.
    * @param platform The platform id.
    * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
-   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform), single
-   *     song link in pms platform.
+   *     Map&lt;String,String&gt; (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform),
+   *     single song link in pms platform.
    */
   Result getSongsLink(String ids, String level, Integer platform);
 
@@ -62,7 +62,7 @@ public interface SongService {
    * @param pageSize The page size.
    * @param type The type of the searched resources.
    * @param platform The platform id.
-   * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
+   * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO&lt;T&gt;.
    */
   Result searchResourcesByKeyword(
       String keyword, Integer pageNo, Integer pageSize, Integer type, Integer platform);

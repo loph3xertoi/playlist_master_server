@@ -25,6 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class SongController {
   private final SongService songService;
 
+  /**
+   * Constructor for SongController.
+   *
+   * @param songService a {@link com.daw.pms.Service.PMS.SongService} object.
+   */
   public SongController(SongService songService) {
     this.songService = songService;
   }

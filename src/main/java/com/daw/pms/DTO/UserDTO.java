@@ -37,7 +37,7 @@ public class UserDTO implements Serializable {
    */
   @NotBlank private Boolean enabled;
 
-  /** Login type of this user, 0 for email & password, 1 for GitHub, 2 for Google. */
+  /** Login type of this user, 0 for email &amp; password, 1 for GitHub, 2 for Google. */
   @NotBlank private Integer loginType;
 
   /** User's introduction in pms. */

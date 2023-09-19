@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
   private final LoginService loginService;
 
+  /**
+   * Constructor for LoginController.
+   *
+   * @param loginService a {@link com.daw.pms.Service.PMS.LoginService} object.
+   */
   public LoginController(LoginService loginService) {
     this.loginService = loginService;
   }
@@ -111,6 +116,8 @@ public class LoginController {
    *
    * @param registerFormDTO Register form data.
    * @return Registered user's id in pms if success.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   @PostMapping("/register")
   public Result register(@Valid @RequestBody RegisterFormDTO registerFormDTO)
@@ -133,6 +140,8 @@ public class LoginController {
    * Forget user's password, send verifying code to user's email, need login first.
    *
    * @return Common result.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   @GetMapping("/forgot/password")
   public Result forgotPassword() throws MessagingException, UnsupportedEncodingException {
@@ -142,7 +151,10 @@ public class LoginController {
   /**
    * Bind email, send verifying code to user's email, need login first.
    *
+   * @param email a {@link java.lang.String} object.
    * @return Common result.
+   * @throws javax.mail.MessagingException if any.
+   * @throws java.io.UnsupportedEncodingException if any.
    */
   @GetMapping("/bind/email")
   public Result bindEmail(
@@ -161,8 +173,8 @@ public class LoginController {
    * @param email Email to receive token.
    * @param type Token type, 1 for sign up, 2 for reset password.
    * @return Common result.
-   * @throws MessagingException MessagingException.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * @throws javax.mail.MessagingException javax.mail.MessagingException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
    */
   @GetMapping("/sendcode")
   public Result sendVerifyTokenWithoutLogin(

@@ -74,7 +74,7 @@ public interface QQMusicSongService {
    * @param cookie Your qq music cookie.
    * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
    *     {@code type}
-   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaMid}
+   * @apiNote GET /song/url?id={@code songMid}&amp;type={@code type}&amp;mediaId={@code mediaMid}
    */
   String getSongLink(String songMid, String type, String mediaMid, String cookie);
 
@@ -84,7 +84,7 @@ public interface QQMusicSongService {
    * @param songMids The songMid, separated with comma.
    * @param cookie Your qq music cookie.
    * @return The urls of your songs with mid {@code songMids}, wrapped with Result DTO, the data is
-   *     Map<String, String>.
+   *     Map&lt;String, String&gt;.
    * @apiNote GET /song/urls?id={@code songMids}
    */
   Result getSongsLink(String songMids, String cookie);
@@ -96,8 +96,8 @@ public interface QQMusicSongService {
    * @param pageNo Page order.
    * @param pageSize Size one page.
    * @param cookie Your qq music cookie.
-   * @return Searched result wrapped in Result DTO, the data is PagedDataDTO<QQMusicSong>.
-   * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
+   * @return Searched result wrapped in Result DTO, the data is PagedDataDTO&lt;QQMusicSong&gt;.
+   * @apiNote GET /search?key={@code name}&amp;pageNo={@code pageNo}&amp;pageSize={@code pageSize}
    */
   Result searchSongsByKeyword(String name, int pageNo, int pageSize, String cookie);
 }

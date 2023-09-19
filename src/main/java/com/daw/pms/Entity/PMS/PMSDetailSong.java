@@ -17,6 +17,11 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class PMSDetailSong extends BasicSong {
+  /**
+   * Constructor for PMSDetailSong.
+   *
+   * @param song a {@link com.daw.pms.Entity.PMS.PMSSong} object.
+   */
   public PMSDetailSong(PMSSong song) {
     this.id = song.getId();
     this.type = song.getType();

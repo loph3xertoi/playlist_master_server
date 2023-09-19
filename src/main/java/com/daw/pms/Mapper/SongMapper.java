@@ -109,6 +109,12 @@ public interface SongMapper {
   @SelectProvider(type = SongSqlProvider.class, method = "getExistedIdsAndSongIdsList")
   List<Map<String, Object>> getExistedIdsAndSongIdsList(@Param("songIds") List<Long> songIds);
 
+  /**
+   * getExistedIdsAndSongIds.
+   *
+   * @param songIds a {@link java.util.List} object.
+   * @return a {@link java.util.Map} object.
+   */
   default Map<Long, Long> getExistedIdsAndSongIds(List<Long> songIds) {
     Map<Long, Long> result = new HashMap<>();
     List<Map<String, Object>> existedIdsAndSongIdsList = getExistedIdsAndSongIdsList(songIds);
@@ -157,6 +163,12 @@ public interface SongMapper {
   @SelectProvider(type = SongSqlProvider.class, method = "getExistedIdsAndNCMIdsList")
   List<Map<String, Object>> getExistedIdsAndNCMIdsList(@Param("ncmIds") List<Long> ncmIds);
 
+  /**
+   * getExistedIdsAndNCMIds.
+   *
+   * @param ncmIds a {@link java.util.List} object.
+   * @return a {@link java.util.Map} object.
+   */
   default Map<Long, Long> getExistedIdsAndNCMIds(List<Long> ncmIds) {
     Map<Long, Long> result = new HashMap<>();
     List<Map<String, Object>> existedIdsAndNCMIdsList = getExistedIdsAndNCMIdsList(ncmIds);
@@ -201,6 +213,12 @@ public interface SongMapper {
   @SelectProvider(type = SongSqlProvider.class, method = "getExistedIdsAndAidsList")
   List<Map<String, Object>> getExistedIdsAndAidsList(@Param("aids") List<Long> aids);
 
+  /**
+   * getExistedIdsAndAids.
+   *
+   * @param aids a {@link java.util.List} object.
+   * @return a {@link java.util.Map} object.
+   */
   default Map<Long, Long> getExistedIdsAndAids(List<Long> aids) {
     Map<Long, Long> result = new HashMap<>();
     List<Map<String, Object>> existedIdsAndAidsList = getExistedIdsAndAidsList(aids);

@@ -23,6 +23,11 @@ public class EmailUtil {
   @Value("${spring.mail.username}")
   private String tokenSenderEmail;
 
+  /**
+   * Constructor for EmailUtil.
+   *
+   * @param mailSender a {@link org.springframework.mail.javamail.JavaMailSender} object.
+   */
   public EmailUtil(JavaMailSender mailSender) {
     this.mailSender = mailSender;
   }
@@ -32,8 +37,8 @@ public class EmailUtil {
    *
    * @param recipientEmail The recipient email.
    * @param token Verification token for resetting password.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
-   * @throws MessagingException MessagingException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
+   * @throws javax.mail.MessagingException javax.mail.MessagingException.
    */
   public void sendResetPassEmail(String recipientEmail, String token)
       throws UnsupportedEncodingException, MessagingException {
@@ -69,8 +74,8 @@ public class EmailUtil {
    *
    * @param recipientEmail The recipient email.
    * @param token Verification token for signing up.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
-   * @throws MessagingException MessagingException.
+   * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
+   * @throws javax.mail.MessagingException javax.mail.MessagingException.
    */
   public void sendSignUpEmail(String recipientEmail, String token)
       throws UnsupportedEncodingException, MessagingException {

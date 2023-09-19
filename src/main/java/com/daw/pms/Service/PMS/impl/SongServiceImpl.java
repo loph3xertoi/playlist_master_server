@@ -43,6 +43,17 @@ public class SongServiceImpl implements SongService, Serializable {
   private final SongMapper songMapper;
   private final SingerMapper singerMapper;
 
+  /**
+   * Constructor for SongServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   * @param qqMusicSongService a {@link com.daw.pms.Service.QQMusic.QQMusicSongService} object.
+   * @param ncmSongService a {@link com.daw.pms.Service.NeteaseCloudMusic.NCMSongService} object.
+   * @param biliResourceService a {@link com.daw.pms.Service.BiliBili.BiliResourceService} object.
+   * @param songMapper a {@link com.daw.pms.Mapper.SongMapper} object.
+   * @param singerMapper a {@link com.daw.pms.Mapper.SingerMapper} object.
+   */
   public SongServiceImpl(
       HttpTools httpTools,
       PmsUserDetailsUtil pmsUserDetailsUtil,
@@ -61,11 +72,9 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Get the detail information of the song.
+   * {@inheritDoc}
    *
-   * @param ids The song mid.
-   * @param platform The platform this song belongs to.
-   * @return Detail song, wrapped with Result DTO, the data is subclass of BasicSong.
+   * <p>Get the detail information of the song.
    */
   @Override
   public Result getDetailSong(String ids, Integer platform) {
@@ -124,12 +133,9 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Return a list of similar song with {@code songId}.
+   * {@inheritDoc}
    *
-   * @param songId The song id.
-   * @param songType The pms song type, only used in pms platform.
-   * @param platform The platform the song belongs to.
-   * @return A list of similar songs with {@code songId}.
+   * <p>Return a list of similar song with {@code songId}.
    */
   @Override
   public List<? extends BasicSong> getSimilarSongs(
@@ -172,11 +178,9 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Get the lyrics of the song with {@code id}.
+   * {@inheritDoc}
    *
-   * @param id The id of song.
-   * @param platform The platform this song belongs to.
-   * @return Lyrics of your song in netease cloud music.
+   * <p>Get the lyrics of the song with {@code id}.
    */
   @Override
   public BasicLyrics getLyrics(Long id, Integer platform) {
@@ -198,15 +202,9 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Get the songs' links.
+   * {@inheritDoc}
    *
-   * @param ids The song's id, multiple songs id separated with comma, in bilibili, ids == bvid:cid.
-   * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
-   *     jymaster.
-   * @param platform The platform id.
-   * @return The urls of your songs with ids {@code ids}, wrapped with Result DTO, the data is
-   *     Map<String,String> (qqmusic and ncm platform) or BiliLinksDTO (bilibili platform), single
-   *     song link in pms platform.
+   * <p>Get the songs' links.
    */
   @Override
   public Result getSongsLink(String ids, String level, Integer platform) {
@@ -317,14 +315,9 @@ public class SongServiceImpl implements SongService, Serializable {
   }
 
   /**
-   * Search resources of type {@code type} by {@code keyword}.
+   * {@inheritDoc}
    *
-   * @param keyword The keyword to search.
-   * @param pageNo The page number.
-   * @param pageSize The page size.
-   * @param type The type of the searched resources.
-   * @param platform The platform id.
-   * @return Searched resources wrapped by Result DTO, the data is PagedDataDTO<T>.
+   * <p>Search resources of type {@code type} by {@code keyword}.
    */
   @Override
   public Result searchResourcesByKeyword(

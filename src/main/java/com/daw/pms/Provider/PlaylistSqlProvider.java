@@ -12,6 +12,12 @@ import org.apache.ibatis.jdbc.SQL;
  * @since 9/18/23
  */
 public class PlaylistSqlProvider {
+  /**
+   * updatePlaylist.
+   *
+   * @param library a {@link com.daw.pms.Entity.PMS.PMSDetailLibrary} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String updatePlaylist(PMSDetailLibrary library) {
     String name = library.getName();
     String cover = library.getCover();
@@ -55,6 +61,12 @@ public class PlaylistSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * deletePlaylists.
+   *
+   * @param ids a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String deletePlaylists(List<Long> ids) {
     return new SQL() {
       {
@@ -83,6 +95,11 @@ public class PlaylistSqlProvider {
     }
   }
 
+  /**
+   * createPlaylist.
+   *
+   * @return a {@link java.lang.String} object.
+   */
   public String createPlaylist() {
     String createPlaylist =
         new SQL()

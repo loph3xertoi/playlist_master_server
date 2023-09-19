@@ -11,6 +11,12 @@ import org.apache.ibatis.jdbc.SQL;
  * @since 9/18/23
  */
 public class UserSqlProvider {
+  /**
+   * addUser.
+   *
+   * @param userDTO a {@link com.daw.pms.DTO.UserDTO} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addUser(UserDTO userDTO) {
     SQL sql =
         new SQL()

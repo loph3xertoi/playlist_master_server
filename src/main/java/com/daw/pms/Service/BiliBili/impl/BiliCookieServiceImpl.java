@@ -25,14 +25,20 @@ import org.springframework.stereotype.Service;
 public class BiliCookieServiceImpl implements BiliCookieService {
   private final HttpTools httpTools;
 
+  /**
+   * Constructor for BiliCookieServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public BiliCookieServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
   }
 
   /**
-   * Get wbi key.
+   * {@inheritDoc}
    *
-   * @return Img key and sub key.
+   * <p>Get wbi key.
+   *
    * @apiNote GET GET_WBI_KEY
    */
   @Cacheable(value = "bilibili-wbi-key", key = "#root.methodName", unless = "#result==null")

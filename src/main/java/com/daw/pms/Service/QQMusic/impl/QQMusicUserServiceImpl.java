@@ -23,17 +23,21 @@ public class QQMusicUserServiceImpl implements QQMusicUserService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for QQMusicUserServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public QQMusicUserServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
-   * Return the user info for your qq music.
+   * {@inheritDoc}
    *
-   * @param qid Your qq number.
-   * @param cookie Your cookie for qq music.
-   * @return Your user info for your qq music.
+   * <p>Return the user info for your qq music.
+   *
    * @apiNote GET /user/detail?id={@code qid}
    */
   @Override

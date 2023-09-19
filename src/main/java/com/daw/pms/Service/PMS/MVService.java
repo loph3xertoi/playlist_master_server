@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public interface MVService {
   /**
+   * getDetailMV.
+   *
    * @param vid The vid/mvid/mlogId of the mv.
    * @param platform The platform id.
    * @return The detail information of the mv {@code vid}.
@@ -20,6 +22,8 @@ public interface MVService {
   BasicVideo getDetailMV(String vid, Integer platform);
 
   /**
+   * getMVsLink.
+   *
    * @param vids The vids of the mv(s), multi vids separated by comma.
    * @param platform The platform id.
    * @return The urls for the mv(s).

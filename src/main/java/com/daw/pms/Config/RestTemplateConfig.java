@@ -10,6 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * RestTemplateConfig.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/19/23
+ */
 @Configuration
 public class RestTemplateConfig {
   @Value("${server.proxy.host}")
@@ -18,6 +25,11 @@ public class RestTemplateConfig {
   @Value("${server.proxy.port}")
   private String proxyPort;
 
+  /**
+   * restTemplateWithProxy.
+   *
+   * @return a {@link org.springframework.web.client.RestTemplate} object.
+   */
   @Bean
   public RestTemplate restTemplateWithProxy() {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -27,6 +39,11 @@ public class RestTemplateConfig {
     return new RestTemplate(requestFactory);
   }
 
+  /**
+   * restTemplate.
+   *
+   * @return a {@link org.springframework.web.client.RestTemplate} object.
+   */
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();

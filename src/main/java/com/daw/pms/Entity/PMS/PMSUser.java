@@ -6,7 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/** User stored in playlist master server. */
+/**
+ * User stored in playlist master server.
+ *
+ * @author Daw Loph
+ * @version 1.0
+ * @since 9/19/23
+ */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

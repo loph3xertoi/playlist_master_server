@@ -60,6 +60,26 @@ public class LoginServiceImpl implements LoginService {
   private final SessionRegistry sessionRegistry;
   private final ClientRegistrationRepository clientRegistrationRepository;
 
+  /**
+   * Constructor for LoginServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   * @param redisTemplate a {@link org.springframework.data.redis.core.RedisTemplate} object.
+   * @param passwordEncoder a {@link org.springframework.security.crypto.password.PasswordEncoder}
+   *     object.
+   * @param emailUtil a {@link com.daw.pms.Utils.EmailUtil} object.
+   * @param authenticationProvider a {@link
+   *     org.springframework.security.authentication.dao.DaoAuthenticationProvider} object.
+   * @param userService a {@link com.daw.pms.Service.PMS.UserService} object.
+   * @param OAuth2UserDetailsServiceImpl a {@link
+   *     com.daw.pms.Service.PMS.impl.OAuth2UserDetailsServiceImpl} object.
+   * @param sessionRegistry a {@link org.springframework.security.core.session.SessionRegistry}
+   *     object.
+   * @param clientRegistrationRepository a {@link
+   *     org.springframework.security.oauth2.client.registration.ClientRegistrationRepository}
+   *     object.
+   */
   public LoginServiceImpl(
       HttpTools httpTools,
       PmsUserDetailsUtil pmsUserDetailsUtil,
@@ -84,11 +104,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Login to playlist master by email and password.
+   * {@inheritDoc}
    *
-   * @param loginFormDTO Login info.
-   * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * <p>Login to playlist master by email and password.
    */
   @Override
   public Result login(LoginFormDTO loginFormDTO, HttpServletRequest request) {
@@ -104,11 +122,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Login to playlist master by GitHub.
+   * {@inheritDoc}
    *
-   * @param code Authorization code.
-   * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * <p>Login to playlist master by GitHub.
    */
   @Override
   public Result loginByGitHub(String code, HttpServletRequest request) {
@@ -202,11 +218,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Login to playlist master by Google.
+   * {@inheritDoc}
    *
-   * @param code Authorization code.
-   * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * <p>Login to playlist master by Google.
    */
   @Override
   public Result loginByGoogle(String code, HttpServletRequest request) {
@@ -299,10 +313,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Register playlist master account using email and password.
+   * {@inheritDoc}
    *
-   * @param registerFormDTO Register form dto.
-   * @return Registered user's id in pms if success.
+   * <p>Register playlist master account using email and password.
    */
   @Override
   public Result register(RegisterFormDTO registerFormDTO)
@@ -344,10 +357,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Logout current pms user.
+   * {@inheritDoc}
    *
-   * @param request Http servlet request.
-   * @return Result for logout.
+   * <p>Logout current pms user.
    */
   @Override
   public Result logout(HttpServletRequest request) {
@@ -361,9 +373,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Forget user's password, send verifying code to user's email, only used when user have login.
+   * {@inheritDoc}
    *
-   * @return Common result.
+   * <p>Forget user's password, send verifying code to user's email, only used when user have login.
    */
   @Override
   public Result forgotPassword() throws MessagingException, UnsupportedEncodingException {
@@ -391,10 +403,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Bind email, send verifying code to user's email, need login first.
+   * {@inheritDoc}
    *
-   * @param email Email to bind.
-   * @return Common result.
+   * <p>Bind email, send verifying code to user's email, need login first.
    */
   @Override
   public Result bindEmail(String email) throws MessagingException, UnsupportedEncodingException {
@@ -418,13 +429,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Send token to yur email for verifying, no need to login first.
+   * {@inheritDoc}
    *
-   * @param email Email to receive token.
-   * @param type Token type, 1 for sign up, 2 for reset password.
-   * @return Common result.
-   * @throws MessagingException MessagingException.
-   * @throws UnsupportedEncodingException UnsupportedEncodingException.
+   * <p>Send token to yur email for verifying, no need to login first.
    */
   @Override
   public Result sendVerifyToken(String email, Integer type)
@@ -463,10 +470,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Verify token for resetting user's password, need to log in first.
+   * {@inheritDoc}
    *
-   * @param resetPassDTO DTO for resetting password.
-   * @return Common result.
+   * <p>Verify token for resetting user's password, need to log in first.
    */
   @Override
   public Result verifyResetPassToken(ResetPassDTO resetPassDTO) {
@@ -494,10 +500,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Verify token for binding user's email, need to log in first.
+   * {@inheritDoc}
    *
-   * @param bindEmailDTO DTO for bind email.
-   * @return Common result.
+   * <p>Verify token for binding user's email, need to log in first.
    */
   @Override
   public Result verifyBindEmailToken(BindEmailDTO bindEmailDTO) {
@@ -527,10 +532,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Verify token for resetting user's password, don't need to log in first.
+   * {@inheritDoc}
    *
-   * @param resetPassNologinDTO Reset pass dto.
-   * @return Common result.
+   * <p>Verify token for resetting user's password, don't need to log in first.
    */
   @Override
   public Result verifyResetPassTokenWithoutLogin(ResetPassNologinDTO resetPassNologinDTO) {
@@ -560,10 +564,9 @@ public class LoginServiceImpl implements LoginService {
   }
 
   /**
-   * Verify token for create new account, don't need to log in first.
+   * {@inheritDoc}
    *
-   * @param signUpNologinDTO Sign up dto.
-   * @return Common result.
+   * <p>Verify token for create new account, don't need to log in first.
    */
   @Override
   public Result verifySignUpTokenWithoutLogin(SignUpNologinDTO signUpNologinDTO) {

@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ErrorController {
+  /**
+   * error.
+   *
+   * @return a {@link java.lang.String} object.
+   */
   @GetMapping("/error")
   public String error() {
     return "Got error";

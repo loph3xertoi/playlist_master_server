@@ -26,6 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MpdController {
   private final RedisTemplate<String, String> redisTemplate;
 
+  /**
+   * Constructor for MpdController.
+   *
+   * @param redisTemplate a {@link org.springframework.data.redis.core.RedisTemplate} object.
+   */
   public MpdController(RedisTemplate<String, String> redisTemplate) {
     this.redisTemplate = redisTemplate;
   }

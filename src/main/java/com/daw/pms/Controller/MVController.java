@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MVController {
   private final MVService mvService;
 
+  /**
+   * Constructor for MVController.
+   *
+   * @param mvService a {@link com.daw.pms.Service.PMS.MVService} object.
+   */
   public MVController(MVService mvService) {
     this.mvService = mvService;
   }
@@ -70,8 +75,8 @@ public class MVController {
    * @param songType The pms song's type, only used in pms platform.
    * @param platform The platform id.
    * @return All the related video about the song with {@code songId}.
-   * @apiNote GET /relatedMV/{@code songId}?mvId={@code mvId}&limit={@code limit}&platform={@code
-   *     platform}
+   * @apiNote GET /relatedMV/{@code songId}?mvId={@code mvId}&amp;limit={@code
+   *     limit}&amp;platform={@code platform}
    */
   @GetMapping("/relatedMV/{songId}")
   public Result getRelatedVideos(

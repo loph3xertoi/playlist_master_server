@@ -13,6 +13,12 @@ import org.apache.ibatis.jdbc.SQL;
  * @since 9/18/23
  */
 public class SongSqlProvider {
+  /**
+   * getSongs.
+   *
+   * @param ids a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String getSongs(List<Long> ids) {
     return new SQL() {
       {
@@ -25,6 +31,12 @@ public class SongSqlProvider {
     }.toString();
   }
 
+  /**
+   * getExistedIdsAndSongIdsList.
+   *
+   * @param songIds a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String getExistedIdsAndSongIdsList(List<Long> songIds) {
     return new SQL() {
       {
@@ -37,6 +49,12 @@ public class SongSqlProvider {
     }.toString();
   }
 
+  /**
+   * getExistedIdsAndNCMIdsList.
+   *
+   * @param ncmIds a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String getExistedIdsAndNCMIdsList(List<Long> ncmIds) {
     return new SQL() {
       { // @Select("select pms_song_id, ncm_id from tb_ncm_song where ncm_id in #{ncmIds}")
@@ -49,6 +67,12 @@ public class SongSqlProvider {
     }.toString();
   }
 
+  /**
+   * getExistedIdsAndAidsList.
+   *
+   * @param aids a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String getExistedIdsAndAidsList(List<Long> aids) {
     return new SQL() {
       { //   @Select("select pms_song_id, aid from tb_bilibili_resource where aid in #{aids}")
@@ -78,6 +102,12 @@ public class SongSqlProvider {
     }
   }
 
+  /**
+   * updateSong.
+   *
+   * @param song a {@link com.daw.pms.Entity.PMS.PMSSong} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String updateSong(PMSSong song) {
     String name = song.getName();
     String cover = song.getCover();
@@ -111,6 +141,12 @@ public class SongSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * addSong.
+   *
+   * @param song a {@link com.daw.pms.Entity.PMS.PMSSong} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addSong(PMSSong song) {
     String name = song.getName();
     String cover = song.getCover();
@@ -144,6 +180,12 @@ public class SongSqlProvider {
         .toString();
   }
 
+  /**
+   * addQQMusicSong.
+   *
+   * @param params a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addQQMusicSong(List<Map<String, String>> params) {
     StringBuilder sql = new StringBuilder();
     for (Map<String, String> param : params) {
@@ -176,6 +218,12 @@ public class SongSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * addNCMSong.
+   *
+   * @param params a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addNCMSong(List<Map<String, String>> params) {
     StringBuilder sql = new StringBuilder();
     for (Map<String, String> param : params) {
@@ -203,6 +251,12 @@ public class SongSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * addBiliResource.
+   *
+   * @param params a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addBiliResource(List<Map<String, String>> params) {
     StringBuilder sql = new StringBuilder();
     for (Map<String, String> param : params) {

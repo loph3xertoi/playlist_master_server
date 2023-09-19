@@ -28,17 +28,21 @@ public class NCMMVServiceImpl implements NCMMVService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for NCMMVServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public NCMMVServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
-   * Get detail video information according to its {@code id}.
+   * {@inheritDoc}
    *
-   * @param id The id of this video.
-   * @param cookie Your cookie for netease cloud music.
-   * @return The detail information of the mv {@code id}.
+   * <p>Get detail video information according to its {@code id}.
+   *
    * @apiNote mvid: GET /mv/detail?mvid={@code id} | mlogId: GET /video/detail?id={@code id}
    */
   @Override
@@ -143,13 +147,11 @@ public class NCMMVServiceImpl implements NCMMVService {
   }
 
   /**
-   * Get the url of the mv.
+   * {@inheritDoc}
    *
-   * @param mvId The mvid of the mv.
-   * @param rate The rate of the mv.
-   * @param cookie Your cookie for netease cloud music.
-   * @return MV's link with rate {@code rate}.
-   * @apiNote GET /mv/url?id={@code mvId}&r={@code rate}
+   * <p>Get the url of the mv.
+   *
+   * @apiNote GET /mv/url?id={@code mvId}&amp;r={@code rate}
    */
   @Override
   public String getMVLink(String mvId, Integer rate, String cookie) {
@@ -177,11 +179,10 @@ public class NCMMVServiceImpl implements NCMMVService {
   }
 
   /**
-   * Get mlog's links.
+   * {@inheritDoc}
    *
-   * @param mLogId The mlog's id.
-   * @param cookie Your cookie for netease cloud music.
-   * @return The mlog's links, the key is resolution, the value is the corresponding link.
+   * <p>Get mlog's links.
+   *
    * @apiNote GET /mlog/url?id={@code mLogId}
    */
   @Override
@@ -215,14 +216,12 @@ public class NCMMVServiceImpl implements NCMMVService {
   }
 
   /**
-   * Get all related videos with song {@code songId}.
+   * {@inheritDoc}
    *
-   * @param songId The song's id.
-   * @param mvId The mvid of the song.
-   * @param limit The count of related videos returned.
-   * @param cookie Your cookie for netease cloud music.
-   * @return A list of related videos.
-   * @apiNote GET /mlog/music/rcmd?songid={@code songId}&mvid={@code mvId}&limit={@code limit}
+   * <p>Get all related videos with song {@code songId}.
+   *
+   * @apiNote GET /mlog/music/rcmd?songid={@code songId}&amp;mvid={@code mvId}&amp;limit={@code
+   *     limit}
    */
   @Override
   public List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, String cookie) {
@@ -292,11 +291,9 @@ public class NCMMVServiceImpl implements NCMMVService {
   }
 
   /**
-   * Convert mlog id to vid.
+   * {@inheritDoc}
    *
-   * @param mLogId The Mlog id.
-   * @param cookie Your cookie for netease cloud music.
-   * @return The vid of the mlog.
+   * <p>Convert mlog id to vid.
    */
   public String convertMLogIdToVid(String mLogId, String cookie) {
     String rawVid =

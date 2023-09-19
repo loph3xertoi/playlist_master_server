@@ -21,6 +21,12 @@ public class UserController {
   private final UserService userService;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
+  /**
+   * Constructor for UserController.
+   *
+   * @param userService a {@link com.daw.pms.Service.PMS.UserService} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   */
   public UserController(UserService userService, PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.userService = userService;
     this.pmsUserDetailsUtil = pmsUserDetailsUtil;

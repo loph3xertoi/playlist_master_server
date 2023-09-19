@@ -15,9 +15,11 @@ import org.passay.*;
  */
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
+  /** {@inheritDoc} */
   @Override
   public void initialize(ValidPassword arg0) {}
 
+  /** {@inheritDoc} */
   @Override
   public boolean isValid(String password, ConstraintValidatorContext context) {
     PasswordValidator validator =

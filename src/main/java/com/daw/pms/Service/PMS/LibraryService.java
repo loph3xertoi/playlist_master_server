@@ -85,8 +85,7 @@ public interface LibraryService {
   Result deleteLibrary(String libraryId, Integer platform);
 
   /**
-   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}. /** Add
-   * songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
+   * Add songs {@code songsId} to library {@code libraryId} in platform {@code platform}.
    *
    * @param libraryId Target library id.
    * @param biliSourceFavListId The source media id of fav list, only used in bilibili.
@@ -126,6 +125,7 @@ public interface LibraryService {
    *
    * @param libraryId Library's id.
    * @param songsId The songs' id, multiple songs id separated with comma.
+   * @param platform a {@link java.lang.Integer} object.
    * @return The response of request wrapped by Result DTO.
    */
   Result removeSongsFromLibrary(String libraryId, String songsId, Integer platform);

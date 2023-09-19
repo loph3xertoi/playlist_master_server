@@ -30,7 +30,7 @@ public class BasicPMSUserInfoDTO implements Serializable {
   /** User's avatar. */
   private String avatar;
 
-  /** Login type: 0 for email & password, 1 for GitHub, 2 for Google. */
+  /** Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google. */
   private Integer loginType;
 
   /** User id in qqmusic. */

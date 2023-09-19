@@ -40,6 +40,13 @@ public class BiliResourceServiceImpl implements BiliResourceService {
 
   private final RedisTemplate<String, String> redisTemplate;
 
+  /**
+   * Constructor for BiliResourceServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   * @param biliCookieService a {@link com.daw.pms.Service.BiliBili.BiliCookieService} object.
+   * @param redisTemplate a {@link org.springframework.data.redis.core.RedisTemplate} object.
+   */
   public BiliResourceServiceImpl(
       HttpTools httpTools,
       BiliCookieService biliCookieService,
@@ -50,12 +57,11 @@ public class BiliResourceServiceImpl implements BiliResourceService {
   }
 
   /**
-   * Get detail resource of bilibili.
+   * {@inheritDoc}
    *
-   * @param bvid The bvid of this resource.
-   * @param cookie Your cookie for bilibili.
-   * @return Detail resource of bilibili, wrapped with Result DTO, the data is BiliDetailResource.
-   * @apiNote GET GET_DETAIL_RESOURCE?bvid={@code bvid}&wts=wts&w_rid=w_rid
+   * <p>Get detail resource of bilibili.
+   *
+   * @apiNote GET GET_DETAIL_RESOURCE?bvid={@code bvid}&amp;wts=wts&amp;w_rid=w_rid
    */
   @Override
   public Result getDetailResource(String bvid, String cookie) {
@@ -194,14 +200,12 @@ public class BiliResourceServiceImpl implements BiliResourceService {
   }
 
   /**
-   * Get resource's dash links of bilibili.
+   * {@inheritDoc}
    *
-   * @param bvid The resource's bvid.
-   * @param cid The resource's cid.
-   * @param cookie Your cookie for bilibili.
-   * @return The links of this resource, wrapped with Result DTO, the data is BiliLinksDTO.
-   * @apiNote GET GET_RESOURCE_DASH_LINKS?bvid={@code bvid}&cid={@code
-   *     cid}&fnval=16&fourk=1&platform=html&high_quality=1&wts=wts&w_rid=w_rid
+   * <p>Get resource's dash links of bilibili.
+   *
+   * @apiNote GET GET_RESOURCE_DASH_LINKS?bvid={@code bvid}&amp;cid={@code
+   *     cid}&amp;fnval=16&amp;fourk=1&amp;platform=html&amp;high_quality=1&amp;wts=wts&amp;w_rid=w_rid
    */
   //  @Cacheable(
   //      value = "bilibili-resource-dashLinks",
@@ -399,19 +403,9 @@ public class BiliResourceServiceImpl implements BiliResourceService {
   }
 
   /**
-   * Search resources in bilibili.
+   * {@inheritDoc}
    *
-   * @param searchType The type of search, can be video, media_bangumi and so on.
-   * @param keyword The keyword to search.
-   * @param order The sorting order of searched result, totalrank: by overall, click: by click
-   *     times, pubdate: by publish date, dm: by danmaku number, stow: by collected times, scores:
-   *     by comments number.
-   * @param duration Filter the result by duration, 0: all duration, 1: less than 10 minutes, 2: 10
-   *     to 30 minutes, 3: 30 to 60 minutes, 4: more than 60 minutes.
-   * @param tids Filter by the section number, default is 0(all sections).
-   * @param page The page number.
-   * @param cookie Your cookie for bilibili.
-   * @return Searched resources wrapped with Result DTO, the data is PagedDataDTO<BiliResource>.
+   * <p>Search resources in bilibili.
    */
   // String keyword, int offset, int limit, int type, String cookie
   @Override

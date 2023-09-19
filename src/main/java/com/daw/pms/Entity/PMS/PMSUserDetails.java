@@ -22,10 +22,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class PMSUserDetails implements UserDetails {
   private final UserDTO user;
 
+  /**
+   * Constructor for PMSUserDetails.
+   *
+   * @param user a {@link com.daw.pms.DTO.UserDTO} object.
+   */
   public PMSUserDetails(UserDTO user) {
     this.user = user;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> list = new ArrayList<>();
@@ -33,31 +39,37 @@ public class PMSUserDetails implements UserDetails {
     return list;
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getPassword() {
     return user.getPass();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getUsername() {
     return user.getEmail();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isAccountNonExpired() {
     return true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isAccountNonLocked() {
     return true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isCredentialsNonExpired() {
     return true;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isEnabled() {
     return user.getEnabled();

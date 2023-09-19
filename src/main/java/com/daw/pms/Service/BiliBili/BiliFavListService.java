@@ -20,10 +20,10 @@ public interface BiliFavListService {
    * @param platform The platform, default is web.
    * @param type 0 for created fav lists, 1 for collected fav lists.
    * @param cookie Your cookie for bilibili.
-   * @return Paged bili fav list wrapped with Result DTO, data is PagedDataDTO<BiliFavList>.
-   * @apiNote type==0: GET GET_CREATED_FAV_LISTS?pn={@code pn}&ps={@code ps}&up_mid={@code mid},
-   *     type==1: GET GET_COLLECTED_FAV_LISTS?pn={@code pn}&ps={@code ps}&up_mid={@code
-   *     mid}&platform={@code platform}.
+   * @return Paged bili fav list wrapped with Result DTO, data is PagedDataDTO&lt;BiliFavList&gt;.
+   * @apiNote type==0: GET GET_CREATED_FAV_LISTS?pn={@code pn}&amp;ps={@code ps}&amp;up_mid={@code
+   *     mid}, type==1: GET GET_COLLECTED_FAV_LISTS?pn={@code pn}&amp;ps={@code
+   *     ps}&amp;up_mid={@code mid}&amp;platform={@code platform}.
    */
   Result getFavLists(
       Integer pn, Integer ps, Long mid, String platform, Integer type, String cookie);
@@ -41,9 +41,10 @@ public interface BiliFavListService {
    * @param type 0 for created fav lists, 1 for collected fav lists.
    * @param cookie Your cookie for bilibili.
    * @return Detail fav list wrapped with Result DTO, data is BiliDetailFavList.
-   * @apiNote type==0: GET GET_DETAIL_CREATED_FAV_LIST?media_id={@code id}&pn={@code pn}&ps={@code
-   *     ps}&keyword={@code keyword}&order={@code order}&type={@code range} type==1: GET
-   *     GET_DETAIL_COLLECTED_FAV_LIST?season_id={@code id}&pn={@code pn}&ps={@code ps}
+   * @apiNote type==0: GET GET_DETAIL_CREATED_FAV_LIST?media_id={@code id}&amp;pn={@code
+   *     pn}&amp;ps={@code ps}&amp;keyword={@code keyword}&amp;order={@code order}&amp;type={@code
+   *     range} type==1: GET GET_DETAIL_COLLECTED_FAV_LIST?season_id={@code id}&amp;pn={@code
+   *     pn}&amp;ps={@code ps}
    */
   Result getDetailFavList(
       Long id,

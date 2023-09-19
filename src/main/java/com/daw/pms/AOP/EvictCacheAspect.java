@@ -31,6 +31,14 @@ public class EvictCacheAspect {
   private final RedisConnectionFactory redisConnectionFactory;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
+  /**
+   * Constructor for EvictCacheAspect.
+   *
+   * @param cacheManager a {@link org.springframework.cache.CacheManager} object.
+   * @param redisConnectionFactory a {@link
+   *     org.springframework.data.redis.connection.RedisConnectionFactory} object.
+   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
+   */
   public EvictCacheAspect(
       CacheManager cacheManager,
       RedisConnectionFactory redisConnectionFactory,
@@ -40,11 +48,13 @@ public class EvictCacheAspect {
     this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
+  /** controllerUpdateMethods. */
   @Pointcut(
       "execution(* com.daw.pms.Controller.LibraryController.*(..))"
           + "&& !execution(* com.daw.pms.Controller.LibraryController.get*(..))")
   public void controllerUpdateMethods() {}
 
+  /** controllerUpdateLibrarySongsMethods. */
   @Pointcut(
       "execution(* com.daw.pms.Controller.LibraryController.addSongsToLibrary(..))"
           + "|| execution(* com.daw.pms.Controller.LibraryController.moveSongsToOtherLibrary(..))"
@@ -52,6 +62,12 @@ public class EvictCacheAspect {
           + "|| execution(* com.daw.pms.Controller.LibraryController.updateLibrary(..))")
   public void controllerUpdateLibrarySongsMethods() {}
 
+  /**
+   * evictLibrariesCacheOnUpdated.
+   *
+   * @param joinPoint a {@link org.aspectj.lang.JoinPoint} object.
+   * @param resultObj a {@link java.lang.Object} object.
+   */
   @AfterReturning(pointcut = "controllerUpdateMethods()", returning = "resultObj")
   public void evictLibrariesCacheOnUpdated(JoinPoint joinPoint, Object resultObj) {
     RedisCache redisCache = (RedisCache) cacheManager.getCache("library-cache");
@@ -101,6 +117,12 @@ public class EvictCacheAspect {
     }
   }
 
+  /**
+   * evictDetailLibraryCacheOnUpdated.
+   *
+   * @param joinPoint a {@link org.aspectj.lang.JoinPoint} object.
+   * @param resultObj a {@link java.lang.Object} object.
+   */
   @AfterReturning(pointcut = "controllerUpdateLibrarySongsMethods()", returning = "resultObj")
   public void evictDetailLibraryCacheOnUpdated(JoinPoint joinPoint, Object resultObj) {
     RedisCache redisCache = (RedisCache) cacheManager.getCache("library-cache");

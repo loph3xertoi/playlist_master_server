@@ -16,7 +16,7 @@ public interface QQMusicPlaylistService {
    * @param qid Your qq number.
    * @param cookie Your cookie for qq music.
    * @return All playlists created by {@code qid}, wrapped by Result DTO, the data is
-   *     PagedDataDTO<QQMusicPlaylist>
+   *     PagedDataDTO&lt;QQMusicPlaylist&gt;.
    * @apiNote GET /user/playlist?id={@code qid}
    */
   Result getPlaylists(String qid, String cookie);
@@ -58,7 +58,7 @@ public interface QQMusicPlaylistService {
    * @param songsMid The mid of songs, multiple mid separated with comma.
    * @param cookie Your qq music cookie.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/add?dirid={@code dirId}&mid={@code songsMid}
+   * @apiNote GET /playlist/add?dirid={@code dirId}&amp;mid={@code songsMid}
    */
   Result addSongsToPlaylist(int dirId, String songsMid, String cookie);
 
@@ -71,7 +71,7 @@ public interface QQMusicPlaylistService {
    * @param toDirId DirId of target playlist.
    * @param cookie Your qq music cookie.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /move?id={@code songsId}&from_dir={@code fromDirId}&to_dir={@code toDirId}
+   * @apiNote GET /move?id={@code songsId}&amp;from_dir={@code fromDirId}&amp;to_dir={@code toDirId}
    */
   Result moveSongsToOtherPlaylist(String songsId, int fromDirId, int toDirId, String cookie);
 
@@ -82,7 +82,7 @@ public interface QQMusicPlaylistService {
    * @param songsId The songs' id, multiple songs id separated with comma.
    * @param cookie Your qq music cookie.
    * @return The response of request wrapped by Result DTO.
-   * @apiNote GET /playlist/remove?dirid={@code dirId}&id={@code songsId}
+   * @apiNote GET /playlist/remove?dirid={@code dirId}&amp;id={@code songsId}
    */
   Result removeSongsFromPlaylist(int dirId, String songsId, String cookie);
 }

@@ -30,7 +30,7 @@ public interface NCMMVService {
    * @param rate The rate of the mv.
    * @param cookie Your cookie for netease cloud music.
    * @return MV's link with rate {@code rate}.
-   * @apiNote GET /mv/url?id={@code mvId}&r={@code rate}
+   * @apiNote GET /mv/url?id={@code mvId}&amp;r={@code rate}
    */
   String getMVLink(String mvId, Integer rate, String cookie);
 
@@ -52,7 +52,8 @@ public interface NCMMVService {
    * @param limit The count of related videos returned.
    * @param cookie Your cookie for netease cloud music.
    * @return A list of related videos.
-   * @apiNote GET /mlog/music/rcmd?songid={@code songId}&mvid={@code mvId}&limit={@code limit}
+   * @apiNote GET /mlog/music/rcmd?songid={@code songId}&amp;mvid={@code mvId}&amp;limit={@code
+   *     limit}
    */
   List<BasicVideo> getRelatedVideos(Long songId, String mvId, Integer limit, String cookie);
 

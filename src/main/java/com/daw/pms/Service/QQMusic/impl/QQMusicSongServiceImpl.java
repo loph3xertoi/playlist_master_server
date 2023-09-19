@@ -25,17 +25,21 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for QQMusicSongServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public QQMusicSongServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
-   * Get songs id from playlist {@code dirId}.
+   * {@inheritDoc}
    *
-   * @param dirId Playlist's dirId.
-   * @param cookie Your qq music cookie.
-   * @return A list of songId for your playlist with {@code dirId}.
+   * <p>Get songs id from playlist {@code dirId}.
+   *
    * @apiNote GET /playlist/map?dirid={@code dirId}
    */
   @Override
@@ -74,12 +78,10 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get detail song with mid {@code songMid}.
+   * {@inheritDoc}
    *
-   * @param songMid The mid of this song.
-   * @param cookie Your qq music cookie.
-   * @return Detail song with {@code songMid}, wrapped with Result DTO, the data is
-   *     QQMusicDetailSong.
+   * <p>Get detail song with mid {@code songMid}.
+   *
    * @apiNote GET /song?songmid={@code songMid}
    */
   @Override
@@ -174,11 +176,10 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get the similar songs according to {@code songId}.
+   * {@inheritDoc}
    *
-   * @param songId The id of song.
-   * @param cookie Your qq music cookie.
-   * @return A list of songs that is similar to song {@code songId}.
+   * <p>Get the similar songs according to {@code songId}.
+   *
    * @apiNote GET /song/similar?id={@code songId}
    */
   @Override
@@ -263,11 +264,10 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get the lyrics of the song with {@code songMid}.
+   * {@inheritDoc}
    *
-   * @param songMid The mid of song.
-   * @param cookie Your qq music cookie.
-   * @return Lyrics of your song in QQMusicLyrics.
+   * <p>Get the lyrics of the song with {@code songMid}.
+   *
    * @apiNote GET /lyric?songmid={@code songMid}
    */
   @Override
@@ -303,11 +303,10 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get the cover uri of the song/album with {@code albumMid}.
+   * {@inheritDoc}
    *
-   * @param albumMid The albumMid of song.
-   * @param cookie Your qq music cookie.
-   * @return Cover uri of your song.
+   * <p>Get the cover uri of the song/album with {@code albumMid}.
+   *
    * @apiNote GET /album?albummid={@code albumMid}
    * @deprecated Not used.
    */
@@ -341,16 +340,12 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get the url of song with songMid {@code songMid} and mediaMid {@code mediaMid} and type {@code
-   * type}.
+   * {@inheritDoc}
    *
-   * @param songMid The song mid.
-   * @param type The quality(128, 320, flac, m4a, ogg) of song you want to get.
-   * @param mediaMid The mediaMid of song.
-   * @param cookie Your qq music cookie.
-   * @return The url of your song with mid {@code songMid} and mediaMid {@code mediaMid} and type
-   *     {@code type}
-   * @apiNote GET /song/url?id={@code songMid}&type={@code type}&mediaId={@code mediaMid}
+   * <p>Get the url of song with songMid {@code songMid} and mediaMid {@code mediaMid} and type
+   * {@code type}.
+   *
+   * @apiNote GET /song/url?id={@code songMid}&amp;type={@code type}&amp;mediaId={@code mediaMid}
    */
   @Override
   public String getSongLink(String songMid, String type, String mediaMid, String cookie) {
@@ -390,12 +385,10 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Get the url of songs with songMids {@code songMids}.
+   * {@inheritDoc}
    *
-   * @param songMids The songMid, separated with comma.
-   * @param cookie Your qq music cookie.
-   * @return The urls of your songs with mid {@code songMids}, wrapped with Result DTO, the data is
-   *     Map<String, String>.
+   * <p>Get the url of songs with songMids {@code songMids}.
+   *
    * @apiNote GET /song/urls?id={@code songMids}
    */
   @Override
@@ -445,14 +438,11 @@ public class QQMusicSongServiceImpl implements QQMusicSongService {
   }
 
   /**
-   * Search and return paged songs according to the given keyword {@code name}.
+   * {@inheritDoc}
    *
-   * @param name The search keyword.
-   * @param pageNo Page order.
-   * @param pageSize Size one page.
-   * @param cookie Your qq music cookie.
-   * @return Searched result wrapped in Result DTO, the data is PagedDataDTO<QQMusicSong>.
-   * @apiNote GET /search?key={@code name}&pageNo={@code pageNo}&pageSize={@code pageSize}
+   * <p>Search and return paged songs according to the given keyword {@code name}.
+   *
+   * @apiNote GET /search?key={@code name}&amp;pageNo={@code pageNo}&amp;pageSize={@code pageSize}
    */
   @Override
   public Result searchSongsByKeyword(String name, int pageNo, int pageSize, String cookie) {

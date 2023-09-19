@@ -12,6 +12,12 @@ import org.apache.ibatis.jdbc.SQL;
  * @since 9/18/23
  */
 public class SingerSqlProvider {
+  /**
+   * updateSinger.
+   *
+   * @param singer a {@link com.daw.pms.Entity.PMS.PMSSinger} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String updateSinger(PMSSinger singer) {
     String name = singer.getName();
     String avatar = singer.getHeadPic();
@@ -37,6 +43,12 @@ public class SingerSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * addSinger.
+   *
+   * @param singer a {@link com.daw.pms.Entity.PMS.PMSSinger} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addSinger(PMSSinger singer) {
     String name = singer.getName();
     Integer type = singer.getType();
@@ -56,6 +68,12 @@ public class SingerSqlProvider {
         .toString();
   }
 
+  /**
+   * getSingersByIds.
+   *
+   * @param ids a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String getSingersByIds(List<Long> ids) {
     return new SQL() {
       { // @Select("select * from tb_pms_singer where id in (#{ids})")

@@ -12,6 +12,12 @@ import org.apache.ibatis.jdbc.SQL;
  * @since 9/18/23
  */
 public class RelationSqlProvider {
+  /**
+   * addRelationSongSinger.
+   *
+   * @param params a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addRelationSongSinger(List<Map<String, Long>> params) {
     StringBuilder sql = new StringBuilder();
     for (Map<String, Long> param : params) {
@@ -34,6 +40,12 @@ public class RelationSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * addRelationPlaylistSong.
+   *
+   * @param params a {@link java.util.List} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String addRelationPlaylistSong(List<Map<String, Long>> params) {
     StringBuilder sql = new StringBuilder();
     for (Map<String, Long> param : params) {
@@ -56,6 +68,12 @@ public class RelationSqlProvider {
     return sql.toString();
   }
 
+  /**
+   * deleteRelationPlaylistSong.
+   *
+   * @param params a {@link java.util.Map} object.
+   * @return a {@link java.lang.String} object.
+   */
   public String deleteRelationPlaylistSong(Map<String, Object> params) {
     StringBuilder sql = new StringBuilder();
     String libraryId = String.valueOf(params.get("libraryId"));

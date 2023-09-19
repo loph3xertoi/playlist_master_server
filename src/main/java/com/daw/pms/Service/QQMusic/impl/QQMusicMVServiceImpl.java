@@ -27,17 +27,21 @@ public class QQMusicMVServiceImpl implements QQMusicMVService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for QQMusicMVServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public QQMusicMVServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
-   * Get detail video information according to its {@code vid}.
+   * {@inheritDoc}
    *
-   * @param vid The vid of the mv.
-   * @param cookie Your qq music cookie.
-   * @return The detail information of the mv {@code vid}.
+   * <p>Get detail video information according to its {@code vid}.
+   *
    * @apiNote GET /mv?id={@code vid}
    */
   @Override
@@ -58,11 +62,10 @@ public class QQMusicMVServiceImpl implements QQMusicMVService {
   }
 
   /**
-   * Get the url for the mv(s) {@code vids}.
+   * {@inheritDoc}
    *
-   * @param vids The vid of the mv, multi vid separated by comma.
-   * @param cookie Your qq music cookie.
-   * @return A map which key is the vid and value is a list of urls of this mv.
+   * <p>Get the url for the mv(s) {@code vids}.
+   *
    * @apiNote GET /mv/url?id={@code vids}
    */
   @Override
@@ -140,11 +143,9 @@ public class QQMusicMVServiceImpl implements QQMusicMVService {
   }
 
   /**
-   * Get all the related basic videos information according to its {@code songId}.
+   * {@inheritDoc}
    *
-   * @param songId The song's id.
-   * @param cookie Your qq music cookie.
-   * @return A list of basic video information related to the song.
+   * <p>Get all the related basic videos information according to its {@code songId}.
    */
   @Override
   public List<BasicVideo> getRelatedVideos(Integer songId, String cookie) {

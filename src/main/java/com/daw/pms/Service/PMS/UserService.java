@@ -26,7 +26,7 @@ public interface UserService {
    * Check if the pms user with username already exists.
    *
    * @param username User name.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @param loginType Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google.
    * @return True if the username already exists, false otherwise.
    */
   boolean checkIfPMSUserNameExist(String username, Integer loginType);
@@ -35,7 +35,7 @@ public interface UserService {
    * Check if the pms user binds this email already exists.
    *
    * @param email User email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @param loginType Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google.
    * @return True if the email has already been bound, false otherwise.
    */
   boolean checkIfEmailAddressExist(String email, Integer loginType);
@@ -44,7 +44,7 @@ public interface UserService {
    * Check if the phone number exists.
    *
    * @param phoneNumber Phone number to bind.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @param loginType Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google.
    * @return True if the phone number has already been bound, false otherwise.
    */
   boolean checkIfPhoneNumberExist(String phoneNumber, Integer loginType);
@@ -99,7 +99,7 @@ public interface UserService {
    * Check if this email has already bound to user in this login type.
    *
    * @param email User's email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @param loginType Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google.
    * @return True if this email has already bound in this login type, false otherwise.
    */
   boolean identifyUserByEmail(String email, Integer loginType);
@@ -108,7 +108,7 @@ public interface UserService {
    * Get user id by email in specific login type.
    *
    * @param email User's email.
-   * @param loginType Login type: 0 for email & password, 1 for GitHub, 2 for Google.
+   * @param loginType Login type: 0 for email &amp; password, 1 for GitHub, 2 for Google.
    * @return User id.
    */
   Long getUserIdByEmail(String email, Integer loginType);

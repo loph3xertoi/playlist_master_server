@@ -27,17 +27,21 @@ public class NCMSongServiceImpl implements NCMSongService {
   private final HttpTools httpTools;
   private final String baseUrl;
 
+  /**
+   * Constructor for NCMSongServiceImpl.
+   *
+   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
+   */
   public NCMSongServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
     this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**
-   * Get detail song with {@code ids}.
+   * {@inheritDoc}
    *
-   * @param ids The id of song, multiple songs separated by comma.
-   * @param cookie Your cookie for netease cloud music.
-   * @return Detail song with {@code ids}, wrapped with Result DTO, the data is NCMDetailSong.
+   * <p>Get detail song with {@code ids}.
+   *
    * @apiNote GET /song/detail?ids={@code ids}
    */
   @Override
@@ -138,11 +142,10 @@ public class NCMSongServiceImpl implements NCMSongService {
   }
 
   /**
-   * Get the similar songs of song {@code id}.
+   * {@inheritDoc}
    *
-   * @param id The id of song.
-   * @param cookie Your cookie for netease cloud music.
-   * @return A list of songs that is similar to song {@code id}.
+   * <p>Get the similar songs of song {@code id}.
+   *
    * @apiNote GET /simi/song?id={@code id}
    */
   @Override
@@ -208,11 +211,10 @@ public class NCMSongServiceImpl implements NCMSongService {
   }
 
   /**
-   * Get the lyrics of the song with {@code id}.
+   * {@inheritDoc}
    *
-   * @param id The id of song.
-   * @param cookie Your cookie for netease cloud music.
-   * @return Lyrics of your song in netease cloud music.
+   * <p>Get the lyrics of the song with {@code id}.
+   *
    * @apiNote GET /lyric/new?id={@code id}
    */
   @Override
@@ -272,15 +274,11 @@ public class NCMSongServiceImpl implements NCMSongService {
   }
 
   /**
-   * Get the url of songs with {@code ids} and quality {@code level}.
+   * {@inheritDoc}
    *
-   * @param ids The song's id, multiple songs separated by comma.
-   * @param level Quality of song, include standard, higher, exhigh, lossless, hires, jyeffect, sky,
-   *     jymaster.
-   * @param cookie Your cookie for netease cloud music.
-   * @return A map which the key is the song's id and the value is the url of songs with {@code ids}
-   *     and quality {@code level}, wrapped with Result DTO, the data is Map<String,String>.
-   * @apiNote GET /song/url/v1?id={@code ids}&level={@code level}
+   * <p>Get the url of songs with {@code ids} and quality {@code level}.
+   *
+   * @apiNote GET /song/url/v1?id={@code ids}&amp;level={@code level}
    */
   @Override
   public Result getSongsLink(String ids, String level, String cookie) {
@@ -316,17 +314,11 @@ public class NCMSongServiceImpl implements NCMSongService {
   }
 
   /**
-   * Search and return paged songs/resources according to the given keyword {@code name}.
+   * {@inheritDoc}
    *
-   * @param keyword Your search keywords.
-   * @param pageNo The page number.
-   * @param pageSize The page size.
-   * @param type Search type, 1 for song, 10 for album, 100 for singers, 1000 for playlists, 1002
-   *     for user, 1004 for MV, 1006 for lyrics, 1009 for podcasts, 1014 for videos, 1018 for misc,
-   *     2000 for voice.
-   * @param cookie Your cookie for netease cloud music.
-   * @return Searched songs wrapped with Result DTO, the data is PagedDataDTO<NCMSong>.
-   * @apiNote GET /cloudsearch?keywords=as long as you love me&offset=0&limit=30&type=1
+   * <p>Search and return paged songs/resources according to the given keyword {@code name}.
+   *
+   * @apiNote GET /cloudsearch?keywords=as long as you love me&amp;offset=0&amp;limit=30&amp;type=1
    */
   @Override
   public Result searchResourcesByKeyword(
