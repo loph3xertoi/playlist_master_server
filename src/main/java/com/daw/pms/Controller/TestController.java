@@ -4,6 +4,7 @@ import com.daw.pms.DTO.Result;
 import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,12 +38,13 @@ public class TestController {
    * @return a {@link java.util.Map} object.
    */
   @GetMapping("/hello")
-  public Map<String, Object> test() {
+  public Map<String, Object> test(HttpServletResponse response) {
     Map<String, Object> map = new HashMap<>();
     map.put("time", new Date());
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     map.put("authentication", authentication);
+    //    response.addHeader("Access-Control-Allow-Origin", "*");
     return map;
   }
 
