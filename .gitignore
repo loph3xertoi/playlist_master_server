@@ -39,4 +39,5 @@ node_modules/
 
 ### Secret ###
 src/main/resources/application.yml
+src/main/resources/playlistmasterhttps.p12
 src/test/java/com/daw/pms/GlobalConfig.java
