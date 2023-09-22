@@ -31,6 +31,7 @@ public class CorsController {
    *
    * @return splash screen image.
    */
+  //  @Operation(summary = "Get bilibili splash screen image")
   @GetMapping("/bili/splash")
   public String getSplashScreen() {
 

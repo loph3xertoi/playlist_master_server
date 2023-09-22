@@ -80,43 +80,38 @@ public class WebSecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf()
         .disable()
-        .authorizeHttpRequests(
-            authorize -> {
-              authorize
-                  .antMatchers(
-                      "/",
-                      "/users",
-                      "/index.html",
-                      "/robots.txt",
-                      "/favicon.ico",
-                      "/css/**",
-                      "/js/**",
-                      "/images/**",
-                      "/xml/**",
-                      "/mpd/**",
-                      "/login",
-                      "/register",
-                      "/sendcode",
-                      "/verify/nologin/signUp",
-                      "/verify/nologin/resetPassword",
-                      "/login/oauth2/github",
-                      "/login/oauth2/google",
-                      "/logout/success",
-                      "/error",
-                      "/hello",
-                      "/cors/bili/splash")
-                  .permitAll();
-            })
         .authorizeHttpRequests()
-        //        .authorizeHttpRequests()
-        //        .antMatchers(
-        //            )
-        //        .permitAll()
-
+        .antMatchers(
+            "/",
+            //                      "/swagger-ui.html",
+            //                      "/swagger-ui/**",
+            //                      "/v3/api-docs/**",
+            //                      "/v3/api-docs.yaml",
+            //            "/users",
+            "/index.html",
+            "/robots.txt",
+            "/favicon.ico",
+            "/css/**",
+            "/js/**",
+            "/images/**",
+            "/xml/**",
+            "/mpd/**",
+            "/login",
+            "/register",
+            "/sendcode",
+            "/verify/nologin/signUp",
+            "/verify/nologin/resetPassword",
+            "/login/oauth2/github",
+            "/login/oauth2/google",
+            "/logout/success",
+            "/error",
+            "/hello",
+            "/cors/bili/splash")
+        .permitAll()
         .antMatchers(HttpMethod.POST, "/verify/resetPassword", "/verify/bindEmail")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
-        //        .antMatchers(HttpMethod.GET, "/users")
-        //        .hasRole(String.valueOf(UserRole.ADMIN))
+        .antMatchers(HttpMethod.GET, "/users")
+        .hasRole(String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.GET)
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.POST)
