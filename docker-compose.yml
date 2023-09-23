@@ -1,0 +1,47 @@
+version: "3"
+services:
+  pms:
+    image: loph3xertoi/pms:latest
+    container_name: pms
+    ports:
+      - "80:80"
+    volumes:
+      - /root/app/pms:/data
+    networks:
+      - pms_network
+    depends_on:
+      - redis
+      - mysql
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - /root/app/redis/redis.conf:/etc/redis/redis.conf
+      - /root/app/redis/data:/data
+      - /root/app/redis/backup:/etc/redis/backup
+    networks:
+      - pms_network
+    command: redis-server /etc/redis/redis.conf
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_DATABASE: 'playlist_master'
+      MYSQL_USER: 'pms'
+      MYSQL_PASSWORD: 'pms'
+    volumes:
+      - /root/app/mysql/data:/var/lib/mysql
+      - /root/app/mysql/conf/my.cnf:/etc/my.cnf
+      - /root/app/mysql/init:/docker-entrypoint-initdb.d
+      - /root/app/mysql/logs/error.log:/var/log/mysql/error.log
+    networks:
+      - pms_network
+    command: --default-authentication-plugin=mysql_native_password
+networks:
+  pms_network:

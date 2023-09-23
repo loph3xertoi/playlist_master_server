@@ -28,8 +28,7 @@ flush privileges;
 -- ----------------------------
 -- Table structure for tb_bilibili_resource
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_bilibili_resource`;
-CREATE TABLE `tb_bilibili_resource`
+CREATE TABLE If NOT EXISTS `tb_bilibili_resource`
 (
     `id`          int(11)                          NOT NULL AUTO_INCREMENT,
     `pms_song_id` int(11)                          NOT NULL,
@@ -45,8 +44,7 @@ CREATE TABLE `tb_bilibili_resource`
 -- ----------------------------
 -- Table structure for tb_ncm_song
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_ncm_song`;
-CREATE TABLE `tb_ncm_song`
+CREATE TABLE If NOT EXISTS `tb_ncm_song`
 (
     `id`          int(11)                          NOT NULL AUTO_INCREMENT,
     `pms_song_id` int(11)                          NOT NULL,
@@ -61,8 +59,7 @@ CREATE TABLE `tb_ncm_song`
 -- ----------------------------
 -- Table structure for tb_playlist_song
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_playlist_song`;
-CREATE TABLE `tb_playlist_song`
+CREATE TABLE If NOT EXISTS `tb_playlist_song`
 (
     `id`             int(11) NOT NULL AUTO_INCREMENT,
     `fk_playlist_id` int(11) NOT NULL,
@@ -78,8 +75,7 @@ CREATE TABLE `tb_playlist_song`
 -- ----------------------------
 -- Table structure for tb_pms_detail_playlist
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_pms_detail_playlist`;
-CREATE TABLE `tb_pms_detail_playlist`
+CREATE TABLE If NOT EXISTS `tb_pms_detail_playlist`
 (
     `id`          int(11)                          NOT NULL AUTO_INCREMENT,
     `intro`       varchar(500) DEFAULT '' COMMENT 'The description of this playlist.',
@@ -94,8 +90,7 @@ CREATE TABLE `tb_pms_detail_playlist`
 -- ----------------------------
 -- Table structure for tb_pms_playlist
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_pms_playlist`;
-CREATE TABLE `tb_pms_playlist`
+CREATE TABLE If NOT EXISTS `tb_pms_playlist`
 (
     `id`          int(11)     NOT NULL AUTO_INCREMENT,
     `creator_id`  int(11)     NOT NULL,
@@ -109,8 +104,7 @@ CREATE TABLE `tb_pms_playlist`
 -- ----------------------------
 -- Table structure for tb_pms_singer
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_pms_singer`;
-CREATE TABLE `tb_pms_singer`
+CREATE TABLE If NOT EXISTS `tb_pms_singer`
 (
     `id`     int(11)     NOT NULL AUTO_INCREMENT,
     `type`   int(11)     NOT NULL COMMENT 'Which platform this singer belongs to.',
@@ -124,8 +118,7 @@ CREATE TABLE `tb_pms_singer`
 -- ----------------------------
 -- Table structure for tb_pms_song
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_pms_song`;
-CREATE TABLE `tb_pms_song`
+CREATE TABLE If NOT EXISTS `tb_pms_song`
 (
     `id`            int(11)      NOT NULL AUTO_INCREMENT,
     `name`          varchar(100) NOT NULL COMMENT 'The name of this song.',
@@ -141,8 +134,7 @@ CREATE TABLE `tb_pms_song`
 -- ----------------------------
 -- Table structure for tb_pms_user
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_pms_user`;
-CREATE TABLE `tb_pms_user`
+CREATE TABLE If NOT EXISTS `tb_pms_user`
 (
     `id`             int(11)     NOT NULL AUTO_INCREMENT COMMENT 'User id and primary key in pms user table.',
     `name`           varchar(50) NOT NULL COMMENT 'User name.',
@@ -169,8 +161,7 @@ CREATE TABLE `tb_pms_user`
 -- ----------------------------
 -- Table structure for tb_qqmusic_song
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_qqmusic_song`;
-CREATE TABLE `tb_qqmusic_song`
+CREATE TABLE If NOT EXISTS `tb_qqmusic_song`
 (
     `id`          int(11)                          NOT NULL AUTO_INCREMENT,
     `pms_song_id` int(11)                          NOT NULL,
@@ -186,8 +177,7 @@ CREATE TABLE `tb_qqmusic_song`
 -- ----------------------------
 -- Table structure for tb_song_singer
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_song_singer`;
-CREATE TABLE `tb_song_singer`
+CREATE TABLE If NOT EXISTS `tb_song_singer`
 (
     `id`           int(11) NOT NULL AUTO_INCREMENT,
     `fk_song_id`   int(11) NOT NULL COMMENT 'The foreign key to pms song.',

@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - main
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -18,7 +16,7 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: "docs"
   cancel-in-progress: false
 
 jobs:
@@ -33,6 +31,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
+          cache: 'maven'
 
       - name: Install Maven Dependencies
         run: mvn dependency:resolve
@@ -40,25 +39,24 @@ jobs:
       - name: Generate Docs
         run: mvn javadoc:javadoc -f pom.xml
 
-      - name: Generate APIs
-        run: mvn springdoc-openapi:generate -f pom.xml
+      # - name: Generate APIs
+      #   run: mvn springdoc-openapi:generate -f pom.xml
 
       - name: Configure Git
         run: |
           git config user.email "loph3xertoi@gmail.com"
           git config user.name "Daw Loph"
+          git config pull.rebase false
 
       - name: Commit and Push docs and api to gh-pages Branch
         run: |
-          ls
-          ls target
-          echo "-----tree----"
-          tree
           git checkout --orphan gh-pages
           git rm -rf .
           mv ./target/site/docs ./docs
           git add ./docs
           git commit -m "Update Docs"
+          gh_pages_exist=$(git ls-remote --heads git@github.com:loph3xertoi/playlist_master_server.git refs/heads/gh-pages | wc -l)
+          if [ $gh_pages_exist == 1 ]; then git pull origin gh-pages -s ours --allow-unrelated-histories; exit; fi
           git push origin gh-pages -f
 
       - name: Setup Pages
@@ -67,7 +65,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: './target/site/docs'
+          path: './docs'
 
       - name: Deploy to GitHub Pages
         id: deployment
