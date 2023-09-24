@@ -3,26 +3,33 @@ services:
   pms:
     image: loph3xertoi/pms:latest
     container_name: pms
+    environment:
+      _JAVA_OPTIONS: >
+        -Xdebug
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
     ports:
       - "80:80"
+      - "443:443"
+      - "5005:5005"
     volumes:
-      - /root/app/pms:/data
+      - ./pms:/data
     networks:
-      - pms_network
+      - net
     depends_on:
       - redis
       - mysql
   redis:
     container_name: redis
     image: redis:latest
+    restart: always
     ports:
       - "6379:6379"
     volumes:
-      - /root/app/redis/redis.conf:/etc/redis/redis.conf
-      - /root/app/redis/data:/data
-      - /root/app/redis/backup:/etc/redis/backup
+      - ./redis/redis.conf:/etc/redis/redis.conf
+      - ./redis/data:/data
+      - ./redis/backup:/etc/redis/backup
     networks:
-      - pms_network
+      - net
     command: redis-server /etc/redis/redis.conf
   mysql:
     container_name: mysql
@@ -36,12 +43,12 @@ services:
       MYSQL_USER: 'pms'
       MYSQL_PASSWORD: 'pms'
     volumes:
-      - /root/app/mysql/data:/var/lib/mysql
-      - /root/app/mysql/conf/my.cnf:/etc/my.cnf
-      - /root/app/mysql/init:/docker-entrypoint-initdb.d
-      - /root/app/mysql/logs/error.log:/var/log/mysql/error.log
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf/my.cnf:/etc/my.cnf
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/logs/error.log:/var/log/mysql/mysql.log
     networks:
-      - pms_network
+      - net
     command: --default-authentication-plugin=mysql_native_password
 networks:
-  pms_network:
+  net:

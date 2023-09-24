@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 import org.apache.catalina.connector.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -15,16 +14,12 @@ public class MyWebServerFactoryCustomizer
     implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MyWebServerFactoryCustomizer.class);
-  private final int httpPort;
-  private final int redirectToHttpsPort;
 
-  @Autowired
-  MyWebServerFactoryCustomizer(
-      @Value("${server.http-port}") int httpPort,
-      @Value("${server.port}") int redirectToHttpsPort) {
-    this.httpPort = httpPort;
-    this.redirectToHttpsPort = redirectToHttpsPort;
-  }
+  @Value("${server.http-port}")
+  private int httpPort;
+
+  @Value("${server.port}")
+  private int redirectToHttpsPort;
 
   @PostConstruct
   void postConstruct() {

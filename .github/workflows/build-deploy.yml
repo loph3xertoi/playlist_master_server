@@ -24,7 +24,7 @@ jobs:
       - name: Setup Java JDK 8
         uses: actions/setup-java@v3.13.0
         with:
-          distribution: 'temurin'
+          distribution: 'dragonwell'
           java-version: '8'
           cache: 'maven'
 
@@ -50,10 +50,37 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pms:latest
 
+      - name: Copy Config Files
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.REMOTE_SERVER_HOST }}
+          username: ${{ secrets.REMOTE_SERVER_USERNAME }}
+          key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_SERVER_PORT }}
+          source: "redis.conf,my.cnf,src/main/resources/init.sql,docker-compose.yml"
+          target: ~/app
+
+      - name: Place Config Files
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.REMOTE_SERVER_HOST }}
+          username: ${{ secrets.REMOTE_SERVER_USERNAME }}
+          key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_SERVER_PORT }}
+          script: |
+            mkdir -p ~/app/pms ~/app/redis ~/app/mysql/conf ~/app/mysql/init ~/app/mysql/logs
+            mv ~/app/redis.conf ~/app/redis
+            mv ~/app/my.cnf ~/app/mysql/conf
+            mv ~/app/src/main/resources/init.sql ~/app/mysql/init
+            cp ~/application.yml ~/playlistmaster.fun.jks ~/app/pms
+            rm -r ~/app/src
+            touch ~/app/mysql/logs/error.log
+            chmod -R 777 ~/app
+
       - name: Deploy to Remote Server
         uses: loph3xertoi/docker-remote-deployment-action@v1
         with:
-          remote_docker_host: root@playlistmaster.fun
+          remote_docker_host: ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_HOST }}
           ssh_private_key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           ssh_public_key: ${{ secrets.REMOTE_SERVER_SSH_PUBLIC_KEY }}
           docker_registry_username:  ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -61,39 +88,11 @@ jobs:
           # docker_registry_uri: https://registry.hub.docker.com
           deployment_mode: docker-compose
           copy_stack_file: true
-          deploy_path: /root/app
+          deploy_path: ~/app
           stack_file_name: docker-compose.yml
           keep_files: 5
           args: -p pms up -d
           docker_prune: true
           pull_images_first: true
           docker_compose_down: true
-
-      
-      # - name: Start Deployment
-      #   uses: TapTap21/docker-remote-deployment-action@v1.1
-      #   with:
-      #     remote_docker_host: root@playlistmaster.fun
-      #     ssh_private_key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
-      #     ssh_public_key: ${{ secrets.REMOTE_SERVER_SSH_PUBLIC_KEY }}
-      #     stack_file_name: docker-compose.yml
-      #     docker_login_password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      #     docker_login_user: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     # docker_login_registry : https://registry.hub.docker.com/v2/
-      #     args: -p pms up -d
-
-      # - name: Deploy PMS
-      #   uses: wshihadeh/docker-deployment-action@v1
-      #   with:
-      #     remote_docker_host: root@playlistmaster.fun
-      #     ssh_private_key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
-      #     ssh_public_key: ${{ secrets.REMOTE_SERVER_SSH_PUBLIC_KEY }}
-      #     deployment_mode: docker-compose
-      #     copy_stack_file: true
-      #     deploy_path: /root/app
-      #     stack_file_name: docker-compose.yml
-      #     keep_files: 5
-      #     args: up -d
-      #     docker_prune: 'true'
-      #     pull_images_first: 'true'
           

@@ -4,5 +4,4 @@ ADD target/pms.jar pms.jar
 
 EXPOSE 80 443
 
-# ENTRYPOINT ["java", "-jar", "/root/pms.jar"]
-ENTRYPOINT ["sleep", "999999"]
+ENTRYPOINT ["java", "-Xms256m", "-Xmx256m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "pms.jar", "--spring.config.location=/data/application.yml"]
