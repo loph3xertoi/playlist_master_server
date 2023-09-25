@@ -71,10 +71,6 @@ public class OAuth2UserDetailsServiceImpl extends DefaultOAuth2UserService {
       userEmail = user.getAttribute("email");
       UserDTO userDTO = userMapper.getUserByName(user.getName(), loginType);
       GoogleOAuth2User googleOAuth2User = new GoogleOAuth2User(user, userDTO);
-      Long userId = userMapper.getUserIdByName(user.getName(), loginType);
-      if (userId != null) {
-        googleOAuth2User.setId(userId);
-      }
       googleOAuth2User.setEmail(userEmail);
       googleOAuth2User.setOauth2AccessToken(accessToken);
       return googleOAuth2User;

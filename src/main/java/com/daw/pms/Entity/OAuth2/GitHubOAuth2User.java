@@ -59,16 +59,15 @@ public class GitHubOAuth2User implements OAuth2User {
    */
   public GitHubOAuth2User(OAuth2User oauth2User, UserDTO userDTO) {
     this.oauth2User = oauth2User;
-    Long userId = userDTO.getId();
-    if (userId != null) {
-      this.id = userId;
+    if (userDTO != null) {
+      this.id = userDTO.getId();
+      this.qqmusicId = userDTO.getQqmusicId();
+      this.qqmusicCookie = userDTO.getQqmusicCookie();
+      this.ncmId = userDTO.getNcmId();
+      this.ncmCookie = userDTO.getNcmCookie();
+      this.bilibiliId = userDTO.getBilibiliId();
+      this.biliCookie = userDTO.getBiliCookie();
     }
-    this.qqmusicId = userDTO.getQqmusicId();
-    this.qqmusicCookie = userDTO.getQqmusicCookie();
-    this.ncmId = userDTO.getNcmId();
-    this.ncmCookie = userDTO.getNcmCookie();
-    this.bilibiliId = userDTO.getBilibiliId();
-    this.biliCookie = userDTO.getBiliCookie();
   }
 
   /**

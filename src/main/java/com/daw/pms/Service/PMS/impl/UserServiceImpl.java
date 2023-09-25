@@ -7,7 +7,10 @@ import com.daw.pms.DTO.UserDTO;
 import com.daw.pms.Entity.Basic.BasicUser;
 import com.daw.pms.Entity.Bilibili.BiliUser;
 import com.daw.pms.Entity.NeteaseCloudMusic.NCMUser;
+import com.daw.pms.Entity.OAuth2.GitHubOAuth2User;
+import com.daw.pms.Entity.OAuth2.GoogleOAuth2User;
 import com.daw.pms.Entity.PMS.PMSUser;
+import com.daw.pms.Entity.PMS.PMSUserDetails;
 import com.daw.pms.Entity.QQMusic.QQMusicUser;
 import com.daw.pms.Mapper.UserMapper;
 import com.daw.pms.Service.BiliBili.BiliUserService;
@@ -18,6 +21,9 @@ import com.daw.pms.Utils.PmsUserDetailsUtil;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -247,6 +253,25 @@ public class UserServiceImpl implements UserService, Serializable {
   private Result updateQQMusicCredential(Long pmsUserId, String qqmusicId, String qqmusicCookie) {
     int rows = userMapper.updateQQMusicCredential(pmsUserId, qqmusicId, qqmusicCookie);
     if (rows == 1) {
+      // Update qq music credential in security context.
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      Authentication authentication = securityContext.getAuthentication();
+      Object principal = authentication.getPrincipal();
+      if (principal.getClass().equals(PMSUserDetails.class)) {
+        PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
+        pmsUserDetails.getUser().setQqmusicId(Long.valueOf(qqmusicId));
+        pmsUserDetails.getUser().setQqmusicCookie(qqmusicCookie);
+      } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+        GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+        gitHubOAuth2User.setQqmusicId(Long.valueOf(qqmusicId));
+        gitHubOAuth2User.setQqmusicCookie(qqmusicCookie);
+      } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+        GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+        googleOAuth2User.setQqmusicId(Long.valueOf(qqmusicId));
+        googleOAuth2User.setQqmusicCookie(qqmusicCookie);
+      } else {
+        throw new RuntimeException("Invalid login type");
+      }
       return Result.ok();
     } else {
       return Result.fail("Failed to update qqmusic credential");
@@ -256,6 +281,25 @@ public class UserServiceImpl implements UserService, Serializable {
   private Result updateNCMCredential(Long pmsUserId, String ncmId, String ncmCookie) {
     int rows = userMapper.updateNCMCredential(pmsUserId, ncmId, ncmCookie);
     if (rows == 1) {
+      // Update ncm credential in security context.
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      Authentication authentication = securityContext.getAuthentication();
+      Object principal = authentication.getPrincipal();
+      if (principal.getClass().equals(PMSUserDetails.class)) {
+        PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
+        pmsUserDetails.getUser().setNcmId(Long.valueOf(ncmId));
+        pmsUserDetails.getUser().setNcmCookie(ncmCookie);
+      } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+        GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+        gitHubOAuth2User.setNcmId(Long.valueOf(ncmId));
+        gitHubOAuth2User.setNcmCookie(ncmCookie);
+      } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+        GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+        googleOAuth2User.setNcmId(Long.valueOf(ncmId));
+        googleOAuth2User.setNcmCookie(ncmCookie);
+      } else {
+        throw new RuntimeException("Invalid login type");
+      }
       return Result.ok();
     } else {
       return Result.fail("Failed to update qqmusic credential");
@@ -265,6 +309,25 @@ public class UserServiceImpl implements UserService, Serializable {
   private Result updateBiliCredential(Long pmsUserId, String biliId, String biliCookie) {
     int rows = userMapper.updateBiliCredential(pmsUserId, biliId, biliCookie);
     if (rows == 1) {
+      // Update bilibili credential in security context.
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      Authentication authentication = securityContext.getAuthentication();
+      Object principal = authentication.getPrincipal();
+      if (principal.getClass().equals(PMSUserDetails.class)) {
+        PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
+        pmsUserDetails.getUser().setBilibiliId(Long.valueOf(biliId));
+        pmsUserDetails.getUser().setBiliCookie(biliCookie);
+      } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+        GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+        gitHubOAuth2User.setBilibiliId(Long.valueOf(biliId));
+        gitHubOAuth2User.setBiliCookie(biliCookie);
+      } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+        GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+        googleOAuth2User.setBilibiliId(Long.valueOf(biliId));
+        googleOAuth2User.setBiliCookie(biliCookie);
+      } else {
+        throw new RuntimeException("Invalid login type");
+      }
       return Result.ok();
     } else {
       return Result.fail("Failed to update qqmusic credential");
