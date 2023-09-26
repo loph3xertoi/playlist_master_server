@@ -40,7 +40,7 @@ src/PlaylistMasterServer.code-workspace
 node_modules/
 
 ### Secret ###
-src/main/resources/application.yml
+src/main/resources/secrets.yml
 src/main/resources/playlistmasterhttps.jks
 src/main/resources/playlistmaster.fun.jks
 src/test/java/com/daw/pms/GlobalConfig.java

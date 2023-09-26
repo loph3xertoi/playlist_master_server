@@ -72,7 +72,7 @@ jobs:
             mv ~/app/redis.conf ~/app/redis
             mv ~/app/my.cnf ~/app/mysql/conf
             mv ~/app/src/main/resources/init.sql ~/app/mysql/init
-            cp ~/application.yml ~/playlistmaster.fun.jks ~/app/pms
+            cp ~/secrets.yml ~/playlistmaster.fun.jks ~/app/pms
             rm -r ~/app/src
             touch ~/app/mysql/logs/error.log
             chmod -R 777 ~/app

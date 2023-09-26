@@ -7,6 +7,7 @@ services:
       _JAVA_OPTIONS: >
         -Xdebug
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+      SPRING_CONFIG_ADDITIONAL-LOCATION: /data/secrets.yml
     ports:
       - "443:443"
       - "5005:5005"
@@ -17,6 +18,8 @@ services:
     depends_on:
       - redis
       - mysql
+      - qqmusic-api
+      - ncm-api
   redis:
     container_name: redis
     image: redis:latest
@@ -33,6 +36,7 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
+    restart: always
     ports:
       - "3306:3306"
     environment:
@@ -49,5 +53,21 @@ services:
     networks:
       - net
     command: --default-authentication-plugin=mysql_native_password
+  qqmusic-api:
+    container_name: qqmusic-api
+    image: loph3xertoi/qqmusic-api:latest
+    restart: always
+    ports:
+      - "3300:80"
+    networks:
+      - net
+  ncm-api:
+    container_name: ncm-api
+    image: loph3xertoi/netease-music-api:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - net
 networks:
   net:

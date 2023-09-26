@@ -30,7 +30,7 @@ public class QQMusicUserServiceImpl implements QQMusicUserService {
    */
   public QQMusicUserServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+    this.baseUrl = "http://" + httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**

@@ -82,7 +82,6 @@ public class TestController {
    */
   @GetMapping("/check")
   public Result checkLoginState() {
-    System.out.println(pmsUserDetailsUtil.getCurrentLoginUserId());
     return Result.ok();
   }
 }

@@ -35,7 +35,7 @@ public class NCMMVServiceImpl implements NCMMVService {
    */
   public NCMMVServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
+    this.baseUrl = "http://" + httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**

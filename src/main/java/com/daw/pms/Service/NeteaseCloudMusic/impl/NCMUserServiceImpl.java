@@ -30,7 +30,7 @@ public class NCMUserServiceImpl implements NCMUserService {
    */
   public NCMUserServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
+    this.baseUrl = "http://" + httpTools.ncmHost + ":" + httpTools.ncmPort;
   }
 
   /**

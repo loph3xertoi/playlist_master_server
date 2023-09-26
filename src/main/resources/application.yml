@@ -1,0 +1,92 @@
+server:
+  ssl:
+    key-store: file:/data/playlistmaster.fun.jks
+    key-store-type: JKS
+    enabled: true
+  port: 443
+  http-port: 80
+  servlet:
+    session:
+      timeout: 30d
+      #      cookie:
+      #        same-site: none
+      #        secure: true
+  proxy:
+    host: 172.17.0.1
+    port: 7890
+
+qqmusic:
+  proxy:
+    host: qqmusic-api
+    port: 3300
+
+ncm:
+  proxy:
+    host: ncm-api
+    port: 3000
+
+spring:
+  mail:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  redis:
+    host: redis
+    port: 6379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/playlist_master?allowMultiQueries=true
+    druid:
+      max-active: 20
+      initial-size: 5
+      min-idle: 5
+      min-evictable-idle-time-millis: 300000
+      max-wait: 60000
+      validation-query: SELECT 1
+      test-on-borrow: true
+      test-on-return: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+    type: com.alibaba.druid.pool.DruidDataSource
+  security:
+    filter:
+      order: 20
+    oauth2:
+      client:
+        registration:
+          github:
+            client-name: GitHub
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+            provider: github
+            redirect-uri: https://playlistmaster.fun/login/oauth2/github
+            scope:
+              - user:email
+          google:
+            client-name: Google
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+            provider: google
+            redirect-uri: https://playlistmaster.fun/login/oauth2/google
+            scope:
+              - user:email
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: login
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: name
+  mvc:
+    log-request-details: true
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

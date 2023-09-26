@@ -34,7 +34,7 @@ public class QQMusicMVServiceImpl implements QQMusicMVService {
    */
   public QQMusicMVServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+    this.baseUrl = "http://" + httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**

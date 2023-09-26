@@ -28,7 +28,7 @@ public class QQMusicCookieServiceImpl implements QQMusicCookieService {
    */
   public QQMusicCookieServiceImpl(HttpTools httpTools) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+    this.baseUrl = "http://" + httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**

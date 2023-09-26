@@ -37,7 +37,7 @@ public class NCMPlaylistServiceImpl implements NCMPlaylistService {
    */
   public NCMPlaylistServiceImpl(HttpTools httpTools, NCMSongService ncmSongService) {
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.ncmHost + ":" + httpTools.ncmPort;
+    this.baseUrl = "http://" + httpTools.ncmHost + ":" + httpTools.ncmPort;
     this.ncmSongService = ncmSongService;
   }
 

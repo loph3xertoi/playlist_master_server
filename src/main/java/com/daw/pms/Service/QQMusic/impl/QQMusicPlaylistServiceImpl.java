@@ -39,7 +39,7 @@ public class QQMusicPlaylistServiceImpl implements QQMusicPlaylistService {
   public QQMusicPlaylistServiceImpl(QQMusicSongService qqMusicSongService, HttpTools httpTools) {
     this.qqMusicSongService = qqMusicSongService;
     this.httpTools = httpTools;
-    this.baseUrl = httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
+    this.baseUrl = "http://" + httpTools.qqmusicHost + ":" + httpTools.qqmusicPort;
   }
 
   /**
