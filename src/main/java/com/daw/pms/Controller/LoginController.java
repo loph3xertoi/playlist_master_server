@@ -68,47 +68,6 @@ public class LoginController {
   public Result loginByGoogle(@RequestParam String code, HttpServletRequest request) {
     Map<String, String[]> parameterMap = request.getParameterMap();
     return loginService.loginByGoogle(code, request);
-    //    HttpTransportFactory httpTransportFactory =
-    //        new HttpTransportFactory() {
-    //          @Override
-    //          public HttpTransport create() {
-    //            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1",
-    // 7890));
-    //            return new NetHttpTransport.Builder().setProxy(proxy).build();
-    //          }
-    //        };
-    //    HttpTransport httpTransport = httpTransportFactory.create();
-    //    GsonFactory gsonFactory = new GsonFactory();
-    //
-    //    GenericUrl genericUrl = new GenericUrl("https://oauth2.googleapis.com/token");
-    //    //    AuthorizationRequest authRequest = new AuthorizationRequest.Builder(
-    //    //      serviceConfiguration,
-    //    //      provider.getClientId(),
-    //    //      ResponseTypeValues.CODE,
-    //    //      provider.getRedirectUri()
-    //    //    )
-    //    //      .setScope(provider.getScope())
-    //    //      .setCodeVerifier(null)
-    //    //      .build();
-    //    AuthorizationCodeTokenRequest authorizationCodeTokenRequest =
-    //        new AuthorizationCodeTokenRequest(httpTransport, gsonFactory, genericUrl, code);
-    //    authorizationCodeTokenRequest.setGrantType("authorization_code");
-    //    authorizationCodeTokenRequest.setScopes(Collections.singleton("email"));
-    //    authorizationCodeTokenRequest.set("code_verifier", null);
-    //    authorizationCodeTokenRequest.setRedirectUri(
-    //        "http://playlistmaster.com:8080/login/oauth2/google");
-    //    ClientParametersAuthentication authentication =
-    //        new ClientParametersAuthentication(
-    //            "1043116433744-fu89rnc4g7tti8rek1k2d4gmutqmokt1.apps.googleusercontent.com",
-    //            "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");
-    //    authorizationCodeTokenRequest.setClientAuthentication(authentication);
-    //    try {
-    //      TokenResponse tokenResponse = authorizationCodeTokenRequest.execute();
-    //      System.out.println(tokenResponse);
-    //    } catch (IOException e) {
-    //      throw new RuntimeException(e);
-    //    }
-    //    return null;
   }
 
   /**

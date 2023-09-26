@@ -1,6 +1,7 @@
 package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
+import com.daw.pms.Utils.PmsUserDetailsUtil;
 import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +22,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class TestController {
   private final SessionRegistry sessionRegistry;
+  private final PmsUserDetailsUtil pmsUserDetailsUtil;
 
   /**
    * Constructor for TestController.
    *
-   * @param sessionRegistry a {@link org.springframework.security.core.session.SessionRegistry}
-   *     object.
+   * @param sessionRegistry a {@link SessionRegistry} object.
+   * @param pmsUserDetailsUtil a {@link PmsUserDetailsUtil} object.
    */
-  public TestController(SessionRegistry sessionRegistry) {
+  public TestController(SessionRegistry sessionRegistry, PmsUserDetailsUtil pmsUserDetailsUtil) {
     this.sessionRegistry = sessionRegistry;
+    this.pmsUserDetailsUtil = pmsUserDetailsUtil;
   }
 
   /**
@@ -44,7 +47,6 @@ public class TestController {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     map.put("authentication", authentication);
-    //    response.addHeader("Access-Control-Allow-Origin", "*");
     return map;
   }
 
@@ -73,13 +75,6 @@ public class TestController {
     return request.getCookies();
   }
 
-  //  @PostMapping("/myendpoint")
-  //  public Result myEndpoint(@RequestBody Map<String, Object> library, @RequestParam int platform)
-  // {
-  //    System.out.println(library);
-  //    return null;
-  //  }
-
   /**
    * Check if the user is logged in.
    *
@@ -87,6 +82,7 @@ public class TestController {
    */
   @GetMapping("/check")
   public Result checkLoginState() {
+    System.out.println(pmsUserDetailsUtil.getCurrentLoginUserId());
     return Result.ok();
   }
 }

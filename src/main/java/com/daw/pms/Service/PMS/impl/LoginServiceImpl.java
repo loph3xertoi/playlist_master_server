@@ -231,7 +231,7 @@ public class LoginServiceImpl implements LoginService {
     access_token_url += "&client_secret=" + google.getClientSecret();
     access_token_url += "&grant_type=authorization_code";
     access_token_url += "&code=" + code;
-    access_token_url += "&redirect_uri=http://playlistmaster.com:8080/login/oauth2/google";
+    access_token_url += "&redirect_uri=" + google.getRedirectUri();
     String tokenResponse =
         httpTools.requestPostAPIByFinalUrlWithProxy(
             access_token_url, new HttpHeaders(), Optional.empty());
