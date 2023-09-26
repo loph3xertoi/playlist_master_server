@@ -1,6 +1,5 @@
 package com.daw.pms.Config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,12 +25,6 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @Configuration
 @EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
-  @Value("${server.http-port}")
-  private int httpPort;
-
-  @Value("${server.port}")
-  private int httpsPort;
-
   private final UserDetailsService userDetailsService;
 
   /**
@@ -122,10 +115,17 @@ public class WebSecurityConfig {
         .hasRole(String.valueOf(UserRole.ADMIN))
         .anyRequest()
         .authenticated()
-        .and()
-        .portMapper()
-        .http(httpPort)
-        .mapsTo(httpsPort)
+        //        .and()
+        //        .portMapper()
+        //        .http(httpPort)
+        //        .mapsTo(httpsPort)
+        //        .and()
+        //        .requiresChannel()
+        //        .anyRequest()
+        //        .requiresSecure()
+        //        .and()
+        //        .requestCache()
+        //        .requestCache(new NullRequestCache())
         .and()
         .requiresChannel()
         .anyRequest()
@@ -135,7 +135,7 @@ public class WebSecurityConfig {
         .maximumSessions(1)
         .maxSessionsPreventsLogin(true)
         .and()
-        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
         .and()
         .logout()
         .deleteCookies("JSESSIONID")
