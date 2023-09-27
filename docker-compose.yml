@@ -7,6 +7,7 @@ services:
       _JAVA_OPTIONS: >
         -Xdebug
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+        -Dspring.profiles.active=prod
       SPRING_CONFIG_ADDITIONAL-LOCATION: /data/secrets.yml
     ports:
       - "443:443"

@@ -26,7 +26,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
  * @since 9/19/23
  */
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity()
+// @EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
   private final UserDetailsService userDetailsService;
 

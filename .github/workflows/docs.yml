@@ -1,5 +1,5 @@
-# Generate and Deploy Docs and APIs to GitHub Pages.
-name: Generate Docs and APIs
+# Setup Docs and APIs to GitHub Pages.
+name: doc
 
 on:
   push:
@@ -39,8 +39,11 @@ jobs:
       - name: Generate Docs
         run: mvn javadoc:javadoc -f pom.xml
 
-      # - name: Generate APIs
-      #   run: mvn springdoc-openapi:generate -f pom.xml
+      - name: Generate Swagger UI
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: swagger-ui
+          spec-file: openapi.json
 
       - name: Configure Git
         run: |
@@ -54,7 +57,8 @@ jobs:
           git rm -rf .
           mv ./target/site/docs ./docs
           git add ./docs
-          git commit -m "Update Docs"
+          git add ./swagger-ui
+          git commit -m "Update Docs and OpenAPI"
           gh_pages_exist=$(git ls-remote --heads git@github.com:loph3xertoi/playlist_master_server.git refs/heads/gh-pages | wc -l)
           if [ $gh_pages_exist == 1 ]; then git pull origin gh-pages -s ours --allow-unrelated-histories; exit; fi
           git push origin gh-pages -f
@@ -62,10 +66,15 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Upload Artifact
+      - name: Upload Docs
         uses: actions/upload-pages-artifact@v2
         with:
-          path: './docs'
+          path: './'
+
+      #      - name: Upload Swagger UI
+      #        uses: actions/upload-pages-artifact@v2
+      #        with:
+      #          path: './swagger-ui'
 
       - name: Deploy to GitHub Pages
         id: deployment
