@@ -24,6 +24,9 @@ public class CorsFilter implements Filter {
     httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
     httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
     httpServletResponse.setHeader("Access-Control-Expose-Headers", "*");
+    httpServletResponse.setHeader("X-Frame-Options", "SAMEORIGIN");
+    httpServletResponse.setHeader(
+        "Content-Security-Policy", "frame-src 'self' https://playlistmaster.fun;");
     chain.doFilter(request, response);
   }
 }
