@@ -143,8 +143,8 @@ public class UserServiceImpl implements UserService, Serializable {
   @Override
   public Result updateThirdAppCredential(ThirdAppCredentialDTO credentialDTO, Integer platform) {
     Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
-    String thirdId = credentialDTO.getThirdId();
-    String thirdCookie = credentialDTO.getThirdCookie();
+    String thirdId = credentialDTO.getThirdId().trim();
+    String thirdCookie = credentialDTO.getThirdCookie().trim();
     if (platform == 1) {
       return updateQQMusicCredential(pmsUserId, thirdId, thirdCookie);
     } else if (platform == 2) {
