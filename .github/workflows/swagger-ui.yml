@@ -1,5 +1,5 @@
-# Setup Docs in GitHub Pages.
-name: docs
+# Setup Swagger UI in GitHub Pages.
+name: api
 
 on:
   push:
@@ -16,7 +16,7 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "docs"
+  group: "api"
   cancel-in-progress: false
 
 jobs:
@@ -26,18 +26,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v3.13.0
+      - name: Generate Swagger UI
+        uses: Legion2/swagger-ui-action@v1
         with:
-          distribution: 'temurin'
-          java-version: '8'
-          cache: 'maven'
-
-      - name: Install Maven Dependencies
-        run: mvn dependency:resolve
-
-      - name: Generate Docs
-        run: mvn javadoc:javadoc -f pom.xml
+          output: swagger-ui
+          spec-file: openapi.json
 
       - name: Configure Git
         run: |
@@ -45,13 +38,12 @@ jobs:
           git config user.name "Daw Loph"
           git config pull.rebase false
 
-      - name: Commit and Push docs to gh-pages Branch
+      - name: Commit and Push docs and api to gh-pages Branch
         run: |
           git checkout --orphan gh-pages
           git rm -rf .
-          mv ./target/site/docs ./docs
-          git add ./docs
-          git commit -m "Update Docs"
+          git add ./swagger-ui
+          git commit -m "Update swagger ui"
           gh_pages_exist=$(git ls-remote --heads git@github.com:loph3xertoi/playlist_master_server.git refs/heads/gh-pages | wc -l)
           if [ $gh_pages_exist == 1 ]; then git pull origin gh-pages -s ours --allow-unrelated-histories; exit; fi
           git push origin gh-pages -f
@@ -59,7 +51,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Upload Docs
+      - name: Upload Swagger UI
         uses: actions/upload-pages-artifact@v2
         with:
           path: './'
