@@ -3,6 +3,9 @@ package com.daw.pms.Controller;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicVideo;
 import com.daw.pms.Service.PMS.MVService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -41,8 +44,12 @@ public class MVController {
    * @return The detail information of the mv {@code vid}.
    * @apiNote GET /mv/{@code vid}?platform={@code platform}
    */
+  @Operation(summary = "Get detail video information")
+  @ApiResponse(description = "The detail information of the mv.")
   @GetMapping("/mv/{vid}")
-  public Result getDetailMV(@PathVariable String vid, @RequestParam int platform) {
+  public Result getDetailMV(
+      @Parameter(description = "The vid/mvid/mlogId of the mv.") @PathVariable String vid,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     BasicVideo video;
     try {
       video = mvService.getDetailMV(vid, platform);
@@ -61,8 +68,13 @@ public class MVController {
    * @apiNote GET /mvLink/{@code vids}?platform={@code platform}
    * @deprecated DON'T USE, NEED TO CONFORM THE RESULT.
    */
+  @Operation(summary = "Get all MVs links.")
+  @ApiResponse(description = "A map which key is the vid and value is a list of urls of this mv.")
   @GetMapping("/mvLink/{vids}")
-  public Result getMVsLink(@PathVariable String vids, @RequestParam int platform) {
+  public Result getMVsLink(
+      @Parameter(description = "The vid of the mv(s), multi vid separated by comma.") @PathVariable
+          String vids,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     return Result.ok(mvService.getMVsLink(vids, platform));
   }
 
@@ -78,13 +90,20 @@ public class MVController {
    * @apiNote GET /relatedMV/{@code songId}?mvId={@code mvId}&amp;limit={@code
    *     limit}&amp;platform={@code platform}
    */
+  @Operation(summary = "Get all related videos with the song.")
+  @ApiResponse(description = "All the related video about the song.")
   @GetMapping("/relatedMV/{songId}")
   public Result getRelatedVideos(
-      @PathVariable Long songId,
-      @RequestParam(required = false) String mvId,
-      @RequestParam(required = false) Integer limit,
-      @RequestParam(required = false) Integer songType,
-      @RequestParam int platform) {
+      @Parameter(description = "The song's id.") @PathVariable Long songId,
+      @Parameter(description = "The mv's id, only in ncm platform.") @RequestParam(required = false)
+          String mvId,
+      @Parameter(description = "The limit of related videos, only in ncm platform.")
+          @RequestParam(required = false)
+          Integer limit,
+      @Parameter(description = "The pms song's type, only used in pms platform.")
+          @RequestParam(required = false)
+          Integer songType,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     List<? extends BasicVideo> relatedVideos =
         mvService.getRelatedVideos(songId, mvId, limit, songType, platform);
     return Result.ok(relatedVideos, (long) relatedVideos.size());

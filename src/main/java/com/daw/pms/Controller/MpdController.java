@@ -1,5 +1,8 @@
 package com.daw.pms.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -41,8 +44,11 @@ public class MpdController {
    * @param fileName The mpd file name.
    * @return The mpd file.
    */
+  @Operation(summary = "Get mpd file.")
+  @ApiResponse(description = "The mpd file.")
   @GetMapping(value = "/{fileName:.+\\.mpd}")
-  public ResponseEntity<byte[]> getMpdFile(@PathVariable String fileName) {
+  public ResponseEntity<byte[]> getMpdFile(
+      @Parameter(description = "The mpd file name.") @PathVariable String fileName) {
     String mpdXml = redisTemplate.opsForValue().get("bili-mpd::" + fileName);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.parseMediaType("application/dash+xml"));

@@ -1,5 +1,7 @@
 package com.daw.pms.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorController {
   /**
-   * error.
+   * Error endpoint.
    *
-   * @return a {@link java.lang.String} object.
+   * @return Error message.
    */
+  @Operation(summary = "Error endpoint")
+  @ApiResponse(description = "Error message.")
   @GetMapping("/error")
   public String error() {
     return "Got error";

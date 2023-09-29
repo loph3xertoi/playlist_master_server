@@ -11,6 +11,9 @@ import com.daw.pms.Service.PMS.LibraryService;
 import com.daw.pms.Utils.PmsUserDetailsUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,15 +58,32 @@ public class LibraryController {
    * @return All libraries for specific platform.
    * @apiNote GET /libraries?id={@code id}&amp;platform={@code platform}
    */
+  @Operation(summary = "Get all libraries.")
+  @ApiResponse(description = "All libraries for specific platform.")
   @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
   @GetMapping("/libraries")
   public Result getLibraries(
-      @RequestParam Long id,
-      @RequestParam(required = false) Integer pn,
-      @RequestParam(required = false) Integer ps,
-      @RequestParam(required = false) String biliPlatform,
-      @RequestParam(required = false) Integer type,
-      @RequestParam int platform) {
+      @Parameter(description = "Your user id in pms, used for cache evicting.") @RequestParam
+          Long id,
+      @Parameter(description = "The page number, only used in bilibili.")
+          @RequestParam(required = false)
+          Integer pn,
+      @Parameter(description = "The page size, only used in bilibili.")
+          @RequestParam(required = false)
+          Integer ps,
+      @Parameter(description = "The platform of bilibili, default is web, only used in bilibili.")
+          @RequestParam(required = false)
+          String biliPlatform,
+      @Parameter(
+              description =
+                  "The fav lists type of bilibili, 0 means get created fav lists, 1 means get collected fav lists, only used in bilibili.")
+          @RequestParam(required = false)
+          Integer type,
+      @Parameter(
+              description =
+                  "Which platform the user belongs to. 0 represents pms, 1 represents qq music, 2 represents netease cloud music, 3 represents bilibili.")
+          @RequestParam
+          int platform) {
     Long pmsUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
     return libraryService.getLibraries(pmsUserId, pn, ps, biliPlatform, type, platform);
   }
@@ -77,9 +97,14 @@ public class LibraryController {
    * @apiNote POST /library?platform={@code platform} {"name"(required): "{@code name}",
    *     "intro":intro, "privacy":privacy, "cover":cover}
    */
+  @Operation(summary = "Create new library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @PostMapping("/library")
   public Result createLibrary(
-      @RequestBody Map<String, String> library, @RequestParam int platform) {
+      @Parameter(description = "library A map that contains the name of library.") @RequestBody
+          Map<String, String> library,
+      @Parameter(description = "Which platform the library belongs to.") @RequestParam
+          int platform) {
     return libraryService.createLibrary(library, platform);
   }
 
@@ -92,9 +117,14 @@ public class LibraryController {
    * @apiNote PUT /library?platform={@code platform} {"name"(required):name, "intro":intro,
    *     "cover":cover} (PMSDetailLibrary)
    */
+  @Operation(summary = "Update library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @PutMapping("/library")
   public Result updateLibrary(
-      @ModelAttribute UpdateLibraryDTO library, @RequestParam int platform) {
+      @Parameter(description = "A map contains fields to update.") @ModelAttribute
+          UpdateLibraryDTO library,
+      @Parameter(description = "Which platform the library belongs to.") @RequestParam
+          int platform) {
     return libraryService.updateLibrary(library, platform);
   }
 
@@ -114,17 +144,39 @@ public class LibraryController {
    * @return Detail library.
    * @apiNote GET /library/{@code library}?platform={@code platform}
    */
+  @Operation(summary = "Get detail library.")
+  @ApiResponse(description = "Detail library.")
   @Cacheable(key = "#root.methodName + '(' + #root.args + ')'", unless = "!#result.success")
   @GetMapping("/library/{library}")
   public Result getDetailLibrary(
-      @PathVariable String library,
-      @RequestParam(required = false) Integer pn,
-      @RequestParam(required = false) Integer ps,
-      @RequestParam(required = false) String keyword,
-      @RequestParam(required = false) String order,
-      @RequestParam(required = false) Integer range,
-      @RequestParam(required = false) Integer type,
-      @RequestParam int platform) {
+      @Parameter(description = "The library id.") @PathVariable String library,
+      @Parameter(description = "The page number of library, required in bilibili.")
+          @RequestParam(required = false)
+          Integer pn,
+      @Parameter(description = "The page size of library, required in bilibili.")
+          @RequestParam(required = false)
+          Integer ps,
+      @Parameter(
+              description =
+                  "The searching keyword of resources in fav list, only used in bilibili.")
+          @RequestParam(required = false)
+          String keyword,
+      @Parameter(
+              description =
+                  "The sorting order of resources of this fav list, mtime: by collected time, view: by view time, pubtime: by published time, only used in bilibili.")
+          @RequestParam(required = false)
+          String order,
+      @Parameter(
+              description =
+                  "The range of searching, 0: current fav list, 1: all fav lists, only used in bilibili.")
+          @RequestParam(required = false)
+          Integer range,
+      @Parameter(
+              description =
+                  "0 for created fav list, 1 for collected fav list, required in bilibili.")
+          @RequestParam(required = false)
+          Integer type,
+      @Parameter(description = "Which platform the user belongs to.") @RequestParam int platform) {
     return libraryService.getDetailLibrary(library, pn, ps, keyword, order, range, type, platform);
   }
 
@@ -136,8 +188,15 @@ public class LibraryController {
    * @return The response of request wrapped by Result DTO.
    * @apiNote DELETE /library/{@code libraryId}?platform={@code platform}
    */
+  @Operation(summary = "Delete the library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @DeleteMapping("/library/{libraryId}")
-  public Result deleteLibrary(@PathVariable String libraryId, @RequestParam int platform) {
+  public Result deleteLibrary(
+      @Parameter(description = "The id of library, multiple libraries separated with comma.")
+          @PathVariable
+          String libraryId,
+      @Parameter(description = "Which platform the library belongs to.") @RequestParam
+          int platform) {
     return libraryService.deleteLibrary(libraryId, platform);
   }
 
@@ -156,9 +215,14 @@ public class LibraryController {
    *     isAddToPMSLibrary set to true; If add bilibili resources, still need resources field and
    *     isAddToPMSLibrary set to true.
    */
+  @Operation(summary = "Add songs to library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @PostMapping("/addSongsToLibrary")
   public Result addSongsToLibrary(
-      @RequestBody Map<String, Object> requestBody, @RequestParam int platform) {
+      @Parameter(description = "A map that contains songs id and target library's id.") @RequestBody
+          Map<String, Object> requestBody,
+      @Parameter(description = "Which platform the library belongs to.") @RequestParam
+          int platform) {
     String libraryId = String.valueOf(requestBody.get("libraryId"));
     String biliSourceFavListId = String.valueOf(requestBody.get("biliSourceFavListId"));
     String songsIds = String.valueOf(requestBody.get("songsIds"));
@@ -217,9 +281,17 @@ public class LibraryController {
    * @apiNote PUT /moveSongsToOtherLibrary?platform={@code platform}
    *     {"songsId":"songsId","fromLibrary":"fromLibrary","toLibrary":"toLibrary","fromTid":"fromTid","toTid":"toTid"}
    */
+  @Operation(summary = "Move songs to other library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @PutMapping("/moveSongsToOtherLibrary")
   public Result moveSongsToOtherLibrary(
-      @RequestBody Map<String, String> requestBody, @RequestParam int platform) {
+      @Parameter(
+              description =
+                  "A map that contains parameters, fromTid and toTid are used to evict cache.")
+          @RequestBody
+          Map<String, String> requestBody,
+      @Parameter(description = "Which platform the library belongs to.") @RequestParam
+          int platform) {
     String songsId = requestBody.get("songsId");
     String fromLibrary = requestBody.get("fromLibrary");
     String toLibrary = requestBody.get("toLibrary");
@@ -237,12 +309,17 @@ public class LibraryController {
    * @apiNote DELETE /removeSongsFromLibrary?libraryId={@code libraryId}&amp;songsId={@code
    *     songsId}&amp;platform={@code platform}&amp;tid={@code tid}
    */
+  @Operation(summary = "Remove songs from library.")
+  @ApiResponse(description = "The response of request wrapped by Result DTO.")
   @DeleteMapping("/removeSongsFromLibrary")
   public Result removeSongsFromLibrary(
-      @RequestParam String libraryId,
-      @RequestParam String songsId,
-      @RequestParam String tid,
-      @RequestParam int platform) {
+      @Parameter(description = "The id of library.") @RequestParam String libraryId,
+      @Parameter(description = "The id of songs, multiple songs id separated with comma.")
+          @RequestParam
+          String songsId,
+      @Parameter(description = "The tid of library, used to evict cache.") @RequestParam String tid,
+      @Parameter(description = "The response of request wrapped by Result DTO.") @RequestParam
+          int platform) {
     return libraryService.removeSongsFromLibrary(libraryId, songsId, platform);
   }
 }

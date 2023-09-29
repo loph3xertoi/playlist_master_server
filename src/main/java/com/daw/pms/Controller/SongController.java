@@ -3,6 +3,9 @@ package com.daw.pms.Controller;
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Entity.Basic.BasicSong;
 import com.daw.pms.Service.PMS.SongService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,8 +45,12 @@ public class SongController {
    * @return The detail song, wrapped with Result DTO, the data is subclass of BasicSong.
    * @apiNote GET /song/{@code songId}?platform={@code platform}
    */
+  @Operation(summary = "Get detail song.")
+  @ApiResponse(description = "The detail song, wrapped with Result DTO, the data is subclass of BasicSong.")
   @GetMapping("/song/{songId}")
-  public Result getDetailSong(@PathVariable String songId, @RequestParam int platform) {
+  public Result getDetailSong(
+      @Parameter(description = "The song id.") @PathVariable String songId,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     return songService.getDetailSong(songId, platform);
   }
 
@@ -56,11 +63,13 @@ public class SongController {
    * @return The similar songs.
    * @apiNote GET /similarSongs/{@code songId}?platform={@code platform}
    */
+  @Operation(summary = "Get similar songs.")
+  @ApiResponse(description = "The similar songs.")
   @GetMapping("/similarSongs/{songId}")
   public Result getSimilarSongs(
-      @PathVariable String songId,
-      @RequestParam(required = false) Integer songType,
-      @RequestParam int platform) {
+      @Parameter(description = "The song id.") @PathVariable String songId,
+      @Parameter(description = "The pms song type, only used in pms platform.") @RequestParam(required = false) Integer songType,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     List<? extends BasicSong> similarSongs =
         songService.getSimilarSongs(songId, songType, platform);
     return Result.ok(similarSongs, (long) similarSongs.size());
@@ -96,9 +105,13 @@ public class SongController {
    * @return The urls of your songs with {@code SongIds}, wrapped in Result DTO.
    * @apiNote GET /songsLink/{@code SongIds}?platform={@code platform}
    */
+  @Operation(summary = "Get songs link.")
+  @ApiResponse(description = "Songs' links.")
   @GetMapping("/songsLink/{SongIds}")
   @CacheEvict
-  public Result getSongsLink(@PathVariable String SongIds, @RequestParam int platform) {
+  public Result getSongsLink(
+      @Parameter(description = "The song's id, multiple songs separated with comma.") @PathVariable String SongIds,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     return songService.getSongsLink(SongIds, "standard", platform);
   }
 
@@ -111,12 +124,14 @@ public class SongController {
    * @param platform The platform id.
    * @return The search result with page.
    */
+  @Operation(summary = "Search song by keyword.")
+  @ApiResponse(description = "The search result with page.")
   @GetMapping("/search/song/{keyword}")
   public Result searchSong(
-      @PathVariable String keyword,
-      @RequestParam int pageNo,
-      @RequestParam int pageSize,
-      @RequestParam int platform) {
+      @Parameter(description = "The song name to search.") @PathVariable String keyword,
+      @Parameter(description = "The page number.") @RequestParam int pageNo,
+      @Parameter(description = "The page size.") @RequestParam int pageSize,
+      @Parameter(description = "The platform id.") @RequestParam int platform) {
     return songService.searchResourcesByKeyword(keyword, pageNo, pageSize, 1, platform);
   }
 }

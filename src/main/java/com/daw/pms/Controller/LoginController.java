@@ -2,6 +2,9 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.*;
 import com.daw.pms.Service.PMS.LoginService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import javax.mail.MessagingException;
@@ -40,8 +43,12 @@ public class LoginController {
    * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
+  @Operation(summary = "PMS user login endpoint.")
+  @ApiResponse(description = "Result whose data is user's id in pms.")
   @PostMapping("/login")
-  public Result login(@Valid @RequestBody LoginFormDTO loginFormDTO, HttpServletRequest request) {
+  public Result login(
+      @Parameter(description = "Login form dto.") @Valid @RequestBody LoginFormDTO loginFormDTO,
+      @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     return loginService.login(loginFormDTO, request);
   }
 
@@ -52,8 +59,12 @@ public class LoginController {
    * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
+  @Operation(summary = "Login by GitHub.")
+  @ApiResponse(description = "Result whose data is user's id in pms.")
   @GetMapping("/login/oauth2/github")
-  public Result loginByGitHub(@RequestParam String code, HttpServletRequest request) {
+  public Result loginByGitHub(
+      @Parameter(description = "Authorization code.") @RequestParam String code,
+      @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     return loginService.loginByGitHub(code, request);
   }
 
@@ -64,8 +75,12 @@ public class LoginController {
    * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
+  @Operation(summary = "Login by Google.")
+  @ApiResponse(description = "Result whose data is user's id in pms.")
   @GetMapping("/login/oauth2/google")
-  public Result loginByGoogle(@RequestParam String code, HttpServletRequest request) {
+  public Result loginByGoogle(
+      @Parameter(description = "Authorization code.") @RequestParam String code,
+      @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     Map<String, String[]> parameterMap = request.getParameterMap();
     return loginService.loginByGoogle(code, request);
   }
@@ -78,8 +93,12 @@ public class LoginController {
    * @throws javax.mail.MessagingException if any.
    * @throws java.io.UnsupportedEncodingException if any.
    */
+  @Operation(summary = "Register account in pms.")
+  @ApiResponse(description = "Registered user's id in pms if success.")
   @PostMapping("/register")
-  public Result register(@Valid @RequestBody RegisterFormDTO registerFormDTO)
+  public Result register(
+      @Parameter(description = "Register form data.") @Valid @RequestBody
+          RegisterFormDTO registerFormDTO)
       throws MessagingException, UnsupportedEncodingException {
     return loginService.register(registerFormDTO);
   }
@@ -90,8 +109,11 @@ public class LoginController {
    * @param request Http servlet request.
    * @return Common result.
    */
+  @Operation(summary = "Page for logout successfully.")
+  @ApiResponse(description = "Common result.")
   @GetMapping("/logout/success")
-  public Result logout(HttpServletRequest request) {
+  public Result logout(
+      @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     return loginService.logout(request);
   }
 
@@ -102,6 +124,9 @@ public class LoginController {
    * @throws javax.mail.MessagingException if any.
    * @throws java.io.UnsupportedEncodingException if any.
    */
+  @Operation(
+      summary = "Forget user's password, send verifying code to user's email, need login first.")
+  @ApiResponse(description = "Common result.")
   @GetMapping("/forgot/password")
   public Result forgotPassword() throws MessagingException, UnsupportedEncodingException {
     return loginService.forgotPassword();
@@ -110,14 +135,17 @@ public class LoginController {
   /**
    * Bind email, send verifying code to user's email, need login first.
    *
-   * @param email a {@link java.lang.String} object.
+   * @param email Email you want to bind.
    * @return Common result.
    * @throws javax.mail.MessagingException if any.
    * @throws java.io.UnsupportedEncodingException if any.
    */
+  @Operation(summary = "Bind email, send verifying code to user's email, need login first.")
+  @ApiResponse(description = "Common result.")
   @GetMapping("/bind/email")
   public Result bindEmail(
-      @Valid
+      @Parameter(description = "Email you want to bind.")
+          @Valid
           @RequestParam
           @NotBlank(message = "No blank email.")
           @Email(message = "Email format error.")
@@ -135,14 +163,18 @@ public class LoginController {
    * @throws javax.mail.MessagingException javax.mail.MessagingException.
    * @throws java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException.
    */
+  @Operation(summary = "Send token to yur email for verifying, no need to login first.")
+  @ApiResponse(description = "Common result.")
   @GetMapping("/sendcode")
   public Result sendVerifyTokenWithoutLogin(
-      @Valid
+      @Parameter(description = "Email to receive token.")
+          @Valid
           @RequestParam
           @NotBlank(message = "No blank email.")
           @Email(message = "Email format error.")
           String email,
-      @RequestParam Integer type)
+      @Parameter(description = "Token type, 1 for sign up, 2 for reset password.") @RequestParam
+          Integer type)
       throws MessagingException, UnsupportedEncodingException {
     return loginService.sendVerifyToken(email, type);
   }
@@ -153,8 +185,11 @@ public class LoginController {
    * @param resetPassDTO DTO for resetting password.
    * @return Common result.
    */
+  @Operation(summary = "Verify token for resetting user's password, need to log in first.")
+  @ApiResponse(description = "Common result.")
   @PostMapping("/verify/resetPassword")
-  public Result verifyResetPassToken(@Valid @RequestBody ResetPassDTO resetPassDTO) {
+  public Result verifyResetPassToken(
+      @Parameter(description = "DTO for resetting password.") @Valid @RequestBody ResetPassDTO resetPassDTO) {
     return loginService.verifyResetPassToken(resetPassDTO);
   }
 
@@ -164,8 +199,12 @@ public class LoginController {
    * @param bindEmailDTO DTO for bind email.
    * @return Common result.
    */
+  @Operation(summary = "Verify token for binding user's email, need to log in first.")
+  @ApiResponse(description = "Common result.")
   @PostMapping("/verify/bindEmail")
-  public Result verifyBingEmailToken(@Valid @RequestBody BindEmailDTO bindEmailDTO) {
+  public Result verifyBingEmailToken(
+      @Parameter(description = "DTO for bind email.") @Valid @RequestBody
+          BindEmailDTO bindEmailDTO) {
     return loginService.verifyBindEmailToken(bindEmailDTO);
   }
 
@@ -175,9 +214,12 @@ public class LoginController {
    * @param resetPassNologinDTO DTO for resetting password.
    * @return Common result.
    */
+  @Operation(summary = "Verify token for resetting user's password, no need to log in.")
+  @ApiResponse(description = "Common result.")
   @PostMapping("/verify/nologin/resetPassword")
   public Result verifyResetPassTokenWithoutLogin(
-      @Valid @RequestBody ResetPassNologinDTO resetPassNologinDTO) {
+      @Parameter(description = "DTO for resetting password.") @Valid @RequestBody
+          ResetPassNologinDTO resetPassNologinDTO) {
     return loginService.verifyResetPassTokenWithoutLogin(resetPassNologinDTO);
   }
 
@@ -187,9 +229,12 @@ public class LoginController {
    * @param signUpNologinDTO DTO for sign up.
    * @return Common result.
    */
+  @Operation(summary = "Verify token for sign up new account, no need to log in.")
+  @ApiResponse(description = "Common result.")
   @PostMapping("/verify/nologin/signUp")
   public Result verifySignUpTokenWithoutLogin(
-      @Valid @RequestBody SignUpNologinDTO signUpNologinDTO) {
+      @Parameter(description = "DTO for sign up.") @Valid @RequestBody
+          SignUpNologinDTO signUpNologinDTO) {
     return loginService.verifySignUpTokenWithoutLogin(signUpNologinDTO);
   }
 }

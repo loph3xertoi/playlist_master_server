@@ -2,10 +2,12 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Utils.PmsUserDetailsUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,12 +38,14 @@ public class TestController {
   }
 
   /**
-   * test.
+   * Test endpoint.
    *
-   * @return a {@link java.util.Map} object.
+   * @return Current user's authentication.
    */
+  @Operation(summary = "Test endpoint.")
+  @ApiResponse(description = "Current user's authentication.")
   @GetMapping("/hello")
-  public Map<String, Object> test(HttpServletResponse response) {
+  public Map<String, Object> test() {
     Map<String, Object> map = new HashMap<>();
     map.put("time", new Date());
     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -55,6 +59,8 @@ public class TestController {
    *
    * @return Logged users.
    */
+  @Operation(summary = "Get logged users.")
+  @ApiResponse(description = "Logged users.")
   @GetMapping("/users")
   public Object getLoggedUsers() {
     List<Object> users = new ArrayList<>();
@@ -70,8 +76,10 @@ public class TestController {
    * @param request Http request.
    * @return Cookies of current user.
    */
+  @Operation(summary = "Get cookies of current user.")
+  @ApiResponse(description = "Cookies of current user.")
   @GetMapping("/cookies")
-  public Cookie[] getCookies(HttpServletRequest request) {
+  public Cookie[] getCookies(@Parameter(description = "Http request.") HttpServletRequest request) {
     return request.getCookies();
   }
 
@@ -80,6 +88,8 @@ public class TestController {
    *
    * @return Common result if user has logged, 401 otherwise.
    */
+  @Operation(summary = "Check if the user is logged in.")
+  @ApiResponse(description = "Common result if user has logged, 401 otherwise.")
   @GetMapping("/check")
   public Result checkLoginState() {
     return Result.ok();
