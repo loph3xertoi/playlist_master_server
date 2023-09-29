@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 /**
  * WebSecurityConfig class.
@@ -26,8 +28,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
  * @since 9/19/23
  */
 @Configuration
-@EnableWebSecurity()
-// @EnableWebSecurity(debug = true)
+// @EnableWebSecurity()
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
   private final UserDetailsService userDetailsService;
 
@@ -77,6 +79,12 @@ public class WebSecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf()
         .disable()
+        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+        .headers(
+            headers ->
+                headers.referrerPolicy(
+                    referrer ->
+                        referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)))
         .authorizeHttpRequests()
         .antMatchers(
             "/",
@@ -168,6 +176,7 @@ public class WebSecurityConfig {
       final Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
       cookieProcessor.setSameSiteCookies(SameSiteCookies.NONE.getValue());
       context.setCookieProcessor(cookieProcessor);
+      context.setUseHttpOnly(false);
     };
   }
 }

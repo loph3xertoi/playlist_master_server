@@ -80,6 +80,10 @@ server:
   proxy:
     host: 172.17.0.1
     port: 7890
+  reactive:
+    session:
+      cookie:
+        http-only: false
 
 pms:
   github-email-endpoint: "https://api.github.com/user/emails"
@@ -174,6 +178,10 @@ server:
   proxy:
     host: localhost
     port: 7890
+  reactive:
+    session:
+      cookie:
+        http-only: false
 
 pms:
   github-email-endpoint: "https://api.github.com/user/emails"

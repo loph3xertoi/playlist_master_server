@@ -18,15 +18,14 @@ public class CorsFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+    httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:42653");
     httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
     httpServletResponse.setHeader("Access-Control-Max-Age", "36000");
-    httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
+    httpServletResponse.setHeader(
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Set-Cookie, Access-Control-Max-Age, Access-Control-Expose-Headers, Access-Control-Allow-Credentials, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
     httpServletResponse.setHeader("Access-Control-Expose-Headers", "*");
-    httpServletResponse.setHeader("X-Frame-Options", "SAMEORIGIN");
-    httpServletResponse.setHeader(
-        "Content-Security-Policy", "frame-src 'self' https://playlistmaster.fun;");
     chain.doFilter(request, response);
   }
 }
