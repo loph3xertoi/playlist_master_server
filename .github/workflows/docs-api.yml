@@ -1,0 +1,131 @@
+# Setup Docs and Swagger UI in GitHub Pages.
+name: Setup docs and openapi
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "doc"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      # - uses: webfactory/ssh-agent@v0.7.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.PRIVATE_SSH_KEY }}
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
+
+      - name: Install Maven Dependencies
+        run: mvn dependency:resolve
+
+      - name: Init Badge Message
+        run: |
+          echo "DOCS_MESSAGE=failing" >> $GITHUB_ENV
+          echo "API_MESSAGE=failing" >> $GITHUB_ENV
+          echo "DOCS_COLOR=red" >> $GITHUB_ENV
+          echo "API_COLOR=red" >> $GITHUB_ENV
+
+      - name: Create Docs Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.DOCS_BADGE_GIST_ID }}
+          filename: pms-docs.json
+          label: docs
+          message: ${{ env.DOCS_MESSAGE }}
+          color: ${{ env.DOCS_COLOR }}
+          
+      - name: Create API Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.API_BADGE_GIST_ID }}
+          filename: pms-api.json
+          label: api
+          message: ${{ env.API_MESSAGE }}
+          color: ${{ env.API_COLOR }}
+
+      - name: Generate Docs
+        run: mvn javadoc:javadoc -f pom.xml
+
+      - name: Generate Swagger UI
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: swagger-ui
+          spec-file: openapi.json
+
+      - name: Configure Git
+        run: |
+          git config user.email "loph3xertoi@gmail.com"
+          git config user.name "Daw Loph"
+          git config pull.rebase false
+
+      - name: Commit and Push docs and swagger-ui to gh-pages Branch
+        run: |
+          git checkout --orphan gh-pages
+          git rm -rf .
+          mv ./target/site/docs docs
+          git add docs
+          git add swagger-ui
+          git commit -m "Update docs and swagger ui"
+          gh_pages_exist=$(git ls-remote --heads git@github.com:loph3xertoi/playlist_master_server.git refs/heads/gh-pages | wc -l)
+          if [ $gh_pages_exist == 1 ]; then git pull origin gh-pages -s ours --allow-unrelated-histories; exit; fi
+          git push origin gh-pages -f
+          echo "DOCS_MESSAGE=passing" >> $GITHUB_ENV
+          echo "API_MESSAGE=passing" >> $GITHUB_ENV
+          echo "DOCS_COLOR=green" >> $GITHUB_ENV
+          echo "API_COLOR=green" >> $GITHUB_ENV
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload Docs and Swagger UI
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+      - name: Create Docs Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.DOCS_BADGE_GIST_ID }}
+          filename: pms-docs.json
+          label: docs
+          message: ${{ env.DOCS_MESSAGE }}
+          color: ${{ env.DOCS_COLOR }}
+
+      - name: Create API Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.API_BADGE_GIST_ID }}
+          filename: pms-api.json
+          label: api
+          message: ${{ env.API_MESSAGE }}
+          color: ${{ env.API_COLOR }}
