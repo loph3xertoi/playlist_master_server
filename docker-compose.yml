@@ -59,7 +59,7 @@ services:
     image: loph3xertoi/qqmusic-api:latest
     restart: always
     ports:
-      - "3300:80"
+      - "3300:3300"
     networks:
       - net
   ncm-api:
