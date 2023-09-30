@@ -117,8 +117,11 @@ public class LoginServiceImpl implements LoginService {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authenticate);
     sessionRegistry.registerNewSession(request.getSession().getId(), authenticate.getPrincipal());
+    LoginResult loginResult = new LoginResult();
     PMSUserDetails pmsUserDetails = (PMSUserDetails) authenticate.getPrincipal();
-    return Result.ok(pmsUserDetails.getUser().getId());
+    loginResult.setId(pmsUserDetails.getUser().getId());
+    loginResult.setCookie(request.getSession().getId());
+    return Result.ok(loginResult);
   }
 
   /**
@@ -170,15 +173,19 @@ public class LoginServiceImpl implements LoginService {
       userDTO.setEmail(oAuth2User.getEmail());
       userDTO.setAvatar(oAuth2User.getAvatar());
 
-      result = userService.addUser(userDTO);
-      oAuth2User.setId(Long.valueOf(result.getData().toString()));
+      Long newUserId = Long.valueOf(userService.addUser(userDTO).getData().toString());
+      String newUserCookie = request.getSession().getId();
+      LoginResult loginResult = new LoginResult();
+      loginResult.setId(newUserId);
+      loginResult.setCookie(newUserCookie);
+      oAuth2User.setId(newUserId);
       // Store oauth2 token.
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(
               oAuth2User, oAuth2User.getAuthorities(), github.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
-      sessionRegistry.registerNewSession(
-          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      sessionRegistry.registerNewSession(newUserCookie, oAuth2AuthenticationToken.getPrincipal());
+      result = Result.ok(loginResult);
     } else {
       Long userId = oAuth2User.getId();
       HashSet<GrantedAuthority> authorities = new HashSet<>(oAuth2User.getAuthorities());
@@ -192,13 +199,12 @@ public class LoginServiceImpl implements LoginService {
             new SimpleGrantedAuthority(storedUserInfoRole);
         authorities.add(storedUserRoleAuthority);
       }
-
+      String newUserCookie = request.getSession().getId();
       // Store oauth2 token.
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(oAuth2User, authorities, github.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
-      sessionRegistry.registerNewSession(
-          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      sessionRegistry.registerNewSession(newUserCookie, oAuth2AuthenticationToken.getPrincipal());
       // Update the oauth2 user info if changed.
       String newUserName = oAuth2User.getName();
       String newUserEmail = oAuth2User.getEmail();
@@ -212,7 +218,10 @@ public class LoginServiceImpl implements LoginService {
           throw new RuntimeException(updateBasicPMSUserInfoResult.getMessage());
         }
       }
-      result = Result.ok(userId);
+      LoginResult loginResult = new LoginResult();
+      loginResult.setId(userId);
+      loginResult.setCookie(newUserCookie);
+      result = Result.ok(loginResult);
     }
     return result;
   }
@@ -272,23 +281,27 @@ public class LoginServiceImpl implements LoginService {
       userDTO.setLoginType(2);
       userDTO.setEmail(oAuth2User.getEmail());
       userDTO.setAvatar(oAuth2User.getAvatar());
-      result = userService.addUser(userDTO);
-      oAuth2User.setId(Long.valueOf(result.getData().toString()));
+      Long newUserId = Long.valueOf(userService.addUser(userDTO).getData().toString());
+      oAuth2User.setId(newUserId);
       // Store oauth2 token.
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(
               oAuth2User, oAuth2User.getAuthorities(), google.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
-      sessionRegistry.registerNewSession(
-          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      String newUserCookie = request.getSession().getId();
+      sessionRegistry.registerNewSession(newUserCookie, oAuth2AuthenticationToken.getPrincipal());
+      LoginResult loginResult = new LoginResult();
+      loginResult.setId(newUserId);
+      loginResult.setCookie(newUserCookie);
+      result = Result.ok(loginResult);
     } else {
       // Store oauth2 token.
+      String newUserCookie = request.getSession().getId();
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
           new OAuth2AuthenticationToken(
               oAuth2User, oAuth2User.getAuthorities(), google.getRegistrationId());
       securityContext.setAuthentication(oAuth2AuthenticationToken);
-      sessionRegistry.registerNewSession(
-          request.getSession().getId(), oAuth2AuthenticationToken.getPrincipal());
+      sessionRegistry.registerNewSession(newUserCookie, oAuth2AuthenticationToken.getPrincipal());
       Long currentLoginUserId = pmsUserDetailsUtil.getCurrentLoginUserId();
 
       // Update the oauth2 user info if changed.
@@ -307,7 +320,10 @@ public class LoginServiceImpl implements LoginService {
           throw new RuntimeException(updateBasicPMSUserInfoResult.getMessage());
         }
       }
-      result = Result.ok(currentLoginUserId);
+      LoginResult loginResult = new LoginResult();
+      loginResult.setId(currentLoginUserId);
+      loginResult.setCookie(newUserCookie);
+      result = Result.ok(loginResult);
     }
     return result;
   }

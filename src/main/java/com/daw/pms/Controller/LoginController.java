@@ -41,10 +41,10 @@ public class LoginController {
    *
    * @param loginFormDTO Login form dto.
    * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * @return Result whose data is LoginResult.
    */
   @Operation(summary = "PMS user login endpoint.")
-  @ApiResponse(description = "Result whose data is user's id in pms.")
+  @ApiResponse(description = "Result whose data is LoginResult.")
   @PostMapping("/login")
   public Result login(
       @Parameter(description = "Login form dto.") @Valid @RequestBody LoginFormDTO loginFormDTO,
@@ -57,10 +57,10 @@ public class LoginController {
    *
    * @param code Authorization code.
    * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * @return Result whose data is LoginResult.
    */
   @Operation(summary = "Login by GitHub.")
-  @ApiResponse(description = "Result whose data is user's id in pms.")
+  @ApiResponse(description = "Result whose data is LoginResult.")
   @GetMapping("/login/oauth2/github")
   public Result loginByGitHub(
       @Parameter(description = "Authorization code.") @RequestParam String code,
@@ -73,10 +73,10 @@ public class LoginController {
    *
    * @param code Authorization code.
    * @param request Http servlet request.
-   * @return Result whose data is user's id in pms.
+   * @return Result whose data is LoginResult.
    */
   @Operation(summary = "Login by Google.")
-  @ApiResponse(description = "Result whose data is user's id in pms.")
+  @ApiResponse(description = "Result whose data is LoginResult.")
   @GetMapping("/login/oauth2/google")
   public Result loginByGoogle(
       @Parameter(description = "Authorization code.") @RequestParam String code,
@@ -189,7 +189,8 @@ public class LoginController {
   @ApiResponse(description = "Common result.")
   @PostMapping("/verify/resetPassword")
   public Result verifyResetPassToken(
-      @Parameter(description = "DTO for resetting password.") @Valid @RequestBody ResetPassDTO resetPassDTO) {
+      @Parameter(description = "DTO for resetting password.") @Valid @RequestBody
+          ResetPassDTO resetPassDTO) {
     return loginService.verifyResetPassToken(resetPassDTO);
   }
 
