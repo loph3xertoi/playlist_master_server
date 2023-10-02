@@ -28,8 +28,8 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
  * @since 9/19/23
  */
 @Configuration
- @EnableWebSecurity()
-//@EnableWebSecurity(debug = true)
+@EnableWebSecurity()
+// @EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
   private final UserDetailsService userDetailsService;
 
@@ -99,7 +99,6 @@ public class WebSecurityConfig {
             "/css/**",
             "/js/**",
             "/images/**",
-            "/xml/**",
             "/mpd/**",
             "/login",
             "/register",

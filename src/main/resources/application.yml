@@ -98,7 +98,119 @@ ncm:
     host: ncm-api
     port: 3000
 
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          #          expression: "(@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()).concat('::'+getRequestURI())"
+          bandwidths:
+            - capacity: 5
+              time: 5
+              unit: seconds
+              fixed-refill-interval: 5
+              fixed-refill-interval-unit: seconds
+            - capacity: 30
+              time: 1
+              unit: minutes
+              fixed-refill-interval: 1
+              fixed-refill-interval-unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /forgot/password
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /sendcode
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /bind/email
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /register
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 3
+              time: 1
+              unit: minutes
 ---
+debug: true
 
 spring:
   config:
@@ -164,6 +276,13 @@ spring:
             user-name-attribute: name
   mvc:
     log-request-details: true
+#  cache:
+#    jcache:
+#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+#    cache-names:
+#      - buckets
+#    caffeine:
+#      spec: maximumSize=1000000,expireAfterAccess=3600s
 
 server:
   ssl:
@@ -199,3 +318,115 @@ ncm:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          #          expression: "(@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()).concat('::'+getRequestURI())"
+          bandwidths:
+            - capacity: 5
+              time: 5
+              unit: seconds
+              fixed-refill-interval: 5
+              fixed-refill-interval-unit: seconds
+            - capacity: 30
+              time: 1
+              unit: minutes
+              fixed-refill-interval: 1
+              fixed-refill-interval-unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /forgot/password
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /sendcode
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /bind/email
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /register
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: URL
+            expression: getRequestURI()
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 3
+              time: 1
+              unit: minutes

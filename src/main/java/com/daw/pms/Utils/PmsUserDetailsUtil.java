@@ -3,7 +3,10 @@ package com.daw.pms.Utils;
 import com.daw.pms.Entity.OAuth2.GitHubOAuth2User;
 import com.daw.pms.Entity.OAuth2.GoogleOAuth2User;
 import com.daw.pms.Entity.PMS.PMSUserDetails;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,9 @@ public class PmsUserDetailsUtil {
   public Long getCurrentLoginUserId() {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
+    if (authentication == null || "anonymousUser".equals(authentication.getName())) {
+      return null;
+    }
     Object principal = authentication.getPrincipal();
     if (principal.getClass().equals(PMSUserDetails.class)) {
       PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
@@ -35,6 +41,52 @@ public class PmsUserDetailsUtil {
     } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
       GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
       return googleOAuth2User.getId();
+    } else {
+      throw new RuntimeException("Invalid login type");
+    }
+  }
+
+  /**
+   * Get current logged user's role.
+   *
+   * @return Current logged user's role.
+   */
+  public String getCurrentLoginUserRole() {
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    if (authentication == null || "anonymousUser".equals(authentication.getName())) {
+      return null;
+    }
+    Object principal = authentication.getPrincipal();
+    if (principal.getClass().equals(PMSUserDetails.class)) {
+      PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
+      return pmsUserDetails.getUser().getRole();
+    } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+      GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+      List<String> roles =
+          gitHubOAuth2User.getOauth2User().getAuthorities().stream()
+              .map(GrantedAuthority::getAuthority)
+              .collect(Collectors.toList());
+      if (roles.contains("ROLE_ADMIN")) {
+        return "ROLE_ADMIN";
+      } else if (roles.contains("ROLE_USER")) {
+        return "ROLE_USER";
+      } else {
+        throw new RuntimeException("Invalid user role");
+      }
+    } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+      GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+      List<String> roles =
+          googleOAuth2User.getOauth2User().getAuthorities().stream()
+              .map(GrantedAuthority::getAuthority)
+              .collect(Collectors.toList());
+      if (roles.contains("ROLE_ADMIN")) {
+        return "ROLE_ADMIN";
+      } else if (roles.contains("ROLE_USER")) {
+        return "ROLE_USER";
+      } else {
+        throw new RuntimeException("Invalid user role");
+      }
     } else {
       throw new RuntimeException("Invalid login type");
     }

@@ -1,5 +1,6 @@
 package com.daw.pms.Config;
 
+import io.lettuce.core.RedisClient;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,5 +109,10 @@ public class RedisConfig extends CachingConfigurerSupport {
     return RedisCacheManager.builder(redisConnectionFactory())
         .withInitialCacheConfigurations(cacheConfigurations)
         .build();
+  }
+
+  @Bean
+  public RedisClient redisClient() {
+    return RedisClient.create(String.format("redis://%s:%s", redisHost, redisPort));
   }
 }
