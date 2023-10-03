@@ -1,5 +1,6 @@
 package com.daw.pms.Utils;
 
+import java.io.BufferedReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -52,12 +53,7 @@ public class HttpTools {
     this.restTemplate = restTemplate;
     this.restTemplateWithProxy = restTemplateWithProxy;
   }
-  /**
-   * @param url
-   * @param params
-   * @param cookie
-   * @return
-   */
+
   /**
    * Send http get request to {@code api} with parameters {@code params} and {@code cookie}.
    *
@@ -208,5 +204,14 @@ public class HttpTools {
     HttpEntity<?> entity = new HttpEntity<>(headers);
 
     return restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
+  }
+
+  /**
+   * Get http request body.
+   *
+   * @return Request body.
+   */
+  public String getRequestBody(BufferedReader bufferedReader){
+    return bufferedReader.lines().reduce("", String::concat);
   }
 }
