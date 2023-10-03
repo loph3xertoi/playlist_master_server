@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 
 /**
  * CORS filter.
@@ -12,11 +13,13 @@ import javax.servlet.http.HttpServletResponse;
  * @version 1.0
  * @since 9/21/23
  */
+@Component
 @WebFilter("/*")
 public class CorsFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
+    System.out.println("CorsFilter");
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:42653");
     httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");

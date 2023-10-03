@@ -1,9 +1,7 @@
 package com.daw.pms.Config;
 
-import com.daw.pms.Filters.CorsFilter;
 import java.util.Collections;
 import javax.servlet.*;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,14 +25,5 @@ public class WebConfig implements WebMvcConfigurer {
       sessionCookieConfig.setHttpOnly(false);
       sessionCookieConfig.setSecure(false);
     };
-  }
-
-  @Bean
-  public FilterRegistrationBean<Filter> afterAuthFilterRegistrationBean() {
-    FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
-    CorsFilter corsFilter = new CorsFilter();
-    registrationBean.setFilter(corsFilter);
-    registrationBean.setOrder(10);
-    return registrationBean;
   }
 }
