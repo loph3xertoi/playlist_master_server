@@ -63,10 +63,6 @@ spring:
   mvc:
     log-request-details: true
 
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
 server:
   ssl:
     key-store: file:/data/playlistmaster.fun.jks

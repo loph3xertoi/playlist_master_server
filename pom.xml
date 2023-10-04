@@ -5,8 +5,8 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.12</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <version>2.7.16</version>
+    <relativePath/>
   </parent>
   <groupId>com.daw</groupId>
   <artifactId>pms</artifactId>
@@ -25,7 +25,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
-      <version>3.0.4</version>
+      <!--      <version>3.0.4</version>-->
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -34,13 +34,12 @@
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.1</version>
+      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
-
     <dependency>
       <groupId>com.mysql</groupId>
       <artifactId>mysql-connector-j</artifactId>
@@ -136,24 +135,6 @@
       <artifactId>bucket4j_jdk8-redis</artifactId>
       <version>8.4.0</version>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>org.springframework.boot</groupId>-->
-    <!--      <artifactId>spring-boot-starter-cache</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>javax.cache</groupId>-->
-    <!--      <artifactId>cache-api</artifactId>-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>com.github.ben-manes.caffeine</groupId>-->
-    <!--      <artifactId>caffeine</artifactId>-->
-    <!--&lt;!&ndash;      <version>2.8.2</version>&ndash;&gt;-->
-    <!--    </dependency>-->
-    <!--    <dependency>-->
-    <!--      <groupId>com.github.ben-manes.caffeine</groupId>-->
-    <!--      <artifactId>jcache</artifactId>-->
-    <!--&lt;!&ndash;      <version>2.8.2</version>&ndash;&gt;-->
-    <!--    </dependency>-->
   </dependencies>
 
   <build>

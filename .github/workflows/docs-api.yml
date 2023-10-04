@@ -56,7 +56,7 @@ jobs:
           label: docs
           message: ${{ env.DOCS_MESSAGE }}
           color: ${{ env.DOCS_COLOR }}
-          
+
       - name: Create API Badge
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
@@ -75,6 +75,9 @@ jobs:
         with:
           output: swagger-ui
           spec-file: openapi.json
+
+      - name: Maven Dependency Tree Dependency Submission
+        uses: advanced-security/maven-dependency-submission-action@v3.0.2
 
       - name: Configure Git
         run: |
