@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +65,14 @@ public class LoginController {
   @ApiResponse(description = "Result whose data is LoginResult.")
   @GetMapping("/login/oauth2/github")
   public Result loginByGitHub(
-      @Parameter(description = "Authorization code.") @RequestParam String code,
+      @Parameter(description = "Authorization code.")
+          @Valid
+          @Length(min = 20, max = 20, message = "Authorization code length must be 20.")
+          @Pattern(
+              regexp = "^[a-z0-9]+$",
+              message = "Only english characters or digit are valid in authorization code.")
+          @RequestParam
+          String code,
       @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     return loginService.loginByGitHub(code, request);
   }
@@ -79,7 +88,13 @@ public class LoginController {
   @ApiResponse(description = "Result whose data is LoginResult.")
   @GetMapping("/login/oauth2/google")
   public Result loginByGoogle(
-      @Parameter(description = "Authorization code.") @RequestParam String code,
+      @Parameter(description = "Authorization code.")
+          @Valid
+          @Pattern(
+              regexp = "^(?!https?://).*$",
+              message = "Invalid authorization code.")
+          @RequestParam
+          String code,
       @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     Map<String, String[]> parameterMap = request.getParameterMap();
     return loginService.loginByGoogle(code, request);

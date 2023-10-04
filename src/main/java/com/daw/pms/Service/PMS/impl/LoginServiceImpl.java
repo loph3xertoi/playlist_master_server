@@ -131,7 +131,7 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result loginByGitHub(String code, HttpServletRequest request) {
-    System.out.println("GitHub authentication code: " + code);
+    //    System.out.println("GitHub authorization code: " + code);
     ClientRegistration github = clientRegistrationRepository.findByRegistrationId("github");
     String access_token_url = github.getProviderDetails().getTokenUri();
     access_token_url += "?client_id=" + github.getClientId();
@@ -234,7 +234,7 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result loginByGoogle(String code, HttpServletRequest request) {
-    System.out.println("Authorization code: " + code);
+//    System.out.println("Google authorization code: " + code);
     ClientRegistration google = clientRegistrationRepository.findByRegistrationId("google");
     String access_token_url = google.getProviderDetails().getTokenUri();
     access_token_url += "?client_id=" + google.getClientId();
