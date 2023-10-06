@@ -103,6 +103,8 @@ bucket4j:
       url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -135,6 +137,8 @@ bucket4j:
       url: /forgot/password
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -159,6 +163,8 @@ bucket4j:
       url: /sendcode
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -183,6 +189,8 @@ bucket4j:
       url: /bind/email
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -207,6 +215,8 @@ bucket4j:
       url: /register
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -344,6 +354,8 @@ bucket4j:
       url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -376,6 +388,8 @@ bucket4j:
       url: /forgot/password
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -400,6 +414,8 @@ bucket4j:
       url: /sendcode
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -424,6 +440,8 @@ bucket4j:
       url: /bind/email
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
@@ -448,6 +466,8 @@ bucket4j:
       url: /register
       metrics:
         tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
           - key: IP
             expression: getRemoteAddr()
             types: REJECTED_COUNTER

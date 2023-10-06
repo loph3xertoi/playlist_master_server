@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
@@ -211,7 +212,16 @@ public class HttpTools {
    *
    * @return Request body.
    */
-  public String getRequestBody(BufferedReader bufferedReader){
+  public String getRequestBody(BufferedReader bufferedReader) {
     return bufferedReader.lines().reduce("", String::concat);
+  }
+
+  /**
+   * Get http request body.
+   *
+   * @return Request body.
+   */
+  public String getCurrentTime() {
+    return Instant.now().toString();
   }
 }
