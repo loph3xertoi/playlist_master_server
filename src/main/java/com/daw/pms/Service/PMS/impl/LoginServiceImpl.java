@@ -11,6 +11,7 @@ import com.daw.pms.Service.PMS.UserService;
 import com.daw.pms.Utils.EmailUtil;
 import com.daw.pms.Utils.HttpTools;
 import com.daw.pms.Utils.PmsUserDetailsUtil;
+import com.daw.pms.Utils.RegistrationCodeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,11 +51,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LoginServiceImpl implements LoginService {
+  @Value("${pms.registration-code:PMSDAW}")
+  private String rootRegistrationCode;
+
   private final HttpTools httpTools;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
   private final RedisTemplate<String, Object> redisTemplate;
   private final PasswordEncoder passwordEncoder;
   private final EmailUtil emailUtil;
+  private final RegistrationCodeUtil registrationCodeUtil;
   private final DaoAuthenticationProvider authenticationProvider;
   private final UserService userService;
   private final OAuth2UserDetailsServiceImpl OAuth2UserDetailsServiceImpl;
@@ -63,22 +69,17 @@ public class LoginServiceImpl implements LoginService {
   /**
    * Constructor for LoginServiceImpl.
    *
-   * @param httpTools a {@link com.daw.pms.Utils.HttpTools} object.
-   * @param pmsUserDetailsUtil a {@link com.daw.pms.Utils.PmsUserDetailsUtil} object.
-   * @param redisTemplate a {@link org.springframework.data.redis.core.RedisTemplate} object.
-   * @param passwordEncoder a {@link org.springframework.security.crypto.password.PasswordEncoder}
-   *     object.
-   * @param emailUtil a {@link com.daw.pms.Utils.EmailUtil} object.
-   * @param authenticationProvider a {@link
-   *     org.springframework.security.authentication.dao.DaoAuthenticationProvider} object.
-   * @param userService a {@link com.daw.pms.Service.PMS.UserService} object.
-   * @param OAuth2UserDetailsServiceImpl a {@link
-   *     com.daw.pms.Service.PMS.impl.OAuth2UserDetailsServiceImpl} object.
-   * @param sessionRegistry a {@link org.springframework.security.core.session.SessionRegistry}
-   *     object.
-   * @param clientRegistrationRepository a {@link
-   *     org.springframework.security.oauth2.client.registration.ClientRegistrationRepository}
-   *     object.
+   * @param httpTools Http tools.
+   * @param pmsUserDetailsUtil PmsUserDetailsUtil.
+   * @param redisTemplate RedisTemplate.
+   * @param passwordEncoder PasswordEncoder.
+   * @param emailUtil EmailUtil.
+   * @param registrationCodeUtil RegistrationCodeUtil.
+   * @param authenticationProvider DaoAuthenticationProvider.
+   * @param userService UserService object.
+   * @param OAuth2UserDetailsServiceImpl OAuth2UserDetailsServiceImpl.
+   * @param sessionRegistry SessionRegistry.
+   * @param clientRegistrationRepository ClientRegistrationRepository.
    */
   public LoginServiceImpl(
       HttpTools httpTools,
@@ -86,6 +87,7 @@ public class LoginServiceImpl implements LoginService {
       RedisTemplate<String, Object> redisTemplate,
       PasswordEncoder passwordEncoder,
       EmailUtil emailUtil,
+      RegistrationCodeUtil registrationCodeUtil,
       DaoAuthenticationProvider authenticationProvider,
       UserService userService,
       OAuth2UserDetailsServiceImpl OAuth2UserDetailsServiceImpl,
@@ -96,6 +98,7 @@ public class LoginServiceImpl implements LoginService {
     this.redisTemplate = redisTemplate;
     this.passwordEncoder = passwordEncoder;
     this.emailUtil = emailUtil;
+    this.registrationCodeUtil = registrationCodeUtil;
     this.authenticationProvider = authenticationProvider;
     this.userService = userService;
     this.OAuth2UserDetailsServiceImpl = OAuth2UserDetailsServiceImpl;
@@ -130,7 +133,7 @@ public class LoginServiceImpl implements LoginService {
    * <p>Login to playlist master by GitHub.
    */
   @Override
-  public Result loginByGitHub(String code, HttpServletRequest request) {
+  public Result loginByGitHub(String code, String registrationCode, HttpServletRequest request) {
     //    System.out.println("GitHub authorization code: " + code);
     ClientRegistration github = clientRegistrationRepository.findByRegistrationId("github");
     String access_token_url = github.getProviderDetails().getTokenUri();
@@ -166,6 +169,18 @@ public class LoginServiceImpl implements LoginService {
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(oAuth2User.getName(), 1);
     Result result;
     if (!isUsernameExists) {
+      // Need to input registration code.
+      if ("".equals(registrationCode)) {
+        LoginResult loginResult = new LoginResult();
+        loginResult.setUserExists(false);
+        return Result.ok(loginResult);
+      }
+
+      // Validate registration code.
+      if (!rootRegistrationCode.equals(registrationCode)) {
+        return Result.fail("Invalid registration code.");
+      }
+
       UserDTO userDTO = new UserDTO();
       userDTO.setName(oAuth2User.getName());
       userDTO.setRole("ROLE_" + UserRole.USER);
@@ -179,6 +194,7 @@ public class LoginServiceImpl implements LoginService {
       LoginResult loginResult = new LoginResult();
       loginResult.setId(newUserId);
       loginResult.setCookie(newUserCookie);
+      loginResult.setUserExists(true);
       oAuth2User.setId(newUserId);
       // Store oauth2 token.
       OAuth2AuthenticationToken oAuth2AuthenticationToken =
@@ -222,6 +238,7 @@ public class LoginServiceImpl implements LoginService {
       LoginResult loginResult = new LoginResult();
       loginResult.setId(userId);
       loginResult.setCookie(newUserCookie);
+      loginResult.setUserExists(true);
       result = Result.ok(loginResult);
     }
     return result;
@@ -233,8 +250,8 @@ public class LoginServiceImpl implements LoginService {
    * <p>Login to playlist master by Google.
    */
   @Override
-  public Result loginByGoogle(String code, HttpServletRequest request) {
-//    System.out.println("Google authorization code: " + code);
+  public Result loginByGoogle(String code, String registrationCode, HttpServletRequest request) {
+    //    System.out.println("Google authorization code: " + code);
     ClientRegistration google = clientRegistrationRepository.findByRegistrationId("google");
     String access_token_url = google.getProviderDetails().getTokenUri();
     access_token_url += "?client_id=" + google.getClientId();
@@ -275,6 +292,18 @@ public class LoginServiceImpl implements LoginService {
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(oAuth2User.getName(), 2);
     Result result;
     if (!isUsernameExists) {
+      // Need to input registration code.
+      if ("".equals(registrationCode)) {
+        LoginResult loginResult = new LoginResult();
+        loginResult.setUserExists(false);
+        return Result.ok(loginResult);
+      }
+
+      // Validate registration code.
+      if (!rootRegistrationCode.equals(registrationCode)) {
+        return Result.fail("Invalid registration code.");
+      }
+
       UserDTO userDTO = new UserDTO();
       userDTO.setName(oAuth2User.getName());
       userDTO.setRole("ROLE_" + UserRole.USER);
@@ -294,6 +323,7 @@ public class LoginServiceImpl implements LoginService {
       LoginResult loginResult = new LoginResult();
       loginResult.setId(newUserId);
       loginResult.setCookie(newUserCookie);
+      loginResult.setUserExists(true);
       result = Result.ok(loginResult);
     } else {
       // Store oauth2 token.
@@ -324,6 +354,7 @@ public class LoginServiceImpl implements LoginService {
       LoginResult loginResult = new LoginResult();
       loginResult.setId(currentLoginUserId);
       loginResult.setCookie(newUserCookie);
+      loginResult.setUserExists(true);
       result = Result.ok(loginResult);
     }
     return result;
@@ -337,6 +368,13 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public Result register(RegisterFormDTO registerFormDTO)
       throws MessagingException, UnsupportedEncodingException {
+    String registrationCode = registerFormDTO.getRegistrationCode();
+    // Validate registration code.
+    if (!rootRegistrationCode.equals(registrationCode)) {
+      return Result.fail("Invalid registration code.");
+    }
+    //    long invitorId = registrationCodeUtil.getUserIdByRegistrationCode(registrationCode);\
+
     boolean isUsernameExists = userService.checkIfPMSUserNameExist(registerFormDTO.getName(), 0);
     if (isUsernameExists) {
       return Result.fail("Name already exists, please change username.");
@@ -587,6 +625,10 @@ public class LoginServiceImpl implements LoginService {
    */
   @Override
   public Result verifySignUpTokenWithoutLogin(SignUpNologinDTO signUpNologinDTO) {
+    String registrationCode = signUpNologinDTO.getRegistrationCode();
+    if (!rootRegistrationCode.equals(registrationCode)) {
+      return Result.fail("Invalid registration code.");
+    }
     String token = signUpNologinDTO.getToken();
     String email = signUpNologinDTO.getEmail();
     String tokenKey = "sign_up_token::" + email;

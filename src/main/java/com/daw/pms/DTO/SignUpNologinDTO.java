@@ -2,6 +2,7 @@ package com.daw.pms.DTO;
 
 import com.daw.pms.Annotation.ValidPassword;
 import com.daw.pms.Annotation.ValidPhoneNumber;
+import com.daw.pms.Annotation.ValidRegistrationCode;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -40,4 +41,8 @@ public class SignUpNologinDTO implements Serializable {
       regexp = "^[a-zA-Z0-9]+$",
       message = "Only english characters or digit are valid in token")
   private String token;
+
+  /** The registration code. */
+  @ValidRegistrationCode
+  private String registrationCode;
 }

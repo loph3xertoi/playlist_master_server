@@ -16,4 +16,7 @@ public class LoginResult {
 
   /** Cookie of logged user in pms. */
   private String cookie;
+
+  /** If the user exists in pms. */
+  private Boolean userExists;
 }

@@ -2,12 +2,14 @@ package com.daw.pms.Controller;
 
 import com.daw.pms.DTO.Result;
 import com.daw.pms.Utils.PmsUserDetailsUtil;
+import com.daw.pms.Utils.RegistrationCodeUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,18 +25,26 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class TestController {
+  @Value("${pms.registration-code:PMSDAW}")
+  private String rootRegistrationCode;
   private final SessionRegistry sessionRegistry;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
+  private final RegistrationCodeUtil registrationCodeUtil;
 
   /**
    * Constructor for TestController.
    *
-   * @param sessionRegistry a {@link SessionRegistry} object.
-   * @param pmsUserDetailsUtil a {@link PmsUserDetailsUtil} object.
+   * @param sessionRegistry SessionRegistry.
+   * @param pmsUserDetailsUtil PmsUserDetailsUtil.
+   * @param registrationCodeUtil RegistrationCodeUtil.
    */
-  public TestController(SessionRegistry sessionRegistry, PmsUserDetailsUtil pmsUserDetailsUtil) {
+  public TestController(
+      SessionRegistry sessionRegistry,
+      PmsUserDetailsUtil pmsUserDetailsUtil,
+      RegistrationCodeUtil registrationCodeUtil) {
     this.sessionRegistry = sessionRegistry;
     this.pmsUserDetailsUtil = pmsUserDetailsUtil;
+    this.registrationCodeUtil = registrationCodeUtil;
   }
 
   /**
@@ -51,6 +61,13 @@ public class TestController {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     map.put("authentication", authentication);
+    for (int i = 0; i < 2; i++) {
+      String registrationCode = registrationCodeUtil.getRegistrationCodeByUserId(0);
+      System.out.println("registrationCode: " + registrationCode);
+      long invitorId = registrationCodeUtil.getUserIdByRegistrationCode(registrationCode);
+      System.out.println("invitorId: " + invitorId);
+    }
+    System.out.println(rootRegistrationCode);
     return map;
   }
 

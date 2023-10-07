@@ -1,5 +1,6 @@
 package com.daw.pms.Controller;
 
+import com.daw.pms.Annotation.ValidRegistrationCode;
 import com.daw.pms.DTO.*;
 import com.daw.pms.Service.PMS.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +59,7 @@ public class LoginController {
    * Login by GitHub.
    *
    * @param code Authorization code.
+   * @param registrationCode Registration code for new user.
    * @param request Http servlet request.
    * @return Result whose data is LoginResult.
    */
@@ -73,14 +75,20 @@ public class LoginController {
               message = "Only english characters or digit are valid in authorization code.")
           @RequestParam
           String code,
+      @Parameter(description = "Registration code for new user.")
+          @Valid
+          @ValidRegistrationCode
+          @RequestParam(required = false, defaultValue = "")
+          String registrationCode,
       @Parameter(description = "Http servlet request.") HttpServletRequest request) {
-    return loginService.loginByGitHub(code, request);
+    return loginService.loginByGitHub(code, registrationCode, request);
   }
 
   /**
    * Login by Google.
    *
    * @param code Authorization code.
+   * @param registrationCode Registration code for new user.
    * @param request Http servlet request.
    * @return Result whose data is LoginResult.
    */
@@ -90,14 +98,17 @@ public class LoginController {
   public Result loginByGoogle(
       @Parameter(description = "Authorization code.")
           @Valid
-          @Pattern(
-              regexp = "^(?!https?://).*$",
-              message = "Invalid authorization code.")
+          @Pattern(regexp = "^(?!https?://).*$", message = "Invalid authorization code.")
           @RequestParam
           String code,
+      @Parameter(description = "Registration code for new user.")
+          @Valid
+          @ValidRegistrationCode
+          @RequestParam(required = false, defaultValue = "")
+          String registrationCode,
       @Parameter(description = "Http servlet request.") HttpServletRequest request) {
     Map<String, String[]> parameterMap = request.getParameterMap();
-    return loginService.loginByGoogle(code, request);
+    return loginService.loginByGoogle(code, registrationCode, request);
   }
 
   /**

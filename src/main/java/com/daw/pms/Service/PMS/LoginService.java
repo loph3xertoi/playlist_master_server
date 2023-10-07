@@ -26,19 +26,21 @@ public interface LoginService {
    * Login to playlist master by GitHub.
    *
    * @param code Authorization code.
+   * @param registrationCode Registration code for new user.
    * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
-  Result loginByGitHub(String code, HttpServletRequest request);
+  Result loginByGitHub(String code, String registrationCode, HttpServletRequest request);
 
   /**
    * Login to playlist master by Google.
    *
    * @param code Authorization code.
+   * @param registrationCode Registration code for new user.
    * @param request Http servlet request.
    * @return Result whose data is user's id in pms.
    */
-  Result loginByGoogle(String code, HttpServletRequest request);
+  Result loginByGoogle(String code, String registrationCode, HttpServletRequest request);
 
   /**
    * Register playlist master account using email and password.

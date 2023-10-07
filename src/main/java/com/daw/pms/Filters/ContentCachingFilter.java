@@ -30,7 +30,6 @@ public class ContentCachingFilter extends OncePerRequestFilter {
       HttpServletResponse httpServletResponse,
       FilterChain filterChain)
       throws ServletException, IOException {
-    System.out.println("ContentCachingFilter");
     CachedBodyHttpServletRequest cachedBodyHttpServletRequest =
         new CachedBodyHttpServletRequest(httpServletRequest);
     filterChain.doFilter(cachedBodyHttpServletRequest, httpServletResponse);
