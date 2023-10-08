@@ -100,7 +100,7 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (\/(?!(sendcode|forgot\/password|bind\/email|register))).*
+      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register))).*
       #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
@@ -134,6 +134,34 @@ bucket4j:
               unit: minutes
               fixed-refill-interval: 1
               fixed-refill-interval-unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /
+      metrics:
+        tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
+            expression: getRequestURI()
+          - key: PARAM
+            expression: getQueryString()
+          - key: BODY
+            expression: "@httpTools.getRequestBody(getReader())"
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 120
+              time: 1
+              unit: minutes
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
@@ -362,7 +390,7 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (\/(?!(sendcode|forgot\/password|bind\/email|register))).*
+      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register))).*
       #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
@@ -396,6 +424,34 @@ bucket4j:
               unit: minutes
               fixed-refill-interval: 1
               fixed-refill-interval-unit: minutes
+    - cache-name: buckets
+      strategy: ALL
+      filter-method: servlet
+      url: /
+      metrics:
+        tags:
+          - key: TIME
+            expression: "@httpTools.getCurrentTime()"
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: UID
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
+            expression: getRequestURI()
+          - key: PARAM
+            expression: getQueryString()
+          - key: BODY
+            expression: "@httpTools.getRequestBody(getReader())"
+      rate-limits:
+        - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
+          expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
+          bandwidths:
+            - capacity: 120
+              time: 1
+              unit: minutes
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
