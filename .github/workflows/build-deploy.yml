@@ -46,7 +46,7 @@ jobs:
 
       - name: Build and Push Docker images
         uses: docker/build-push-action@v5.0.0
-        with: 
+        with:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pms:latest
@@ -58,8 +58,8 @@ jobs:
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
           key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_SERVER_PORT }}
-          source: "redis.conf,my.cnf,src/main/resources/init.sql,docker-compose.yml"
-          target: ~/app
+          source: "redis.conf,my.cnf,src/main/resources/init.sql,src/main/resources/prometheus.yml,docker-compose.yml"
+          target: ~/
 
       - name: Place Config Files
         uses: appleboy/ssh-action@v1.0.0
@@ -69,12 +69,17 @@ jobs:
           key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_SERVER_PORT }}
           script: |
-            mkdir -p ~/app/pms ~/app/redis ~/app/mysql/conf ~/app/mysql/init ~/app/mysql/logs
-            mv ~/app/redis.conf ~/app/redis
-            mv ~/app/my.cnf ~/app/mysql/conf
-            mv ~/app/src/main/resources/init.sql ~/app/mysql/init
-            cp ~/secrets.yml ~/playlistmaster.fun.jks ~/app/pms
-            rm -r ~/app/src
+            mkdir -p ~/app/pms ~/app/redis ~/app/redis/data ~/app/redis/backup ~/app/mysql/conf ~/app/mysql/init
+            mkdir -p ~/app/mysql/logs ~/app/mysql/data ~/app/grafana ~/app/prometheus ~/certs ~/conf ~/scripts
+            mv ~/redis.conf ~/app/redis
+            mv ~/my.cnf ~/app/mysql/conf
+            mv ~/docker-compose.yml ~/app
+            mv ~/src/main/resources/prometheus.yml ~/app/prometheus
+            mv ~/src/main/resources/init.sql ~/app/mysql/init
+            cp ~/conf/secrets.yml ~/certs/playlistmaster.fun.jks ~/app/pms
+            cp ~/conf/prometheus-web.yml ~/app/prometheus/web.yml
+            cp ~/certs/pms.crt ~/certs/privkey.pem ~/app/prometheus
+            rm -r ~/src
             touch ~/app/mysql/logs/error.log
             chmod -R 777 ~/app
 
@@ -84,7 +89,7 @@ jobs:
           remote_docker_host: ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_HOST }}
           ssh_private_key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           ssh_public_key: ${{ secrets.REMOTE_SERVER_SSH_PUBLIC_KEY }}
-          docker_registry_username:  ${{ secrets.DOCKER_HUB_USERNAME }}
+          docker_registry_username: ${{ secrets.DOCKER_HUB_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           # docker_registry_uri: https://registry.hub.docker.com
           deployment_mode: docker-compose

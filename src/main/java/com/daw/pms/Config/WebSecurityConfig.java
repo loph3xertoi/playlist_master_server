@@ -2,6 +2,7 @@ package com.daw.pms.Config;
 
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.apache.tomcat.util.http.SameSiteCookies;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 @EnableWebSecurity()
 // @EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
+  @Value("${pms.remote-ip:127.0.0.1}")
+  private String remoteServerIp;
+
   private final UserDetailsService userDetailsService;
 
   /**
@@ -85,7 +89,7 @@ public class WebSecurityConfig {
                 headers.referrerPolicy(
                     referrer ->
                         referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)))
-        .authorizeHttpRequests()
+        .authorizeRequests()
         .antMatchers(
             "/",
             //                      "/swagger-ui.html",
@@ -112,9 +116,11 @@ public class WebSecurityConfig {
             "/hello",
             "/cors/bili/splash")
         .permitAll()
+        .antMatchers("/actuator/prometheus")
+        .hasIpAddress(remoteServerIp)
         .antMatchers(HttpMethod.POST, "/verify/resetPassword", "/verify/bindEmail")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
-        .antMatchers(HttpMethod.GET, "/users", "/kick", "/kickAll")
+        .antMatchers(HttpMethod.GET, "/users", "/kick", "/kickAll", "/actuator")
         .hasRole(String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.GET)
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))

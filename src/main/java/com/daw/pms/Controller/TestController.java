@@ -63,13 +63,6 @@ public class TestController {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     map.put("authentication", authentication);
-    for (int i = 0; i < 2; i++) {
-      String registrationCode = registrationCodeUtil.getRegistrationCodeByUserId(0);
-      System.out.println("registrationCode: " + registrationCode);
-      long invitorId = registrationCodeUtil.getUserIdByRegistrationCode(registrationCode);
-      System.out.println("invitorId: " + invitorId);
-    }
-    System.out.println(rootRegistrationCode);
     return map;
   }
 

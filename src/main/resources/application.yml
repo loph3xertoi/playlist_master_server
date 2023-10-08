@@ -63,6 +63,15 @@ spring:
   mvc:
     log-request-details: true
 
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
 server:
   ssl:
     key-store: file:/data/playlistmaster.fun.jks
@@ -100,7 +109,7 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register))).*
+      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register|actuator\/prometheus))).*
       #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
@@ -112,13 +121,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -148,13 +157,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -176,13 +185,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -204,13 +213,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -232,13 +241,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -260,13 +269,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -341,13 +350,15 @@ spring:
             user-name-attribute: name
   mvc:
     log-request-details: true
-#  cache:
-#    jcache:
-#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
-#    cache-names:
-#      - buckets
-#    caffeine:
-#      spec: maximumSize=1000000,expireAfterAccess=3600s
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 
 server:
   ssl:
@@ -390,7 +401,7 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register))).*
+      url: (?!\/$)(\/(?!(sendcode|forgot\/password|bind\/email|favicon\.ico|css|js|images|register|actuator\/prometheus))).*
       #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
@@ -402,13 +413,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -438,13 +449,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -466,13 +477,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -494,13 +505,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -522,13 +533,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"
@@ -550,13 +561,13 @@ bucket4j:
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
           - key: METHOD
-            expression: getMethod()
+            expression: "getMethod()?: ''"
           - key: URI
-            expression: getRequestURI()
+            expression: "getRequestURI()?: ''"
           - key: PARAM
-            expression: getQueryString()
+            expression: "getQueryString()?: ''"
           - key: BODY
-            expression: "@httpTools.getRequestBody(getReader())"
+            expression: "@httpTools.getRequestBody(getReader())?: ''"
       rate-limits:
         - skip-condition: "@pmsUserDetailsUtil.getCurrentLoginUserRole() == 'ROLE_ADMIN'"
           expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: getRemoteAddr()"

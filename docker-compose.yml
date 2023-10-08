@@ -3,12 +3,14 @@ services:
   pms:
     image: loph3xertoi/pms:latest
     container_name: pms
+    restart: always
     environment:
       # -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
       _JAVA_OPTIONS: >
         -Xdebug
         -Dspring.profiles.active=prod
       SPRING_CONFIG_ADDITIONAL-LOCATION: /data/secrets.yml
+    user: '0'
     ports:
       - "443:443"
       # - "5005:5005"
@@ -21,12 +23,54 @@ services:
       - mysql
       - qqmusic-api
       - ncm-api
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    user: '0'
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana:/var/lib/grafana
+      - ~/certs:/etc/certs
+    environment:
+      - GF_SERVER_PROTOCOL=https
+      - GF_SERVER_PORT=3000
+      - GF_SERVER_DOMAIN=playlistmaster.fun
+      - GF_SERVER_ENFORCE_DOMAIN=true
+      - GF_SERVER_ROOT_URL=playlistmaster.fun:3000
+      - GF_SERVER_CERT_KEY=/etc/certs/privkey.pem
+      - GF_SERVER_CERT_FILE=/etc/certs/pms.crt
+      #- GF_SECURITY_ADMIN_USER=admin
+      #- GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-worldmap-panel
+    networks:
+      - net
+  prometheus:
+    image: bitnami/prometheus:latest
+    container_name: prometheus
+    restart: always
+    user: '0'
+    ports:
+      - "9009:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--log.level=debug'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.config.file=/etc/prometheus/web.yml'
+      - '--storage.tsdb.retention.time=90d'
+    networks:
+      - net
   redis:
     container_name: redis
     image: redis:latest
     restart: always
-    ports:
-      - "6379:6379"
+    user: '0'
+    # ports:
+    #   - "6379:6379"
     volumes:
       - ./redis/redis.conf:/etc/redis/redis.conf
       - ./redis/data:/data
@@ -38,8 +82,9 @@ services:
     container_name: mysql
     image: mysql:5.7
     restart: always
-    ports:
-      - "3306:3306"
+    user: '0'
+    # ports:
+    #   - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
@@ -58,16 +103,18 @@ services:
     container_name: qqmusic-api
     image: loph3xertoi/qqmusic-api:latest
     restart: always
-    ports:
-      - "3300:3300"
+    user: '0'
+    # ports:
+    #   - "3300:3300"
     networks:
       - net
   ncm-api:
     container_name: ncm-api
     image: loph3xertoi/netease-music-api:latest
     restart: always
-    ports:
-      - "3000:3000"
+    user: '0'
+    # ports:
+    #   - "3000:3000"
     networks:
       - net
 networks:
