@@ -114,7 +114,7 @@ public class WebSecurityConfig {
         .permitAll()
         .antMatchers(HttpMethod.POST, "/verify/resetPassword", "/verify/bindEmail")
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))
-        .antMatchers(HttpMethod.GET, "/users")
+        .antMatchers(HttpMethod.GET, "/users", "/kick", "/kickAll")
         .hasRole(String.valueOf(UserRole.ADMIN))
         .antMatchers(HttpMethod.GET)
         .hasAnyRole(String.valueOf(UserRole.USER), String.valueOf(UserRole.ADMIN))

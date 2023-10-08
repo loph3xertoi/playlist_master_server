@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
   @Value("${pms.registration-code:PMSDAW}")
   private String rootRegistrationCode;
+
   private final SessionRegistry sessionRegistry;
   private final PmsUserDetailsUtil pmsUserDetailsUtil;
   private final RegistrationCodeUtil registrationCodeUtil;
@@ -72,19 +74,51 @@ public class TestController {
   }
 
   /**
-   * Get logged users.
+   * Get all online users.
    *
-   * @return Logged users.
+   * @return All online users.
    */
-  @Operation(summary = "Get logged users.")
-  @ApiResponse(description = "Logged users.")
+  @Operation(summary = "Get all online users.")
+  @ApiResponse(description = "All online users.")
   @GetMapping("/users")
-  public Object getLoggedUsers() {
-    List<Object> users = new ArrayList<>();
+  public List<List<SessionInformation>> getOnlineUsers() {
+    List<List<SessionInformation>> users = new ArrayList<>();
     for (Object principal : sessionRegistry.getAllPrincipals()) {
       users.add(sessionRegistry.getAllSessions(principal, false));
     }
     return users;
+  }
+
+  /**
+   * Kick specific online user.
+   *
+   * @param sessionId SessionId of online user.
+   * @return Common result.
+   */
+  @Operation(summary = "Kick specific online user.")
+  @ApiResponse(description = "Common result.")
+  @GetMapping("/kick")
+  public Result kick(@Parameter(description = "SessionId of online user.") String sessionId) {
+    sessionRegistry.removeSessionInformation(sessionId);
+    return Result.ok();
+  }
+
+  /**
+   * Kick all online users.
+   *
+   * @return Common result.
+   */
+  @Operation(summary = "Kick all online users.")
+  @ApiResponse(description = "Common result.")
+  @GetMapping("/kickAll")
+  public Result kickAll() {
+    List<List<SessionInformation>> onlineUsers = getOnlineUsers();
+    for (List<SessionInformation> userSessions : onlineUsers) {
+      for (SessionInformation userSession : userSessions) {
+        sessionRegistry.removeSessionInformation(userSession.getSessionId());
+      }
+    }
+    return Result.ok();
   }
 
   /**
