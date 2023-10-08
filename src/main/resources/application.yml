@@ -100,7 +100,8 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
+      url: (\/(?!(sendcode|forgot\/password|bind\/email|register))).*
+      #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
           - key: TIME
@@ -361,7 +362,8 @@ bucket4j:
     - cache-name: buckets
       strategy: ALL
       filter-method: servlet
-      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
+      url: (\/(?!(sendcode|forgot\/password|bind\/email|register))).*
+      #      url: (?!\/$)(\/(?!(sendcode|register|index\.html|robots\.txt|check|favicon\.ico|css|js|images|mpd|error))).*
       metrics:
         tags:
           - key: TIME
