@@ -1,5 +1,5 @@
 # Build and deploy PMS.
-name: build
+name: Build
 
 on:
   push:

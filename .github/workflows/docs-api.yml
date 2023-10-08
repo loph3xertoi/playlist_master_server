@@ -51,7 +51,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ vars.DOCS_BADGE_GIST_ID }}
+          gistID: ${{ vars.BADGE_GIST_ID }}
           filename: pms-docs.json
           label: docs
           message: ${{ env.DOCS_MESSAGE }}
@@ -61,7 +61,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ vars.API_BADGE_GIST_ID }}
+          gistID: ${{ vars.BADGE_GIST_ID }}
           filename: pms-api.json
           label: api
           message: ${{ env.API_MESSAGE }}
@@ -98,8 +98,8 @@ jobs:
           git push origin gh-pages -f
           echo "DOCS_MESSAGE=passing" >> $GITHUB_ENV
           echo "API_MESSAGE=passing" >> $GITHUB_ENV
-          echo "DOCS_COLOR=green" >> $GITHUB_ENV
-          echo "API_COLOR=green" >> $GITHUB_ENV
+          echo "DOCS_COLOR=#31c653" >> $GITHUB_ENV
+          echo "API_COLOR=#31c653" >> $GITHUB_ENV
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -117,7 +117,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ vars.DOCS_BADGE_GIST_ID }}
+          gistID: ${{ vars.BADGE_GIST_ID }}
           filename: pms-docs.json
           label: docs
           message: ${{ env.DOCS_MESSAGE }}
@@ -127,7 +127,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: ${{ vars.API_BADGE_GIST_ID }}
+          gistID: ${{ vars.BADGE_GIST_ID }}
           filename: pms-api.json
           label: api
           message: ${{ env.API_MESSAGE }}
