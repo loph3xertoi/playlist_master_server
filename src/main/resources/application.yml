@@ -110,7 +110,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -144,7 +146,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -170,7 +174,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -196,7 +202,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -222,7 +230,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -361,7 +371,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -395,7 +407,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -421,7 +435,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -447,7 +463,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
@@ -473,7 +491,9 @@ bucket4j:
             types: REJECTED_COUNTER
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
-          - key: URL
+          - key: METHOD
+            expression: getMethod()
+          - key: URI
             expression: getRequestURI()
           - key: PARAM
             expression: getQueryString()
