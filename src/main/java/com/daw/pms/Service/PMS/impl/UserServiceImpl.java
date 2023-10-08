@@ -347,19 +347,19 @@ public class UserServiceImpl implements UserService, Serializable {
           qqMusicUserService.getUserInfo(userDTO.getQqmusicId(), userDTO.getQqmusicCookie());
       subUsers.put("qqmusic", qqMusicUser);
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     try {
       NCMUser ncmUser = ncmUserService.getUserInfo(userDTO.getNcmId(), userDTO.getNcmCookie());
       subUsers.put("ncm", ncmUser);
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     try {
       BiliUser biliUser = biliUserService.getUserInfo(userDTO.getBiliCookie());
       subUsers.put("bilibili", biliUser);
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage() + "\n#0\t" + e.getStackTrace()[0].toString());
     }
     pmsUser.setSubUsers(subUsers);
     return pmsUser;

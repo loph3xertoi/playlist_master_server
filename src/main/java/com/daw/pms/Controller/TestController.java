@@ -55,7 +55,7 @@ public class TestController {
   @Operation(summary = "Test endpoint.")
   @ApiResponse(description = "Current user's authentication.")
   @GetMapping("/hello")
-  public Map<String, Object> test() {
+  public Map<String, Object> test(HttpServletRequest request) {
     Map<String, Object> map = new HashMap<>();
     map.put("time", new Date());
     SecurityContext securityContext = SecurityContextHolder.getContext();
