@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
           key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_SERVER_PORT }}
-          source: "redis.conf,my.cnf,src/main/resources/init.sql,src/main/resources/prometheus.yml,docker-compose.yml"
+          source: "redis.conf,my.cnf,init.sql,prometheus.yml,loki.yml,promtail.yml,loki_ds.yml,prometheus_ds.yml,docker-compose.yml"
           target: ~/
 
       - name: Place Config Files
@@ -69,22 +69,23 @@ jobs:
           key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_SERVER_PORT }}
           script: |
-            mkdir -p ~/app/pms ~/app/redis ~/app/redis/data ~/app/redis/backup ~/app/mysql/conf ~/app/mysql/init
-            mkdir -p ~/app/mysql/logs ~/app/mysql/data ~/app/grafana ~/app/prometheus ~/certs ~/conf ~/scripts
+            mkdir -p ~/app/pms/data ~/app/pms/logs ~/app/redis/data ~/app/redis/backup ~/app/mysql/conf ~/app/mysql/init
+            mkdir -p ~/app/mysql/logs ~/app/mysql/data ~/app/grafana/data ~/app/grafana/provisioning/datasources
+            mkdir -p  ~/app/prometheus ~/app/promtail ~/app/loki ~/certs ~/conf ~/scripts
             mv ~/redis.conf ~/app/redis
             mv ~/my.cnf ~/app/mysql/conf
             mv ~/docker-compose.yml ~/app
-            mv ~/src/main/resources/prometheus.yml ~/app/prometheus
-            mv ~/src/main/resources/init.sql ~/app/mysql/init
-            cp ~/conf/secrets.yml ~/certs/playlistmaster.fun.jks ~/app/pms
-            cp ~/conf/prometheus-web.yml ~/app/prometheus/web.yml
-            cp ~/certs/pms.crt ~/certs/privkey.pem ~/app/prometheus
-            rm -r ~/src
+            mv ~/prometheus.yml ~/app/prometheus
+            mv ~/promtail.yml ~/app/promtail
+            mv ~/loki.yml ~/app/loki
+            mv ~/loki_ds.yml ~/prometheus_ds.yml ~/app/grafana/provisioning/datasources
+            mv ~/init.sql ~/app/mysql/init
+            cp ~/conf/secrets.yml ~/certs/playlistmaster.fun.jks ~/app/pms/data
             touch ~/app/mysql/logs/error.log
             chmod -R 777 ~/app
 
       - name: Deploy to Remote Server
-        uses: loph3xertoi/docker-remote-deployment-action@v1
+        uses: loph3xertoi/docker-remote-deployment-action@v1.1
         with:
           remote_docker_host: ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_HOST }}
           ssh_private_key: ${{ secrets.REMOTE_SERVER_SSH_PRIVATE_KEY }}

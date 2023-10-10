@@ -90,6 +90,14 @@ server:
       cookie:
         http-only: false
 
+logging:
+  file:
+    path: /var/log
+  level:
+    org: INFO
+    pattern:
+      console:
+
 pms:
   github-email-endpoint: "https://api.github.com/user/emails"
 
@@ -116,8 +124,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -152,8 +159,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -180,8 +186,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -208,8 +213,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -236,8 +240,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -264,8 +267,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -408,8 +410,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -444,8 +445,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -472,8 +472,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -500,8 +499,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -528,8 +526,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
@@ -556,8 +553,7 @@ bucket4j:
           - key: TIME
             expression: "@httpTools.getCurrentTime()"
           - key: IP
-            expression: getRemoteAddr()
-            types: REJECTED_COUNTER
+            expression: "getRemoteAddr()?: '0.0.0.0'"
           - key: UID
             expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
