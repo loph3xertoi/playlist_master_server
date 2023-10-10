@@ -119,7 +119,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -155,7 +155,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -183,7 +183,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -211,7 +211,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -239,7 +239,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -267,7 +267,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -411,7 +411,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -447,7 +447,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -475,7 +475,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -503,7 +503,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -531,7 +531,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI
@@ -559,7 +559,7 @@ bucket4j:
             expression: getRemoteAddr()
             types: REJECTED_COUNTER
           - key: UID
-            expression: "@pmsUserDetailsUtil.getCurrentLoginUserId()?: 'anonymousUser'"
+            expression: "@pmsUserDetailsUtil.getCurrentLoginUserIdBySessionId(getSession().getId())?: 'anonymousUser'"
           - key: METHOD
             expression: "getMethod()?: ''"
           - key: URI

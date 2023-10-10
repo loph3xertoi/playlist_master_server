@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +22,38 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PmsUserDetailsUtil {
+  private final SessionRegistry sessionRegistry;
+
+  public PmsUserDetailsUtil(SessionRegistry sessionRegistry) {
+    this.sessionRegistry = sessionRegistry;
+  }
+
+  /**
+   * Get current logged user's id by session id.
+   *
+   * @param sessionId Session id.
+   * @return Current logged user's id.
+   */
+  public Long getCurrentLoginUserIdBySessionId(String sessionId) {
+    SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
+    if (sessionInformation == null) {
+      return null;
+    }
+    Object principal = sessionInformation.getPrincipal();
+    if (principal.getClass().equals(PMSUserDetails.class)) {
+      PMSUserDetails pmsUserDetails = (PMSUserDetails) principal;
+      return pmsUserDetails.getUser().getId();
+    } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
+      GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) principal;
+      return gitHubOAuth2User.getId();
+    } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
+      GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) principal;
+      return googleOAuth2User.getId();
+    } else {
+      throw new RuntimeException("Invalid login type");
+    }
+  }
+
   /**
    * Get current logged user's id.
    *
@@ -33,13 +67,13 @@ public class PmsUserDetailsUtil {
     }
     Object principal = authentication.getPrincipal();
     if (principal.getClass().equals(PMSUserDetails.class)) {
-      PMSUserDetails pmsUserDetails = (PMSUserDetails) authentication.getPrincipal();
+      PMSUserDetails pmsUserDetails = (PMSUserDetails) principal;
       return pmsUserDetails.getUser().getId();
     } else if (principal.getClass().equals(GitHubOAuth2User.class)) {
-      GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+      GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) principal;
       return gitHubOAuth2User.getId();
     } else if (principal.getClass().equals(GoogleOAuth2User.class)) {
-      GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) authentication.getPrincipal();
+      GoogleOAuth2User googleOAuth2User = (GoogleOAuth2User) principal;
       return googleOAuth2User.getId();
     } else {
       throw new RuntimeException("Invalid login type");
