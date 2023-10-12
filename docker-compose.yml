@@ -5,15 +5,16 @@ services:
     container_name: pms
     restart: always
     environment:
+      # Used for remote debug by 5005 port.
+      # -Xdebug
       # -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
       _JAVA_OPTIONS: >
-        -Xdebug
         -Dspring.profiles.active=prod
       SPRING_CONFIG_ADDITIONAL-LOCATION: /data/secrets.yml
     user: '0'
     ports:
       - "443:443"
-      # - "5005:5005"
+      - "5005:5005"
     volumes:
       - ./pms/data:/data
       - ./pms/logs:/var/log
