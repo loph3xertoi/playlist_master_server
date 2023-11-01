@@ -3,7 +3,7 @@ services:
   pms:
     image: loph3xertoi/pms:latest
     container_name: pms
-    restart: always
+    restart: unless-stopped
     environment:
       # Used for remote debug by 5005 port.
       # -Xdebug
@@ -31,7 +31,7 @@ services:
     user: '0'
     ports:
       - "3000:3000"
-    restart: always
+    restart: unless-stopped
     depends_on:
       - prometheus
       - loki
@@ -57,7 +57,7 @@ services:
     container_name: loki
     volumes:
       - ./loki:/etc/loki
-    restart: always
+    restart: unless-stopped
     user: '0'
     #ports:
     #  - "3100:3100"
@@ -67,7 +67,7 @@ services:
   promtail:
     image: grafana/promtail:latest
     container_name: promtail
-    restart: always
+    restart: unless-stopped
     user: '0'
     volumes:
       - ~/app/pms/logs:/data/logs
@@ -78,7 +78,7 @@ services:
   prometheus:
     image: bitnami/prometheus:latest
     container_name: prometheus
-    restart: always
+    restart: unless-stopped
     user: '0'
     #ports:
     #  - "9009:9090"
@@ -94,7 +94,7 @@ services:
   redis:
     container_name: redis
     image: redis:latest
-    restart: always
+    restart: unless-stopped
     user: '0'
     # ports:
     #   - "6379:6379"
@@ -108,7 +108,7 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
-    restart: always
+    restart: unless-stopped
     user: '0'
     # ports:
     #   - "3306:3306"
@@ -129,7 +129,7 @@ services:
   qqmusic-api:
     container_name: qqmusic-api
     image: loph3xertoi/qqmusic-api:latest
-    restart: always
+    restart: unless-stopped
     user: '0'
     # ports:
     #   - "3300:3300"
@@ -138,7 +138,7 @@ services:
   ncm-api:
     container_name: ncm-api
     image: loph3xertoi/netease-music-api:latest
-    restart: always
+    restart: unless-stopped
     user: '0'
     # ports:
     #   - "3000:3000"
