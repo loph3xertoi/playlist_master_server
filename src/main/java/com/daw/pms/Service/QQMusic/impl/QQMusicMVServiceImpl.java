@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.Serializable;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
  * @since 6/2/23
  */
 @Service
-public class QQMusicMVServiceImpl implements QQMusicMVService {
+public class QQMusicMVServiceImpl implements QQMusicMVService, Serializable {
   private final HttpTools httpTools;
   private final String baseUrl;
 

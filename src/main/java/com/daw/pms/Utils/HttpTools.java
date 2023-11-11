@@ -1,6 +1,7 @@
 package com.daw.pms.Utils;
 
 import java.io.BufferedReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -21,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @since 7/21/23
  */
 @Component
-public class HttpTools {
+public class HttpTools implements Serializable {
   /** Host of proxy qq music api server. */
   @Value("${qqmusic.proxy.host}")
   public String qqmusicHost;
@@ -39,10 +40,10 @@ public class HttpTools {
   public String ncmPort;
 
   /** Rest template for sending http requests. */
-  private final RestTemplate restTemplate;
+  private final transient RestTemplate restTemplate;
 
   /** Rest template for sending http requests with proxy. */
-  private final RestTemplate restTemplateWithProxy;
+  private final transient RestTemplate restTemplateWithProxy;
 
   /**
    * Constructor for HttpTools.
