@@ -4,4 +4,4 @@ ADD target/pms.jar pms.jar
 
 EXPOSE 443
 
-ENTRYPOINT ["java", "-Xms256m", "-Xmx256m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "pms.jar"]
+ENTRYPOINT ["java", "-Xms1024m", "-Xmx1024m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "pms.jar"]
