@@ -3,13 +3,45 @@ body, html {
     color: #fff;
     margin: 0;
     padding: 0;
+    height: 100%;
     font-family: "Quicksand Light", sans-serif;
     text-align: center;
 }
 
 .container {
+    min-height: calc(100vh - 100px); /* Calculate height of viewport minus footer height */
+    background-color: #f0f0f0;
     position: relative;
+    text-align: center;
     color: orange;
+}
+
+.footer {
+    height: 100px;
+    background-color: #333;
+    position: relative;
+    color: #a4a4a4;
+    text-align: center;
+    line-height: 100px; /* Center content vertically */
+}
+
+.footer a {
+    font-size: 14px;
+    color: #a4a4a4
+}
+
+.footer-beian {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    vertical-align: middle;
+    background: url(/static/images/default_library_cover.png) -66px -77px no-repeat
+}
+
+.footer-spec {
+    border-color: #5d5d5d;
+    margin: 0 10px
 }
 
 .text {
